@@ -1,0 +1,499 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2019
+
+% ready for submission
+%\usepackage{neurips_2019}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+     %\usepackage[preprint]{neurips_2019}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+     \usepackage[final]{neurips_2019}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2019}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\title{Biology and Compositionality: Empirical Considerations for Emergent-Communication Protocols}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+    Travis~LaCroix\thanks{\href{travislacroix.github.io}{\texttt{travislacroix.github.io}}} \\
+        \begin{tabular}{cc}
+        $\qquad$ $\qquad$ $\qquad$ $\qquad$ $\qquad$ $\qquad$ $\qquad$  & $\qquad$ $\qquad$ $\qquad$ $\qquad$ $\qquad$ $\qquad$  $\qquad$ \\
+            Logic and Philosophy of Science & Mila  \\
+            University of California, Irvine & Qu{\'e}bec AI Institute \\
+            Irvine, CA & Montr{\'e}al, PQ \\
+            & \\
+        \end{tabular}\\
+  %Travis~LaCroix\thanks{\href{travislacroix.github.io}{\texttt{travislacroix.github.io}}} \\
+   % \phantom{AND} \\
+  %Department of Logic \& Philosophy of Science\\
+  %University of California, Irvine\\
+  %Irvine, CA \\
+  %\phantom{AND} \\
+  %Mila \\
+  %Qu{\'e}bec AI Insitute \\
+  %Montr{\'e}al, PQ \\
+  %\phantom{AND} \\
+  \texttt{tlacroix@uci.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Many researchers in language origins and emergent communication take {\it compositionality} as their primary target for explaining how simple communication systems can become more like natural language. % %Demonstrating how compositionality may have evolved is supposed to be (at least partially) sufficient for explaining how language evolved.
+    I suggest that, if machine learning research in emergent communication is to take cues from biological systems and language origins, then compositionality is not the correct target.
+\end{abstract}
+
+% Communication is one of the most impressive human abilities but historically it has been studied in machine learning on confined datasets of natural language, and by various other fields in simple low-dimensional spaces. Recently, with the rise of deep RL methods, the questions around the emergence of communication can now be studied in new, complex multi-agent scenarios. Two previous successful workshops (2017, 2018) have gathered the community to discuss how, when, and to what end communication emerges, producing research that was later published at top ML venues such as ICLR, ICML, AAAI. Now, we wish to extend these ideas and explore a new direction: how emergent communication can become more like natural language, and what natural language understanding can learn from emergent communication.
+
+%The push towards emergent natural language is a necessary and important step in all facets of the field. For studying the evolution of human language, emerging a natural language can uncover the requirements that spurred crucial aspects of language (e.g. compositionality). When emerging communication for multi-agent scenarios, protocols may be sufficient for machine-machine interactions, but emerging a natural language is necessary for human-machine interactions. Finally, it may be possible to have truly general natural language understanding if agents learn the language through interaction as humans do. To make this progress, it is necessary to close the gap between artificial and natural language learning.
+
+%To tackle this problem, we want to take an interdisciplinary approach by inviting researchers from various fields (machine learning, game theory, evolutionary biology, linguistics, cognitive science, and programming languages) to participate and engaging them to unify the differing perspectives. Providing this platform, we hope that not only will the ML community will learn something new, but other fields can also gain a new perspective and see the potential of ML as a powerful experimental paradigm for themselves. We believe that the third iteration of this workshop with a novel, unexplored goal and strong commitment to diversity will allow this burgeoning field to flourish. 
+
+\section{Introduction}
+
+Communication is ubiquitous in nature, but {\it linguistic} communication---i.e., natural language---is unique to humans. There are inherent difficulties in determining how language may have evolved---i.e., out of simpler communicative precursors ({\it proto-language}). On the one hand, it is difficult to define what constitutes language---it is always in flux, it is infinitely flexible, and it is one of the most complex behaviours known \citep{Christiansen-Kirby-2003}. On the other hand, there is a paucity of direct evidence available with which to confirm current theories---language does not fossilise, nor can we go back in time to observe the actual precursors of human-level linguistic capacities.
+
+Language origins research may appear to be a purely epistemic project; however, this programme finds application in contemporary machine learning and artificial intelligence (ML/AI). Understanding the fundamental principles that are involved in the (biological and cultural) evolution of effective communication may lead to innovative communication methods for use by interacting AI agents and multi-robot systems \citep{Wagner-et-al-2003}. AI agents need a common language to coordinate successfully and to communicate with humans. Furthermore, given the close relationship between language and thought, a clear understanding of how languages arise and persist in a population may also lend some additional insight into human cognitive capacities, helping lead the way in creating an artificial {\it general} intelligence (AGI).
+
+The similar goals of language origins research (from a philosophical, biological, bio-linguistic, and cognitive systems perspective) and emergent communication research (from a computational perspective) should be apparent. One of the questions asked in contemporary machine learning is
+%
+\begin{center}
+    {\it How can emergent communication become more like natural language?}
+\end{center} 
+%
+This question finds parallel expression in language origins research:
+%
+\begin{center}
+    {\it How might something like natural language evolve out of a simple communication system?}
+\end{center}
+%
+Thus, progress in language origins may help direct research in emergent communication and vice-versa. However, there has been relatively little dialogue between these two approaches.
+
+To explain how language evolved out of simpler precursors, it is necessary to understand the salient differences between language and simple communication, or signalling. Most researchers (in both programmes) working on these questions take {\it compositionality} (productivity, openness, hierarchical structure, generative capacity, complex syntax, etc.) as their primary target. Demonstrating how compositionality may have evolved is supposed to be (at least partially) sufficient for explaining how language evolved. Furthermore, narrowing one's explanatory target from the formidable question of how {\it language} evolved to the question of how one component of language---e.g.,  {\it complex syntax}---evolved affords some degree of analytic tractability. 
+
+However, there is reason to think that compositionality is the wrong target, on the biological side (and so the wrong target on the ML side). As such, the purpose of this paper is to explore this claim. %, %
+%the titular conditional statement, 
+%focusing upon the consequences for potential research in emergent communication. %As a result, I will not argue about {\it whether} gradualism is the correct approach to language origins research; this will be beside the point since, of course, one cannot deny a conditional statement by denying the antecedent. Thus, I will assume that the antecedent is true and then proceed to discuss why the consequent follows from this assumption. 
+This has theoretical implications for language origins research more generally, but the focus here will be the % significant 
+implications for research on {\it emergent communication} in computer science and ML---specifically regarding the types of programmes that might be expected to work, and those which will not. My hope, then, is that this work will help to direct future research in fruitful new directions. 
+
+\section{A Quick Note on Compositionality}
+
+Compositionality provides a {\it prima facie} plausible explanatory target for language origins and emergent communication research. In the former case, this is because compositional syntax is a salient differentiating feature of language which is absent in simple communication systems found in nature. The {\it principle} of compositionality is typically stated as follows: {\it The meaning of a compound [complex] expression is a function of the meaning of its parts [constituents] and how they are combined [composed]} \citep{Kamp-Partee-1995, Szabo-2012}. In ML/AI, this is usually cashed out as a notion of {\it systematicity}; namely, ``the ability to entertain a given thought implies the ability to entertain thoughts with semantically related contents'' \citep[3]{Fodor-Pylyshyn-1988}. 
+
+Any attempt to give an evolutionary explanation of human-level linguistic capacities will minimally need to account for the following: (1) how compositionality might arise from non-compositional communication; (2) if compositionality itself is an evolutionary adaptation, why compositional structure should be selected for in the first place; (3) why compositionality should be rare in nature, though communication is universal. %
+%
+Several models\footnote{See \citet{Nowak-Krakauer-1999, Barrett-2006, Barrett-2007, Barrett-2009, Franke-2014, Franke-2016, Steinert-Threlkeld-2014, Steinert-Threlkeld-2016, Steinert-Threlkeld-2018, Barrett-et-al-2018}.} have been suggested in recent years which grapple with these questions using the signalling-game framework.\footnote{The signalling game was introduced in \citet{Lewis-1969} and extended to dynamic models in \citet{Skyrms-1996, Skyrms-2010-Signals}. In the ML literature, this is sometimes called a {\it referential game}; see \citet{Lazaridou-et-al-2016, Das-et-al-2017, Evtimova-et-al-2017, Havrylov-Titov-2017, Kottur-et-al-2017, Choi-et-al-2018, Lazaridou-et-al-2018}.} Signalling games show how straightforward communication conventions might arise naturally through processes of repeated interactions. In an evolutionary context, starting with initially random signals and actions, individuals in a population learn or evolve effective communication conventions under several different dynamics. 
+
+However, \citet{LaCroix-2019-Compositionality} suggests that the evolutionary explanations for compositional {\it signalling} offered thus far fail to give a plausible account of how compositionality might arise. The reason for this failure is twofold. On the one hand, these models often (if implicitly) take compositionality {\it qua} linguistic compositionality as their target for an evolutionary explanation. This gives rise to significant complications insofar as linguistic compositionality is rife with conceptual difficulties. On the other hand, these models fail to take into account the role asymmetry of the sender and receiver in the signalling game and thus fail to capture how compositionality might be beneficial for communication. \citet{LaCroix-2019-Compositionality} suggests that if compositionality is a good target of language origins (or emergent communication) research, then it is necessary to build a more straightforward notion of  compositionality for complex signalling from the bottom-up. Here, I suggest that compositionality is not even the right target for these research programmes. 
+
+\section{Language Origins}
+
+In the context of the salient distinctions between language and animal communication systems, the problem is that compositional signals are extremely rare, or nonexistent, in nature. There is scant empirical evidence for call sequences that are {\it compositionally} meaningful. Most current data that suggests compositional signalling in nature comes from Zuberb{\" u}hler's study of several species of African forest monkeys ({\it Cercopithecus}) \citep{Zuberbuhler-2001, Zuberbuhler-2002, Arnold-Zuberbuhler-2006a, Arnold-Zuberbuhler-2006b, Arnold-Zuberbuhler-2008, Arnold-Zuberbuhler-2013}. However, no such combinatorial capacity or anything similar has been found in {\it any} other species of monkey or great ape, though these are well-studied \citep{Fitch-2010}.
+
+As a result, there is little evidence of a precursor to human-level compositional syntax. The most recent last common ancestor (LCA) between the great apes (including humans) and old-world monkeys (including {\it Cercopithecus}) existed approximately $25$ {\sc mya} (million years ago), during the Paleogene period. Since no other related species utilises such compositional capacities, it stands to reason that this syntactic disposition was {\it not} present in the LCA of {\it Homo} and {\it Cercopithecus}---the most recent common ancestor of humans and chimpanzees, for example, lived around $10-4$ {\sc mya}. Australopithecine species evolved after this break, with {\it Homo} likely evolving approximately $2$ {\sc mya}. 
+
+Suppose that the LCA to great apes and old-world monkeys {\it did} have functionally proto-compositional syntax. This requires that proto-compositional syntax evolved up to $25$ {\sc mya}. Then, we should expect that most old-world monkeys {\it and} great apes would show signs of using proto-compositional syntax. However, as far as we can tell, they do not---excepting the few mentioned {\it Cercopithecus} species. Assuming these dispositions evolved in the LCA, $25$ {\sc mya}, and given that they do not appear in most decedents of the LCA, this implies that this disposition was lost---and lost more readily than it was held onto---in almost all other {\it Catarrhine} species.
+
+Further still, it is controversial whether Neanderthals had language ($0.4-0.04$ {\sc mya}), let alone whether {\it H. heidelbergensis} had language ($0.7-0.2$ {\sc mya}). But, it is generally accepted that {\it Australopithecine} species ($3.9-2.9$ {\sc mya}) did {\it not} have language \citep{Fitch-2010}. This implies that this proto-compositional disposition evolved into fully-fledged natural language on the order of $0.2-2.0$ {\sc mya}.\footnote{\citet{Berwick-Chomsky-2016} give a more conservative estimate, between $0.06-0.02$ {\sc mya}, corresponding to the first anatomically-modern humans and the last exodus from Africa.} Meanwhile, these dispositions in few {\it Catarrhine} species remained utterly unchanged for more than $20$ million years, and these dispositions were lost in {\it almost all} great apes and old-world monkeys. This is the implausible (though technically not impossible) conclusion that follows from our assumption that a proto-compositional disposition existed in the LCA of great apes and old-world monkeys.  
+
+Thus, the scant empirical evidence for compositional precursors to human language comes paired with an improbable evolutionary history. The more plausible alternative is that there is {\it no} empirical evidence for any precursor to human language in nature. Note that an account which posits the sudden emergence of compositional syntax does not fall prey to these criticisms since it requires no proto-compositional precursor to compositional language. This is a virtue of the so-called {\it saltationist} perspective on language origins. However, this view is not without its own problems \citep{LaCroix-2019-Salt-v-Grad}. Therefore, {\it if} gradualism is the correct approach to language origins, then compositionality {\it cannot} be a correct target.
+
+\section{Consequences for Machine Learning}
+
+Significant advances have been made in artificial systems by using biological systems as a guide. For example, the development of reinforcement learning algorithms was heavily inspired by learning rules that were studied empirically in biology \citep{Bush-Mosteller-1955, Rescorla-Wagner-1972, Roth-Erev-1995, Erev-Roth-1998}. A recent review of points of contact between ML and biology suggests several different areas of future research which can benefit from a bidirectional flow of information between these fields \citep{Neftci-Averbeck-2019}; however, nowhere is mentioned the interface between biological and computational models of the emergence of language.
+
+I suggested above that a gradualist approach to language origins in biology implies that compositionality is an incorrect target for this research programme. Further, computer scientists working on emergent communication also take compositionality as a primary target---a benchmark for success. However, recent work in ML highlights several problems for learning compositional linguistic structures. In particular, neural networks latch on to statistical regularities in existing datasets: \citet{Bahdanau-et-al-2018} highlight that, in a synthetic instruction-following task \citep{Lake-Baroni-2017}, the agent does not learn a generalisation for composing words. Thus, when the agent is trained on the commands `jump', `run twice', and `walk twice', it subsequently fails when asked to interpret `jump twice'. Thus, they fail to {\it generalise}. %
+%
+%Neural networks are the `workhorse' of natural language comprehension and generation---\citet{Bahdanau-et-al-2018} highlight that neural networks play a significant role in machine translation \citep{Wu-et-al-2016} and text generation \citep{Kannan-et-al-2016} in addition to exhibiting state-of-the-art performance on several benchmarks, including {\it Recognising Textual Entailment}, \citep{Gong-et-al-2017}, {\it Visual Question Answering}, \citep{Jiang-et-al-2018}, and {\it Reading Comprehension} \citep{Wang-et-al-2018}. However, they 
+%
+The above analysis suggests a possible reason why they do so fail: the target is compositional communication. Thus, if ML is to take cues from biological systems, it seems that this is not the correct direction for research in emergent communication.
+
+\section{Where to Go From Here: Reflexivity}
+
+Communication is a unique evolutionary process in the following sense: once a group of individuals has learned some set of simple communication conventions, those learned behaviours may be used to influence future communicative behaviours, giving rise to a feedback loop. When faced with a novel context, an individual can always learn a brand new disposition. However, the individual may learn to take advantage of previously evolved dispositions. Indeed, they may learn to take advantage of pre-evolved {\it communicative} dispositions to thereby influence the evolution of future communicative dispositions. This is a notion of {\it reflexivity}. Reflexivity, unlike compositionality, is consistent with a gradualist approach to language origins. %
+%
+Once actors exhibit such complexity, at a small scale, it may lead to a feedback loop between communication and cognition that, over time, gives rise to the complexity that we see in natural languages. Thus, this evolutionary story depends inherently on a notion of {\it conceptual bootstrapping} \citep{Carey-2004, Carey-2009a, Carey-2009b, Carey-2011b, Carey-2011a, Carey-2014, Shea-2009, Margolis-Laurence-2008, Margolis-Laurence-2011, Piantadosi-et-al-2012, Beck-2017}.
+
+To improve performance on generalisation, researchers in ML might add modularity and structure to their designs \citep{Andreas-et-al-2016, Gaunt-et-al-2016}. In the case of the Neural Module Network paradigm, a neural network is assembled from several {\it modules}, each of which is supposed to perform a particular subtask of the input processing. \citet{Bahdanau-et-al-2018} note that although this modular approach is intuitively appealing, ``widespread adoption has been hindered by the large amount of domain knowledge that is required to decide or predict how the modules should be created \ldots and how they should be connected \ldots based on a natural language utterance''. See also, \citet{Andreas-et-al-2016, Johnson-et-al-2016, Johnson-et-al-2017, Hu-et-al-2017}. %
+%
+Insofar as reflexivity is an apt target for the biological evolution of linguistic communication, it may too provide some insights for modelling emergent communication in an artificial system. See further discussion in \citet{LaCroix-If-Gradualism-2019, LaCroix-Dissertation}.
+
+\section{Further Resources}
+
+The gradualist view (though not necessarily via natural selection) is endorsed by, e.g., \citet{ %
+    Givon-1979, 
+        Givon-2002a, 
+        Givon-2002b, 
+        Givon-2009, 
+    Pinker-Bloom-1990, 
+    Newmeyer-1991, 
+        Newmeyer-1998, 
+        Newmeyer-2005, 
+    Jackendoff-1999, 
+        Jackendoff-2002, 
+    Carstairs-McCarthy-1999, 
+    Fitch-2004, 
+        Fitch-2010, 
+    Culicover-Jackendoff-2005, 
+    Szamado-Szathmary-2006,
+    Progovac-2006, 
+        Progovac-2009a, 
+        Progovac-2009b, 
+        Progovac-2013, 
+        Progovac-2015, 
+        Progovac-2019, 
+    Tallerman-2007, 
+        Tallerman-2013a, 
+        Tallerman-2013b, 
+        Tallerman-2014a, 
+        Tallerman-2014b,
+    Heine-Kuteva-2007, 
+    Hurford-2007, 
+        Hurford-2012,
+    Tallerman-Gibson-2011,
+    Yang-2013}, among many others.
+%
+The saltationist view is endorsed by \citet{%
+    Berwick-1998, 
+        Berwick-et-al-2013, 
+        Berwick-Hauser-Tattersall-2013, 
+    Bickerton-1990, 
+        Bickerton-1998, 
+    Lightfoot-1991, 
+    Hauser-et-al-2002, 
+    Chomsky-2002, 
+        Chomsky-2005, 
+        Chomsky-2010, 
+    Piattelli-Palmarini-Uriagereka-2004,
+        Piattelli-Palmarini-Uriagereka-2011, 
+    Moro-2008, 
+    Hornstein-2008, 
+    Piattelli-Palmarini-2010, 
+    Berwick-Chomsky-2011, 
+        Berwick-Chomsky-2016, 
+    Di-Sciullo-2011, 
+        Di-Sciullo-2013, 
+    Bolhuis-et-al-2014, 
+    Miyagawa-et-al-2014, 
+        Miyagawa-2017}, etc.
+
+%I have not argued here for the virtues of the former approach over the latter; though see \citet{LaCroix-2019-Salt-v-Grad}.
+
+This is to say nothing of the signalling-game framework \citep{Lewis-1969, Skyrms-1996, Skyrms-2010-Signals} in evolutionary game theory, which has seen a number of significant advances in a variety of philosophically interesting domains. These include, e.g., the difference between indicatives and imperatives \citep{Huttegger-2007b, Zollman-2011}; signalling in social dilemmas \citep{Wagner-2014}; network formation \citep{Pemantle-Skyrms-2004, Barrett-et-al-2017}; deception \citep{Zollman-et-al-2013, Martinez-2015, Skyrms-Barrett-2018}; meta-linguistic notions of truth and probability \citep{Barrett-2016, Barrett-2017}; syntactic structure and compositionality \citep{Franke-2016, Steinert-Threlkeld-2016, Barrett-et-al-2018, LaCroix-2019-Logic-Game}; vagueness \citep{OConnor-2014}; and epistemic representations, such as how the structure of one’s language evolves to maintain sensitivity to the structure of the world \citep{Barrett-LaCroix-2019}. See \citet{LaCroix-2019-Signaling-Models} for an overview.
+
+\small
+\bibliographystyle{apalikelike}
+\bibliography{Biblio}
+
+\end{document}
+
+%However, rather than arguing for the plausibility of a gradualist versus a saltationist scenario, most researchers appear to fall into one or the other camp based purely upon external or pre-theoretic commitments regarding what they believe evolved [emerged] and how. This is best illustrated by the titular claim of \citet{Jackendoff-2010}: {\it your theory of language evolution depends upon your theory of language}. For example, \citet{Jackendoff-2010} holds that commitment to the {\it Minimalist Program} (MP) entails a saltationist approach to language origins.\footnote{Note, however, that \citet{Clark-2013} suggests that the MP is at least compatible with a gradualist approach.}
+
+
+
+    %Two properties of language are taken as viable candidates: {\it compositionality} and {\it reflexivity}. Most researchers working on this problem take compositionality as their primary target, with the idea being that demonstrating how compositionality may have evolved could be sufficient for explaining how language evolved. I believe this focus is mistaken. On the one hand, there is no empirical evidence for any precursor to compositional syntax in nature. On the other hand, there is no gradualist explanation of compositionality, insofar as its presence or non-presence in a communication system is antipodal.
+
+%In opposition to this paradigm, I suggest that {\it reflexivity} should be our primary target of inquiry. Reflexivity allows for the evolution of complexity via self-reference. This can be modelled using the signalling game, to the extent that the {\it functional referent} of a signal can be the elements of the game, and eventually signals themselves. On my view, compositionality is an emergent property of complex signalling, which arises once hierarchical communication structures are evolved via modular composition, which (in turn) is fundamentally supported by reflexivity. 
+
+%This view is both parsimonious and plausible. There are empirical precursors to this sort of phenomenon that are observable in nature, and this process actually has demonstrable effects on efficiency with respect to signalling. 
+
+%The signalling game methodology is still relatively young, and so many open question remain, and many results, extensions, and applications have yet to be explored.
+
+%My position is couched in terms of a gradualist approach to the evolution of language, and thus it is firmly against the saltationist stance that language emerged suddenly. I believe this is the correct view; for example, \citet{Givon-2002b} argues that ``like other biological phenomena, language cannot be fully understood without reference to its evolution, whether proven or hypothesized'' (39). However, I assume this position rather than arguing for it. In this context, I might simply defer to \citet{Dobzhansky-1973}:
+
+%\vspace{1em}
+
+%\begin{center}
+%    {\it Nothing in biology makes sense except in the light of evolution.}
+%\end{center}
+
+%\vspace{1em}
+
+\subsubsection*{Acknowledgements}
+
+I would like to thank the Qu{\'e}bec Artificial Intelligence Institute (Mila) and, in particular, Yoshua Bengio, for providing generous space and resources.
+
+%Many thanks to Jeffrey A. Barrett and Brian Skyrms for helpful comments and discussions on early drafts. Thanks also to the anonymous referees for their helpful insights. Versions of this paper have been presented at the Pacific Division meeting of the American Philosophical Association (Vancouver, 2019) and the Society for Exact Philosophy (Toronto, 2019), and I am grateful to their respective organisers, audiences, and commentators for helpful discussion. I would additionally like to thank the Qu{\'e}bec Artificial Intelligence Institute (Mila) and, in particular, Yoshua Bengio, for providing generous space and resources. Thanks also to Sarah and Atlas.
+
+%Put another way, one of the {\it key} differences between communication and language that researchers often point to is the {\it generative capacity} of natural languages : with a finite vocabulary and a finite set of grammatical rules, human languages allow for the production of an unlimited number of novel expressions. A principle of generative capacity explains how arbitrary sounds can be combined in unlimited variations to form semantically meaningful and syntactically permissible units---e.g., phonemes form morphemes and words, and words form phrasal expressions and sentences. In its prototypical formulation, a principle of compositionality suggests that the meaning of a complex expression is a function of the meaning of its parts and the ways in which they are combined \citep{Kamp-Partee-1995}. Simple communication systems that arise in nature lack this unbounded character. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Submission of papers to NeurIPS 2019}
+
+NeurIPS requires electronic submissions.  The electronic submission site is
+\begin{center}
+  \url{https://cmt.research.microsoft.com/NeurIPS2019/}
+\end{center}
+
+Please read the instructions below carefully and follow them faithfully.
+
+\subsection{Style}
+
+Papers to be submitted to NeurIPS 2019 must be prepared according to the
+instructions presented here. Papers may only be up to eight pages long,
+including figures. Additional pages \emph{containing only acknowledgments and/or
+  cited references} are allowed. Papers that exceed eight pages of content
+(ignoring references) will not be reviewed, or in any other way considered for
+presentation at the conference.
+
+The margins in 2019 are the same as since 2007, which allow for $\sim$$15\%$
+more words in the paper compared to earlier years.
+
+Authors are required to use the NeurIPS \LaTeX{} style files obtainable at the
+NeurIPS website as indicated below. Please make sure you use the current files
+and not previous versions. Tweaking the style files may be grounds for
+rejection.
+
+\subsection{Retrieval of style files}
+
+The style files for NeurIPS and other conference information are available on
+the World Wide Web at
+\begin{center}
+  \url{http://www.neurips.cc/}
+\end{center}
+The file \verb+neurips_2019.pdf+ contains these instructions and illustrates the
+various formatting requirements your NeurIPS paper must satisfy.
+
+The only supported style file for NeurIPS 2019 is \verb+neurips_2019.sty+,
+rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{} 2.09,
+  Microsoft Word, and RTF are no longer supported!}
+
+The \LaTeX{} style file contains three optional arguments: \verb+final+, which
+creates a camera-ready copy, \verb+preprint+, which creates a preprint for
+submission to, e.g., arXiv, and \verb+nonatbib+, which will not load the
+\verb+natbib+ package for you in case of package clash.
+
+\paragraph{Preprint option}
+If you wish to post a preprint of your work online, e.g., on arXiv, using the
+NeurIPS style, please use the \verb+preprint+ option. This will create a
+nonanonymized version of your work with the text ``Preprint. Work in progress.''
+in the footer. This version may be distributed as you see fit. Please \textbf{do
+  not} use the \verb+final+ option, which should \textbf{only} be used for
+papers accepted to NeurIPS.
+
+At submission time, please omit the \verb+final+ and \verb+preprint+
+options. This will anonymize your submission and add line numbers to aid
+review. Please do \emph{not} refer to these line numbers in your paper as they
+will be removed during generation of camera-ready copies.
+
+The file \verb+neurips_2019.tex+ may be used as a ``shell'' for writing your
+paper. All you have to do is replace the author, title, abstract, and text of
+the paper with your own.
+
+The formatting instructions contained in these style files are summarized in
+Sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
+
+\section{General formatting instructions}
+\label{gen_inst}
+
+The text must be confined within a rectangle 5.5~inches (33~picas) wide and
+9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).  Use 10~point
+type with a vertical spacing (leading) of 11~points.  Times New Roman is the
+preferred typeface throughout, and will be selected for you by default.
+Paragraphs are separated by \nicefrac{1}{2}~line space (5.5 points), with no
+indentation.
+
+The paper title should be 17~point, initial caps/lower case, bold, centered
+between two horizontal rules. The top rule should be 4~points thick and the
+bottom rule should be 1~point thick. Allow \nicefrac{1}{4}~inch space above and
+below the title to rules. All pages should start at 1~inch (6~picas) from the
+top of the page.
+
+For the final version, authors' names are set in boldface, and each name is
+centered above the corresponding address. The lead author's name is to be listed
+first (left-most), and the co-authors' names (if different address) are set to
+follow. If there is only one co-author, list both author and co-author side by
+side.
+
+Please pay special attention to the instructions in Section \ref{others}
+regarding figures, tables, acknowledgments, and references.
+
+\section{Headings: first level}
+\label{headings}
+
+All headings should be lower case (except for first word and proper nouns),
+flush left, and bold.
+
+First-level headings should be in 12-point type.
+
+\subsection{Headings: second level}
+
+Second-level headings should be in 10-point type.
+
+\subsubsection{Headings: third level}
+
+Third-level headings should be in 10-point type.
+
+\paragraph{Paragraphs}
+
+There is also a \verb+\paragraph+ command available, which sets the heading in
+bold, flush left, and inline with the text, with the heading followed by 1\,em
+of space.
+
+\section{Citations, figures, tables, references}
+\label{others}
+
+These instructions apply to everyone.
+
+\subsection{Citations within the text}
+
+The \verb+natbib+ package will be loaded for you by default.  Citations may be
+author/year or numeric, as long as you maintain internal consistency.  As to the
+format of the references themselves, any style is acceptable as long as it is
+used consistently.
+
+The documentation for \verb+natbib+ may be found at
+\begin{center}
+  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
+\end{center}
+Of note is the command \verb+\citet+, which produces citations appropriate for
+use in inline text.  For example,
+\begin{verbatim}
+   \citet{hasselmo} investigated\dots
+\end{verbatim}
+produces
+\begin{quote}
+  Hasselmo, et al.\ (1995) investigated\dots
+\end{quote}
+
+If you wish to load the \verb+natbib+ package with options, you may add the
+following before loading the \verb+neurips_2019+ package:
+\begin{verbatim}
+   \PassOptionsToPackage{options}{natbib}
+\end{verbatim}
+
+If \verb+natbib+ clashes with another package you load, you can add the optional
+argument \verb+nonatbib+ when loading the style file:
+\begin{verbatim}
+   \usepackage[nonatbib]{neurips_2019}
+\end{verbatim}
+
+As submission is double blind, refer to your own published work in the third
+person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
+previous work [4].'' If you cite your other papers that are not widely available
+(e.g., a journal paper under review), use anonymous author names in the
+citation, e.g., an author of the form ``A.\ Anonymous.''
+
+\subsection{Footnotes}
+
+Footnotes should be used sparingly.  If you do require a footnote, indicate
+footnotes with a number\footnote{Sample of the first footnote.} in the
+text. Place the footnotes at the bottom of the page on which they appear.
+Precede the footnote with a horizontal rule of 2~inches (12~picas).
+
+Note that footnotes are properly typeset \emph{after} punctuation
+marks.\footnote{As in this example.}
+
+\subsection{Figures}
+
+\begin{figure}
+  \centering
+  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+  \caption{Sample figure caption.}
+\end{figure}
+
+All artwork must be neat, clean, and legible. Lines should be dark enough for
+purposes of reproduction. The figure number and caption always appear after the
+figure. Place one line space before the figure caption and one line space after
+the figure. The figure caption should be lower case (except for first word and
+proper nouns); figures are numbered consecutively.
+
+You may use color figures.  However, it is best for the figure captions and the
+paper body to be legible if the paper is printed in either black/white or in
+color.
+
+\subsection{Tables}
+
+All tables must be centered, neat, clean and legible.  The table number and
+title always appear before the table.  See Table~\ref{sample-table}.
+
+Place one line space before the table title, one line space after the
+table title, and one line space after the table. The table title must
+be lower case (except for first word and proper nouns); tables are
+numbered consecutively.
+
+Note that publication-quality tables \emph{do not contain vertical rules.} We
+strongly suggest the use of the \verb+booktabs+ package, which allows for
+typesetting high-quality, professional tables:
+\begin{center}
+  \url{https://www.ctan.org/pkg/booktabs}
+\end{center}
+This package was used to typeset Table~\ref{sample-table}.
+
+\begin{table}
+  \caption{Sample table title}
+  \label{sample-table}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    \multicolumn{2}{c}{Part}                   \\
+    \cmidrule(r){1-2}
+    Name     & Description     & Size ($\mu$m) \\
+    \midrule
+    Dendrite & Input terminal  & $\sim$100     \\
+    Axon     & Output terminal & $\sim$10      \\
+    Soma     & Cell body       & up to $10^6$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+

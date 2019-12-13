@@ -1,2 +1,0 @@
-Many researchers in language origins and emergent communication take  compositionality as their primary target for explaining how simple communication systems can become more like natural language. I suggest that, if machine learning research in emergent communication is to take cues from biological systems and language origins, then compositionality is not the correct target.
-
