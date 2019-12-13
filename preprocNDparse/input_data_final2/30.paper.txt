@@ -1,0 +1,53 @@
+Resource Description Framework (RDF) triplestores and Property
+Graph (PG) database systems are two approaches for data management that are based on modeling storing and querying graph-like data.
+Given the heterogeneity between these systems it becomes necessary
+to develop methods to allow interoperability among them. While there
+exist some approaches to exchange data and schema between RDF and
+PG databases they lack compatibility and even a solid formal foundation. In this paper we study the semantic interoperability between
+RDF and PG databases. Specifically we present two direct mappings
+(schema-dependent and schema-independent) for transforming an RDF
+database into a PG database. We show that the proposed mappings
+possess the fundamental properties of semantics preservation and information preservation. The existence of both mappings allows us to
+conclude that the PG data model subsumes the expressiveness or information capacity of the RDF data model.
+
+RDF and Graph databases are two approaches for data management
+that are based on modeling storing and querying graph-like data. The
+database systems based on these models are gaining relevance in the industry
+due to their use in various application domains where complex data analytics
+is required [2]. RDF triplestores and graph database systems are tightly connected as
+they are based on graph data models. RDF databases are based on the RDF
+data model [21] their standard query language is SPARQL and RDF
+Schema [8] allows to describe classes of resources and properties (i.e. the
+data schema). On the other hand most graph databases are based on the
+Property Graph (PG) data model there is no standard query language and
+there is no standard notion of property graph schema. Therefore RDF
+and PG database systems are dissimilar in data model schema constraints
+and query language.
+
+In this article we have presented two mappings to transform RDF databases
+into Property Graph databases. We have shown that both database mappings satisfy the property of information preservation i.e. there exist inverse
+mappings that allow recovering the original databases without losing information. These results allow us to present the following conclusion about the
+information capacity of the Property Graph data models with respect to the
+RDF data model.
+
+@label
+Resource Description Framework (RDF) triplestores and Property
+Graph (PG) database systems are two approaches for data management that are based on modeling storing and querying graph-like data.
+@label
+Given the heterogeneity between these systems it becomes necessary
+to develop methods to allow interoperability among them. 
+@label
+While there
+exist some approaches to exchange data and schema between RDF and
+PG databases they lack compatibility and even a solid formal foundation. 
+@label
+In this paper we study the semantic interoperability between
+RDF and PG databases. Specifically we present two direct mappings
+(schema-dependent and schema-independent) for transforming an RDF
+database into a PG database.
+@label
+We show that the proposed mappings
+possess the fundamental properties of semantics preservation and information preservation.
+@label
+The existence of both mappings allows us to
+conclude that the PG data model subsumes the expressiveness or information capacity of the RDF data model.

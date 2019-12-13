@@ -1,0 +1,236 @@
+
+@#!T
+
+Teaching Perception
+
+@#^T
+
+
+
+Jonathan H. ||SYMBOLTOKEN|| Connell is with IBM T.J. Watson Research, Yorktown Heights NY, USA
+         jconnell@us.ibm.com
+
+
+
+
+
+
+emptyempty
+
+
+
+@#!A
+
+The visual world is very rich and generally too complex to perceive in its entirety. Yet only certain features are typically required to adequately perform some task in a given situation. Rather than hardwirein decisions about when and what to sense, this paper describes a robotic system whose behavioral policy can be set by verbal instructions it receives. These capabilities are demonstrated in an assoc ated video video-p showing the fully implemented system guiding the perception of a physical robot in simple scenario. The structure and functioning of the underlying natural language based symbolic reasoning system is also discussed.
+
+@#^A
+
+
+
+
+@#!S
+INTRODUCTION
+@#^S
+
+
+Sensing is not without costs. For any given object there are many things that can be known about it. What constitutes a reasonable amount of information to obtain? For instance, to identify an object in a scene a robot could run a DNN recognizer. But, depending on the resources available, this may take a noticeable amount of time. And, while so e recognizers have N-ary outputs, others are designed as one-versus-all. In this case, to classify an object a robot might have to run N separate nets. But classification is not the end of the story, there are also properties like color, shape, and pattern. Does it make sense to run all these potential nets on all objects all the time?
+
+In biology there seems to be a division between the "where" system and the "what" system dorsal-ventral. That is, an agent is either trying to find something in particular, or has already focused on an item and is trying to identify it. Generally, animals do not seem to try to create a complete description of a scene by finding and identifying every object present. This is one heuristic to limit the load imposed by perception.
+
+Even when an object has already been picked out from the background, humans use a selective version of the "what" system. For instance, to identify a bird it is important to pay attention to field marks, such as the color of its legs and whether it has an eye ring. The bird's overall size and color are often less informative. Similarly, to determine the model year of a car one needs to examine the details of the front grill and the shape of the taillights. The obvious gross features of having four wheels and a number of windows are largely irrelevant.
+Moreover, the same object may be viewed in different ways depending on the task at hand. When apprehending bank robbers, the police might instead focus on the face of the driver and the license plate of the getaway car.
+
+The visual information described so far is largely overtly evident and can often be obtained relatively quickly. However, there are cases where an object needs to be manipulated or a new viewpoint sought in order to discover additional information. For example, when a robot is told "Hand me that bottle" a simple shape predicate is all that is needed. Yet when asked to "Hand me the Advil" it might need to see that backside of the bottle in order to read the label. Thus, obtaining this information is even more expensive. There have been a number of strategies in computer vision systems including animate vision Ballard, purposive vision Aloimonos, and active vision Bajcsy that try to handle (and synergistically exploit) this interplay between perception and action.
+
+Assessing other predicates can take even more work, such as deciding whether "Mary likes cake". The robot might have to gather ingredients, mix the batter and cook it, and finally serve it to Mary to see if she smiles. Of course another option would be to simply ask Mary "Do you like cake?", although this itself takes some time and Mary's response might not be truthful. Yet, even this might not be appropriate (or feasible) in all cases, such as deciding whether the Queen of England likes cake.
+
+Some properties have more serious problems connected with them. 
+A number of predicates require interaction with an object, such as lifting it to estimate its weight or density. This might be fine for items like books, but a bad idea for items like snakes. Similarly, to see if something is sleeping the robot could poke it. This is (someti es) okay for people, but ill-advised for bears. Finally, consider "flammable". This can be tested by attempting to light an item on fire. Yet, while this experiment might provide an answer, it can lead to an irreversible state change in which the robot is holding, say, charred shreds instead of the envelope containing a bill that needs to be paid.
+
+To gather complete information on any one object can potentially take an unlimited amount of time and is fraught with many perils. Deciding how much effort to invest and when certain exploratory procedures are appropriate depends on numerous criteria, some physical, some time-based, and some social. It is clear that a line has to be drawn somewhere, bu  how? While there have been attempts cost-sensitive to design numeric cost-benefit analysis schemes to cover all these cases, it is relatively simple to explain to another human what to do and when. This is the approach taken with the robot described here. It has a language interpreter and associated reasoning engine that makes it capable of receiving and then acting on advice (perceptual and otherwise) supplied by its user.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| ALIA reasoning system uses a set of rules to interpret situations, and a set of operators to generate behaviors. The output of the controller relies on a set of grounding functions intrinsic to the deployment platform, in this case a small forklift robot.
+@@@FIGURE@@@
+
+
+
+@#!S
+RELATED WORK
+@#^S
+
+
+Aside from the early work on active perception (summarized in revisit), there has been a lot of recent research on planning visitation locations for environmental mapping multi-map,ship-vSLAM. These systems generally approach the problem as search with integrated field-of-view and movement constraints. There has also been work done on where to point a camera in order to best reconstruct a scene given a limited number of snapshots look-around. In this case the problem was formulated as a reinforcement learning exercise. Similar research has been done for 3D modeling of objects from a series of next best views 3D-viewpoints. Note that in all these systems, t e view selection is based on automatic optimization methods, not human-supplied advice.
+ 
+Other work has been done with exploratory actions in manipulation push-poke. Here to determine if an object was, say, metallic, the system would automatically select the action "poke" and listen for a characteristic sound, then "look" at the object's appearance, and finally choose to "report" its conclusion. The system couched the problem as a MOMDP with temporal costs for each action and a reward for the correctness of the result. While such time costs are straightforward, social costs (e.g. for "poke") are more difficult to estimate and not necessarily commensurate with time, making them difficult to incorporate in such frameworks.
+
+There are also a number of robot systems that do some  earning from language. For instance, the programming by demonstration system in verb lprog allows the user to invoke sophisticated motion commands via speech. The DIARC system DIARC-follow can additionally be taught action expansions, such as what "follow me" means. Other systems Eli-AGI,DIARC-learn can learn to associate naming terms with objects or sequential procedures. 
+However none of these systems attempt to control perceptual processing through explicit linguistic instruction.
+
+Given the complexities of knowing when and how deeply to process sensory inputs, the ALIA architecture described in the next se tion provides a relatively simple mechanism  for supplying the necessary guidance in a manner suited to non-technical users.
+
+
+
+@#!S
+ALIA COGNITIVE ARCHITECTURE
+@#^S
+
+
+We are endeavoring to build a  Advice Taker McCarthy, where the top level behavior of an agent can be changed by simply talking to it. This enables one-shot learning by essentially just remembering (with appropriate generalization). This is in contrast to systems b sed on statistical machine learning, which may require 100's of training examples to catch on. Quick learning is essential for one-off tasks where training effort cannot be amortized over a long service life. It is also useful for rapid customization (e.g., of robots) by end users.
+
+Our emphasis on acquiring procedural knowledge directly from natural language is what sets ALIA apart from other cognitive architectures.
+As a consequence of this, we have chosen a symbolic rule-based reasoner as the core of our system. 
+Language most conveniently reduces to symbolic constructs, while reasoning and action recommendations are most often communicated in small chunks like rules.
+
+Fig. ||SYMBOLTOKEN|| shows the overall structure of the implemented robot controller. The reasoning subsystem is split into declarative and procedural parts, amplifying the dichotomy proposed in ACT-proc. That is, there are inference rules that derive new facts, and separate policy operators that control action. Both of these can be taught directly by the user through the natural language interface. In operation, something akin to a goal is generally posted by the user to the attention buffer. A small amount of rule-based reasoning is done to elaborate the situation, then a policy operator is selected for execution in the action tree. To actually accomplish a task, the system relies on a grounding kernel that interfaces with the robot hardware.
+
+As shown in Fig. ||SYMBOLTOKEN|| within the reasoning subsystem inference about facts is performed by rules (left), whereas advice about actions is conveyed by operators (right). 
+Each rule can have a degree of belief in its conclusion, while each operator can have a preference value associated with its selection. 
+The examples here correspond to the natural language inputs "Orange striped things are (usually) tigers" and "To find out what something is, (you could) check if it is striped", where the parenthesized elements correspond to belief and preference, respectively.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| (left) are deductions based on working memory with conclusions asserted in the halo. Operators (right) are triggered by elements of the attention buffer and have a response composed of action directives.
+@@@FIGURE@@@
+
+
+The description of applicable situations is encoded as a semantic network, as are the details of the conclusions to be drawn or actions to be taken.
+This declarative representation uses nodes for both objects (obj-1) and predicates (hq-2). The actual names assigned to the nodes are irrelevant and are merely for debugging purposes. Predicate nodes have directed links marked by the role for each argument. Here hq means "has quality" and ako means "a kind of". Each node can have a belief value
+associated with it  s well as a lexical item (such as "orange" for hq-2) giving the system a strong Whorfian flavor.
+
+These networks are relatively simple, along the lines of Boris-NL rather than more elaborate formalisms such as SNePS,AMR. The overall system is largely concerned with understanding procedural sequences and interpreting imperative com ands. There is no explicit model of time and hence no tense or modality annotations are required, unlike in narrative comprehension. Moreover, our networks are built on-demand and disposed of a short while later. They do not accrete into a large knowledge base over time that needs to be updated and checked for consistency.
+
+During instruction, suitable structured outputs are automatically derived from either text or speech -- they do not need to be entered in the intermediate form depicted here. Fig. ||SYMBOLTOKEN|| shows the steps in this process. The robot first listens to the user's speech as constrained by a Context Free Grammar. The resulting parse is then digested into an association list consisting of a number of slots and values, along with constituent bracketing, by walking the tree and retaining selected nodes. Finally, the a-list gets converted to the internal representation of the rule (Fig. ||SYMBOLTOKEN|| left) which is added to the database.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| speech utterance Orange striped things are tigers is first parsed by a semantic grammar then digested into an association list from which the actual rule is made.
+@@@FIGURE@@@
+
+
+The inference engine relies on a three-level memory structure. At the center is the attention buffer which holds recent facts and commands and is the primary conscious guide for the agent's activities. This can hold multiple focal items simultaneously. Once an item has been "handled" it is deactivated but persists in the attention buffer for a short amount of time. Outside attention there is working memory holding all the ancillary assertions linked to current or recently deactivated items. Finally, the outermost layer is the halo which contains all those facts that are on the tip of your tongue but which only surface if needed. They remain unconscious in the sense that they cannot be used to make further dedu tions.
+
+On each cycle we recompute all implications of the facts currently in memory. However, we limit deduction to two steps because unbridled forward chaining can lead to runaway. Moreover, human-supplied rules are often only locally consistent (bounded rationality) and can lead to global contradict ons. 
+A version of concatenation MACROP or chunking SOAR can be used to get deeper lookahead, although this is often not necessary. Note that because the halo is conceptually ephemeral and is constantly being re-derived as the contents of working memory change, having a limited horizon saves substantial work.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| items (green), operators (blue), and rules (orange) are combined to determine that the agent should run away from a tiger that has just appeared (top).
+@@@FIGURE@@@
+
+
+The action engine also works via forward chaining, where stimulus leads to response. This allows the system to spontaneously react to circumstances and exhibit initiative. Each of our operators has a trigger condition akin to a goal, and an enablement specification more like a typical antecedent. If the trigger is not matched to an item in the attention buffer, the operator is never considered for use. 
+The i voked procedures consist of a num er of directives, intentional tags att ched to particular nodes in the network. The full list includes: NOTE, DO, ANTE, POST, CHK, FIND, ACH, KEEP, PUNT, and FCN. In the natural language front-end verbs are typically mapped to DO, yes/no questions about predicates to CHK, and wh- questions about objects to FIND. Another important flavor of directive is FCN, which provides grounding for the system by activating an external processing system of some sort. ALIA is not intended to control all details of the agent, bu  instead provides a sort of glue to bind things together on-the-fly based on verbal input.
+
+Of course backwards chaining is also useful, particularly for responding to user-imposed goals. Yet language features, such as cut in Prolog, are often introduced to keep logic-based systems from needlessly chasing dead ends. Some systems separately authorize chaining direction on a rule-by-rule basis logic-FB. Our approach is based loosely on determinations determine. These are not exact implications but rather functional dependencies like "if you know a person's nationality, you likely know the language he speaks".
+This piece of knowledge can be translated into the forward chaining advice "if you want to know what language a person speaks, determine his nationality." A separate forward chaining set of rules would then capture the dependencies, such as "if a person is from Brazil, he likely speaks Portuguese". 
+The operator and rule shown in Fig. ||SYMBOLTOKEN|| implement exactly this idea, which is reminiscent of the buffer filling then harvesting pattern found in EPIC EPIC.
+
+The actual interplay between rules and operators to guide perception will be detailed in the next section. Note, however, that the ALIA system can also be used to instill procedures, reactions, prohibitions, and permissions via speech video.
+
+
+
+@#!S
+Elaboration and Reaction
+@#^S
+
+
+Let us illustrate the operation of the system using an example where an agent spontaneously decides to run away from a tiger. While this is an unlikely scenario for any robot, it does highlight several of the key methods in the architecture. In some sense the presence of the tiger provides the affordance of running away, but the system must be able to recognize this. Fig. ||SYMBOLTOKEN|| details the actual process.
+
+In the very first step the perception system posts an item to the attention buffer saying that a new visual object is near by. This is abbreviated as the green NOTE[close] box near the top of the diagram. The real semantic net assertion would be something like:
+obj-1 ||SYMBOLTOKEN|| close.
+
+Next the system invokes an operator (blue) encapsulating the advice that if something is close, the system should try to identify what it is. The operator is triggered b  the matching the NOTE directive in attention and sets a new imperative focus comprising a FIND[kind] directive. FIND tries all applicable operators, one at a time, until a match has been found in working memory to the description in the directive. Here there are two possible follow-on operators that might be triggered. Assuming their preferences are the same, the system randomly picks, say, the left one first.
+
+This operator says that, to find out what something is, it is helpful to find what color the object is. The new FIND[color] directive is then matched directly to the system grounding function classcolor, shown in red. This invokes another piece of the visual system, possibly a color histogramming component, with an area of interest set to the original object that appeared. If this function fails, another method for determining color will be sought by automatic backtracking. However, if the function succeeds, it does not return the value to its caller (the operator). Instead, classcolor directly posts its answer as a new item in the attention buffer. Here it adds the focus abbreviated as NOTE[orange], shorthand for the graphlet: obj-1 ||SYMBOLTOKEN|| orange ||SYMBOLTOKEN|| color.
+
+The new attention item satisfies the precondition of a deductive rule (lower left) which makes a tentative assertion in the unconscious halo memory noting that orange is a warm color. This is not currently relevant, so no operators are invoked on the basis of this inference. However, because the attention item is an assertion about color, it causes the most proximate FIND[color] directive to declare success and thus deactivate itself. This lets the higher level FIND[kind] directive invoke whatever operator is next in its list, in this case the one on the right calling for CHK[striped] (cf. Fig. ||SYMBOLTOKEN|| directive is directly linked to the invocation of grounding function dettexture. As before, this runs some arbitrarily complex piece of code, perhaps a DNN, and injects its answer directly into the attention buffer. In addition, there may be extra physical steps required, such as orienting a narrow angle camera toward the object of interest to ensure sufficient resolution. Assuming that the process does not fail (e.g., the head might be busy doing something else) the NOTE[striped] assertion will be posted, which causes the successful completion of the calling CHK operator.
+
+Starting with ju t the bare assertion that something new has appeared, the system now knows that the object is orange and striped. This conjunction of facts triggers the rule at th  bottom of the diagram which raises the suspicion that the object is a tiger (cf. Fig. ||SYMBOLTOKEN|| again). Because the top-level FIND was trying to determine just such a category, the halo assertion is promoted to a conscious attention item to fulfill the required pattern. At this point, the top-level operator is considered successfully completed and becomes quiescent.
+
+Yet the assertion NOTE[tiger] has several ramifications. First, it triggers a rule which creates a halo fact that the object is also an animal. But there are no operators waiting for this missing piece. On the other hand, the new assertion directly matches the trigger clause of the final operator (lower right) which energizes the directive DO[flee]. This in turn can be realized by the grounding function runaway to spur the system into action. Again, these system calls can be quite sophisticated and time consuming. For instance, running away might involve first orienting away from the stimulus, then engaging a cyclic pattern generator to move the legs while simultaneously activating the collision avoidance behavior to swerve around obstacles.
+
+It is possible that one or more of these routines might fail, such as if the robot is driven into a corner. At this point it is up to runaway to signal failure so that its calling operator can look for some other method for DO[flee]. More likely, at some point runaway will signal successful completion  ecause the reference object (tiger) is no longer visible, because the robot is sufficiently far away, or simply because the routine has timed out and is tired of running. When this occurs, no  urther actions are generated based on the initial stimulus.
+
+
+
+@#!S
+VIDEO DEMONSTRATION
+@#^S
+
+
+The video video-p follows exactly the situation in Fig. ||SYMBOLTOKEN|| In this implementation the actual 
+robot is fairly simple and the bulk of the processing (speech, reasoning, control) happens on a nearby Bluetooth-connected laptop. 
+There are four degrees of freedom to control: two wheels, a gripper, and a lift stage. The associated grounding kernel responds to the commands drive, turn, grab/release, and raise/lower. Each of these is configured as a discrete instead of continuing action, although both modes could be pre ent at the same time. That is, "turn" causes the robot to reorient by a fixed angle rather than spinning forever. The microcontroller on the robot takes care of generating pulses for the servos based on a serial communications line, but simple timeout-based action amounts are governed by the laptop. 
+ For sensing, the robot relies primarily on a wifi-connected color camera. There is also a forward facing triangulation-based rangefinder mounted over the gripper,  but it is not used here.
+
+The demonstration has the user talking to the nearby laptop, although a typing interf ce also exists. The program runs under Wi dows 10 and uses Microsoft Speech Recognizer 8.0 through the SAPI calls. Although this is a relatively old engine, it has the advantage of running locally so no network connection is required. Also, speech recognition still has some accuracy problems and so can benefit from whatever additional constraints can be imposed. This engine allows speaker-dependent acoustic models and can be run in a mixed grammar/dictation mode. The use of grammar can not only limit the  ocabulary to reasonable terms, but can also enforce preferred phrasing patterns. Thus, when the system is told to "pick up the block" by a speaker with a foreign accent, it never erroneously hears "peacock the block". Although "peacock" is a valid English word, it makes no sense in the robot deployment context. Such mistakes can be difficult to detect and repair after the fact.
+
+As stated, the vision system uses a wifi-linked color camera with a linear polarizer to suppress glare from shiny surfaces. The input image is corrected for lens distortion, contrast enhanced, then temporally smoothed. All of this is in pursuit of  table color, which is important for object segmentation and characterization. Because this robot is meant only as a technology demonstrator, its object detection system is fairly simple. As in Eli the robot builds a model on-the-fly of the supporting surface and looks for deviations from this, as shown in Fig. ||SYMBOLTOKEN|| This lets it detect objects it has never seen before, unlike other approaches YOLO,maskCNN that require pre-trained models for all important objects. Gaps in the background are smoothed, filtered by criteria like rough shape and size, and then tracked over time.
+
+Detection and tracking are the only operations performed continuously. However the grounding kernel does automatically monitor the distance of each object, as determined by the height of its bottom in the image. When something enters the personal space of the robot (within about 10cm in front), the vision system spontaneously posts a message to the the ALIA attention buffer. This is what sets off the cascade of reasoning in Fig. ||SYMBOLTOKEN|| As a side effect, the node name used in the assertion is bound to the detected object. Tracking makes sure the label stays with this particular object for later reference.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| magenta region (top) is used is used to find distributions in opponent color space (bottom). Objects (outlined in green) are detected as gaps in this presumed uniform surface color.
+@@@FIGURE@@@
+
+
+As explained in the previous section, the architecture can deliberately query the grounding kernel about the color of some object using the classcolor function. Converting from pixels to color terms is done in several steps. First, the portion of the image corresponding to the object is converted to HSI color space, then colorful pixels of the object are found by checking for sufficient saturation and single channel pixel values. Pixels that pass these tests are segregated into six different color bins by hue: red, orange, yellow, green, blue, and purple. Non-colored pixels are deemed black, gray, or white based on intensity. After each pixel has been given one of these nine canonical colors, all the pixels in the object are histogrammed. A final color determination of one or more values is based on the relative populations of these bins. The grounding kernel then adds one or more assertions (NOTEs) using the object's identifier plus the textual names of the colors found.
+
+ALIA can also ask that the grounding kernel check the visual texture of the object using the function dettexture. In particular, to judge whether the object is striped or not it first convolves the monochrome intensity image with separate horizontal and vertical Sobel filters. The responses are thresholded and then grouped by connected components. Only edges greater than some minimum length are retained and then the fraction of the foreground mask covered by such lines is estimated. For an object to be striped, there must be more than a certain number of lines and the area coverage must exceed a threshold. The grounding kernel then directly posts a NOTE to the attention buffer that the object with the given identifier either is, or is not, striped.
+
+In the video the robot is commanded to drive forward slowly. At a certain point the tiger, which has been tracked for a while as a generic object, it deemed close enough to alert the reasoning system. This in turn activates the analysis routines for color and texture. Once the threat is identified, a response is chosen, namely to flee. Here, this is accomplished through an intermediate operator that was previously trained based on the verbal instruction:
+
+
+
+To flee move backward and say save me master
+
+
+
+ There might conceivably be other operators for running away, such as turning to face the object while backing up, or uttering some other exclamation. If so, the architecture chooses probablistically between them based on the associated preferences.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| color(s) associated with an object are found by canonicalizing each pixel (top) then histogramming. Stripedness is evaluated by determining the length and extent of Sobel edges found in the object mask (bottom).
+@@@FIGURE@@@
+
+
+
+
+@#!S
+CONCLUSION
+@#^S
+
+
+The example focuses on running away from a (toy) tiger. However the perception control is general enough that we can instill additional reactions using only a few sentences, such as below.
+
+
+
+A black and white and striped thing is a zebra 
+
+If a zebra is close then stop and beep
+
+
+
+ This adds one additional halo rule and one operator, but now the robot will attempt to startle zebras out of its path.
+
+Contrast this arrangement with what would happen under the more specific set of perceptual instructions:
+
+
+
+If something is close then find out what color it is 
+
+If something is orange check if it is striped
+
+
+
+ This would result in the same action in the case of the tiger, running away, but responding to the zebra would take more work than before because its stripes are not noticed. Both of these perceptua  policies can be conveyed by language; they just represent different ways of looking at the world. In some sense the second policy is lazier -- it always checks the color of a nearby thing hoping that this will trigger some appropriate reaction, but only looks for stripes in certain cases. This is like the old search heuristic of horizon deepening used in chess when certain piv tal positions are encountered.
+
+In summary, we have described a symbolic rule-based cognitive architecture in which all assertions, commands, rules, and operators are entered via (spoken) natural language. The system is driven by an attention buffer supplemented by context from an associated working memory.  Outside of this there is a seething froth of inference that remains unconscious until certain elements are pulled in by the action system. As shown in the worked-out example (and video), the system can proactively respond to environmental conditions, even when physical or mental effort needs to be exerted to fully comprehend the situation.
+
+
+-11.5cmbiblioIEEEtran
+
+

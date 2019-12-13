@@ -1,0 +1,140 @@
+We study the interpretability of predictive systems that use high-dimensonal behavioral and textual
+data. Examples include predicting product interest based on online browsing data and detecting
+spam emails or objectionable web content. Because these data are very high-dimensional serious
+comprehensibility issues arise: non-linear models which are difficult to understand in the first
+place become completely opaque when using thousands of features and even linear models require
+the investigation of thousands of coefficients. Behavioral and text data instances also tend to be
+sparse which means that any model component may be irrelevant to a particular instance. Recently
+counterfactual explanations have been proposed for generating insight into model predictions which
+bypass issues of model opaqueness and coefficient interpretation and focus on what is relevant
+to a particular instance. Conducting a complete search to compute counterfactuals is very timeconsuming because of the huge dimensionality. To our knowledge for behavioral and text data only
+one model-agnostic heuristic algorithm (SEDC) for finding counterfactual explanations (“Evidence
+Counterfactuals“) has been proposed in the literature. However there may be better algorithms
+for finding counterfactuals quickly. This study aligns the recently proposed Linear Interpretable
+Model-agnostic Explainer (LIME) and Shapley Additive Explanations (SHAP) with the notion of
+counterfactual explanations and empirically benchmarks their effectiveness and efficiency against
+SEDC using a collection of 13 data sets. Results show that LIME-Counterfactual (LIME-C) and SHAPCounterfactual (SHAP-C) have low and stable computation times but mostly they are less efficient
+than SEDC. However for certain instances on certain data sets SEDC’s run time is comparably
+large. With regard to effectiveness LIME-C and SHAP-C find reasonable if not always optimal
+counterfactual explanations. SHAP-C however seems to have difficulties with highly unbalanced
+data. Because of its good overall performance LIME-C seems to be a favorable alternative to SEDC
+which failed for some nonlinear models to find counterfactuals because of the particular heuristic
+search algorithm it uses. A main upshot of this paper is that there is a good deal of room for further
+research. For example we propose algorithmic adjustments that are direct upshots of the paper’s
+findings.
+
+
+The proliferation of big data architectures has resulted in predictive modeling applications having an increasingly large
+impact on business and society. We focus on two sorts of big data. The first is behavioral data defined as data that
+capture human behavior through the actions and interactions of people which can be used for various predictive
+purposes. For instance digital records of behavior such as Facebook ‘Like’ data Twitter profiles or music
+collections can be used to infer psychological traits and political orientation while the merchants you
+pay to or webpages you visit are predictive for product interest and creditworthiness. The second big data
+source is textual data which often is preprocessed into a similar high-dimensional sparse representation for predictive
+modeling. Text classification is ubiquitous in business and government.
+
+Mining behavior and text can result in highly accurate classification models but also in very complex model
+structures. The complexity arises from either the learning technique (e.g. deep learning) or the data or both. Behavioral
+and textual data are typically high-dimensional and sparse. Let’s consider an example that we will refer back to.
+We want to predict the gender of users based on the movies they have viewed. A user having watched a movie is
+represented by a binary feature for each movie which results in an enormous feature set. However each user only has
+watched a small number of movies which results in an extremely sparse data matrix (almost all elements are zero).
+Because of these data characteristics even normally interpretable linear models are difficult to interpret because there
+are many thousands of features each with their own linear coefficient; further the features that will be brought to bear
+for prediction are different for every individual. Moreover applying nonlinear techniques normally renders the reasons
+for a particular prediction completely opaque.
+
+The importance of understanding classification decisions is well-argued in the literature.
+Explanations for model predictions are often necessary for users to trust accept and improve the decision system.
+In some domains like medical diagnosis and credit scoring it even is a legal requirement (e.g. why was
+my loan application rejected?). According to Doshi-Velez and Kim [13] the demand for interpretable models stems
+from a mismatch between formal objectives (e.g. minimize the prediction error) and ethical objectives (e.g. privacy).
+The latter can only be validated when a certain level of interpretability is achieved. Moreover explanations can reveal
+overfitting by the model or other issues such as data leakage which may not always be revealed by evaluation criteria
+such as the area under the ROC curve.
+
+In this study we are interested in finding the minimum-sized counterfactual explanation. One possible approach to find
+counterfactual explanations is to conduct a complete search through the entire space of feature combinations. If we
+wanted say to find the smallest counterfactual explanation we could start with one feature and incrementally increasing
+the number of features until an explanation is found. However this strategy scales exponentially with the number of
+features making it impracticable and possibly ineffective for high-dimensional feature spaces and effectiveness.
+Martens and Provost proposed a heuristic best-first search for finding Evidence Counterfactuals (SEDC) which
+is able to counterfactually explain predictions of any classification model. To our knowledge this has been the only
+proposed model-agnostic algorithm for counterfactuals which is able to deal with behavioral and textual data sources.
+
+From this study applying two novel and one existing model-agnostic explanation algorithms to the finding of counterfactual explanations for high-dimensional behavioral and textual data we can draw several conclusions.
+First the (straightforward) extensions LIME-C and SHAP-C as expected find reasonable if not always optimal
+counterfactual explanations. Furthermore extending these algorithms to find counterfactual explanations addresses
+an open problem with the application of these methods to high-dimensional data namely which features should be
+reported in the explanation. The answer for LIME-C and SHAP-C is: those that allow the creation of an evidence
+counterfactual. SHAP-C does have problems with highly unbalanced data sets. Despite this SHAP-C may still be
+preferable when the user is particularly interested in the theoretical interpretation of the importance weights [29].
+SEDC which was designed to find counterfactual explanations is generally fast and effective but not always. In
+the main results SEDC was clearly the fastest. It is provably optimal for linear models and also empirically found
+smaller counterfactuals (median values) for the non-linear models on two data sets. However for certain instances on
+certain data sets SEDC’s run time was comparably quite large. Furthermore the search stopping criteria were met
+before SEDC found explanations in a non-negligible number of cases. As a best-first search algorithm there is an
+effectiveness–efficiency tradeoff that we did not explore comprehensively in this paper. (In theory SEDC will eventually
+find minimal counterfactuals for all instances but this may take a long time.) Our results show that SEDC seems to be
+the best alternative when facing data with small instances (few active features). For such data sets the limitation of
+best-first search for nonlinear models will be negligible because the number of iterations (and total computation time)
+will still remain small.
+As a main conclusion however LIME-C seems the best model-agnostic alternative because of its stable efficiency and
+effectiveness over all data and models. Compared to SEDC it is less sensitive to the switching point and whereas
+SEDC has failed to find counterfactuals for some instances for nonlinear models LIME-C showed a stable effectiveness
+over all data and models. Even for very large data instances that require many features to be removed for a class change
+LIME-C computes counterfactuals relatively fast. Moreover the results show that LIME-C’s efficiency is less sensitive
+to the number of active features than SHAP-C’s efficiency.
+
+
+@label
+We study the interpretability of predictive systems that use high-dimensonal behavioral and textual
+data.
+@label
+Examples include predicting product interest based on online browsing data and detecting
+spam emails or objectionable web content.
+@label
+Because these data are very high-dimensional serious
+comprehensibility issues arise: non-linear models which are difficult to understand in the first
+place become completely opaque when using thousands of features and even linear models require
+the investigation of thousands of coefficients.
+@label
+Behavioral and text data instances also tend to be
+sparse which means that any model component may be irrelevant to a particular instance. 
+@label
+Recently counterfactual explanations have been proposed for generating insight into model predictions which
+bypass issues of model opaqueness and coefficient interpretation and focus on what is relevant
+to a particular instance.
+@label
+Conducting a complete search to compute counterfactuals is very timeconsuming because of the huge dimensionality. 
+@label
+To our knowledge for behavioral and text data only
+one model-agnostic heuristic algorithm (SEDC) for finding counterfactual explanations (“Evidence
+Counterfactuals“) has been proposed in the literature
+@label
+However there may be better algorithms
+for finding counterfactuals quickly.
+@label
+This study aligns the recently proposed Linear Interpretable
+Model-agnostic Explainer (LIME) and Shapley Additive Explanations (SHAP) with the notion of
+counterfactual explanations and empirically benchmarks their effectiveness and efficiency against
+SEDC using a collection of 13 data sets
+@label
+Results show that LIME-Counterfactual (LIME-C) and SHAPCounterfactual (SHAP-C) have low and stable computation times but mostly they are less efficient
+than SEDC
+@label
+However for certain instances on certain data sets SEDC’s run time is comparably
+large
+@label
+With regard to effectiveness LIME-C and SHAP-C find reasonable if not always optimal
+counterfactual explanations
+@label
+SHAP-C however seems to have difficulties with highly unbalanced
+data
+@label
+Because of its good overall performance LIME-C seems to be a favorable alternative to SEDC
+which failed for some nonlinear models to find counterfactuals because of the particular heuristic
+search algorithm it uses
+@label
+A main upshot of this paper is that there is a good deal of room for further
+research

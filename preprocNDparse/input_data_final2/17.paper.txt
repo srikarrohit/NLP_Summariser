@@ -1,0 +1,108 @@
+Increasing interest in integrating advanced
+robotics within manufacturing has spurred a renewed concentration in developing real-time scheduling solutions to coordinate human-robot collaboration in this environment. Traditionally  the problem of scheduling agents to complete tasks
+with temporal and spatial constraints has been approached
+either with exact algorithms  which are computationally intractable for large-scale  dynamic coordination  or approximate
+methods that require domain experts to craft heuristics for
+each application. We seek to overcome the limitations of these
+conventional methods by developing a novel graph attention network formulation to automatically learn features of scheduling
+problems to allow their deployment. To learn effective policies
+for combinatorial optimization problems via machine learning 
+we combine imitation learning on smaller problems with deep
+Q-learning on larger problems  in a non-parametric framework 
+to allow for fast  near-optimal scheduling of robot teams. We
+show that our network-based policy finds at least twice as
+many solutions over prior state-of-the-art methods in all testing
+scenarios.
+Advances in robotic technology are enabling the introduction of mobile robots into manufacturing environments
+alongside human workers. By removing the cage around
+traditional robot platforms and integrating dynamic  final
+assembly operations with human-robot teams  manufacturers
+can see improvements in reducing a factory’s footprint and
+environmental costs  as well as increased productivity [1].
+For human workspaces associated with final assembly  tasks
+need to be quickly allocated and sequenced (i.e.  scheduled)
+among a set of robotic agents to achieve a high-quality schedule with respect to the application-specific objective function
+while satisfying the temporal constraints (i.e.  upper and
+lower bound deadline  wait  and task duration constraints) 
+as well as spatial constraints on agent proximity for safe and
+efficient collaboration with human workers. The problem of
+resource optimization is made difficult by the inter-coupled
+constraints requiring a joint schedule rather than allowing
+each agent to compute their work plans independently.
+Conventional approaches to scheduling typically involve
+formulating the problem as a mathematical program and
+leveraging commercial solvers or developing custom-made
+approximate and meta-heuristic techniques. Exact algorithms
+aim to find the optimal schedule based on enumeration or branch-and-bound  making them computationally expensive and unable to scale to large  real-time scheduling.
+Exact methods often rely on hand-crafted  “warm-start”
+heuristics unique to each application. Alternatively  heuristic
+approaches are lightweight and often effective; however 
+designing application-specific heuristics requires extracting
+and encoding domain-expert knowledge through interviews
+and trial-and-error-based research  a process which leaves
+much to be desired. Furthermore  accurately and efficiently
+extracting this knowledge remains an open problem [2].
+To overcome the limitations of prior work  we build on
+promising developments in deep-learning-based architectures
+(i.e.  graph neural networks) to learn heuristics for combinatorial problems. Analogous to the convolutional neural networks for feature-learning in images  graph neural networks
+are able to hierarchically learn high-level representations of
+graph structures through convolutions and backpropagation.
+Yet  these approaches have only been developed for simpler scheduling problems  such as the traveling salesman
+problem [3]  [4]  in which the graph is fully apparent and
+and the graph’s edges are undirected. Conversely  multirobot scheduling is a fundamentally different problem in
+which the graphical structure is a directed  acyclic graph with
+latent  disjointed temporal and spatial constraints that must
+be inferred.
+In this paper  we develop a novel graph attention network
+(GAT) [5] model to learn scheduling policies that reason
+about the underlying simple temporal network (STN) structure [6] and auxiliary constraints for multi-robot allocation
+and sequencing. Our GAT method is non-parametric in the
+number of tasks  meaning that the model can learn a policy
+from problem formulations of one size while still being
+able to construct schedules for task sets much larger than
+seen during training. This non-parametricity is relatively
+unique in machine learning but is fundamental to scheduling
+problems as the needs of the manufacturer evolve minute
+by minute. An added benefit is that our approach can
+leverage imitation learning from smaller problems in which
+supervised examples can be generated with exact solution
+methods  without the need for application-specific warm-start
+specifics  and still be fine-tuned with reinforcement learning
+on large-scale problems that are computationally intractable
+for exact approaches. We combine imitation learning with
+deep Q-learning to learn a heuristic policy for scheduling 
+allowing for fast  near-optimal scheduling of robot teams.
+The combined framework is illustrated in Fig. 1. We
+demonstrate that our approach is able to find solutions for
+>90% of problems for two robots scheduling up to 50 tasks with proximity constraints versus only 20% by prior stateof-the-art methods.
+We presented a graph-attention-network-based framework
+that can automatically learn a scalable scheduling policy
+to coordinate multi-robot teams. By combining imitation
+learning on small problems with deep Q-learning on larger
+problems in a non-parametric framework  we were able to
+obtain a deterministic  greedy policy that generated fast  nearoptimal scheduling of robot teams. We demonstrated that our network-based policy found at least twice as many solutions
+over prior state-of-the-art methods in all testing scenarios.
+
+@label
+Increasing interest in integrating advanced
+robotics within manufacturing has spurred a renewed concentration in developing real-time scheduling solutions to coordinate human-robot collaboration in this environment.
+@label
+Traditionally  the problem of scheduling agents to complete tasks
+with temporal and spatial constraints has been approached
+either with exact algorithms  which are computationally intractable for large-scale  dynamic coordination  or approximate
+methods that require domain experts to craft heuristics for
+each application. 
+@label
+We seek to overcome the limitations of these
+conventional methods by developing a novel graph attention network formulation to automatically learn features of scheduling
+problems to allow their deployment. 
+@label
+To learn effective policies
+for combinatorial optimization problems via machine learning 
+we combine imitation learning on smaller problems with deep
+Q-learning on larger problems  in a non-parametric framework 
+to allow for fast  near-optimal scheduling of robot teams.
+@label
+We show that our network-based policy finds at least twice as
+many solutions over prior state-of-the-art methods in all testing
+scenarios.

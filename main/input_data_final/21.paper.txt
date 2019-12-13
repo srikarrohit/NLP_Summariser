@@ -1,0 +1,134 @@
+Multi-Agent Systems (MASs) have been used to solve complex problems which demand intelligent agents working together to reach the desired goals.
+These Agents should effectively synchronize their individual behaviors so that they
+can act as a team in a coordinated manner to achieve the common goal of the whole
+system. One of the main issues in MASs is the agents’ coordination  being common
+domain experts observing MASs execution disapprove agents’ decisions. Even if
+the MAS was designed using the best methods and tools for agents’ coordination 
+this difference of decisions between experts and MAS is confirmed. Therefore  this
+paper proposes a new dataset schema to support learning the coordinated behavior
+in MASs from demonstration. The results of the proposed solution are validated
+in a Multi-Robot System (MRS) organizing a collection of new cooperative plans
+recommendations from the demonstration by domain experts.
+Multi-Agent Systems (MASs) are solutions to complex problems demanding a
+team of intelligent autonomous agents acting towards their common goals. To
+achieve these common goals  agents in a MAS should be capable of interacting
+with other agents  not simply by exchanging data  but by engaging as in social
+activities  such as those people participate in their daily lives: cooperation  coordination  negotiation  and the like. In MASs  agents are assumed to be autonomous
+- capable of making independent decisions about to do in order to satisfy their
+design objectives  and thus they need mechanisms that allow them to synchronize
+and to coordinate their activities at run time [31]. Although one of the main issues
+in MASs is the agents’ coordination structure  this is not hard-wired at design
+time  as MASs are typically in standard concurrent/distributed systems.
+One well-known strategy for coordination in MAS is the design of multi-agent
+coordinated plans that include  not only usual agents’ actions
+defined by their effectors  but also communication actions to achieve the necessary synchronization and coordination. To represent communication actions  some
+specific languages were created  e.g. Knowledge Query and Manipulation Language (KQML)  Knowledge Interchange Format (KIF). KQML is a messageoriented language that defines a common format for messages to be exchanged
+between agents in a MAS. The development of KIF originally intended to provide
+a common language for expressing properties of a particular domain  i.e.  the purpose of KIF was to express an ontology for a specific domain. Later  it was also
+used to represent messages between agents.
+Although the languages and ontologies defined for MAS are generally useful 
+there are some specific domain properties and relations that are relatively hard to
+be expressed. One of these domains is Multi-Robot Systems (MRSs)  often used in
+stochastic  partially-observed  dynamic environments  and whereby an agent in a
+MAS represents each robot. One well-known challenge of these complex domains is
+robotic soccer  as proposed by the RoboCup Federation1
+into the RoboCup Soccer
+Simulation League2
+. This league presents a context in which teams composed of
+eleven agents face each other in a soccer match. This challenge is considered a
+good test-bed for developing coordinated plans named setplays  in the robotic
+soccer domain.
+Many works have developed solutions to create setplays in the robotic soccer
+domain. Section 2 presents details about these solutions and
+tools. However  even with all the development in setplays design  situations have
+commonly been observed whereby domain experts would recommend a different
+setplay  from the one decided by the team of agents. This difference is due to the
+informality present in the specialized knowledge. In fact  it is often hard to extract some natural features from domain experts during the knowledge extraction
+design phase  when an intelligent agent project has been started. For example 
+in a robotic soccer domain  two different domain experts may recommend different triangulation setplays to overcome an opponent player  but both setplays are
+equivalent and a MRS can consider these setplays as a unique choice to deal with
+the posed situation. Learning from Demonstration (LfD) has been used to learn robots basic skills
+or even very simple setplays in a MRS [11]. Although  there is no register of using
+LfD to learn complex setplays. Therefore  this work proposes using LfD to offer
+domain experts a chance to watch robotic soccer matches and suggest new setplays
+for each situation for which they think the MRS has made a bad decision.
+Section 3 presents the state-of-the-art for learning coordinated plans in MAS.
+One of the main issues in LfD for setplays is the nature of the dataset generated
+from the domain experts recommendation. Some features in this dataset are not
+of primitive types as scalars or strings  but some complex types  such as objects 
+structures  trees  etc. Thus  we also define a strategy presented in Section 2.4  to
+handle this kind of complex data.
+The proposed solution has a two-level dataset  detailed in Section 4. To assess the feasibility of using this dataset to support setplays learning  the Fuzzy
+C-Means (FCM) algorithm is used to organize setplays recommendations into
+clusters. The choice of the FCM algorithm is due to the imprecision inherent in
+the friendly interface proposed for use by experts to generate the recommendations
+of setplays. The suggestions from experts are organized in clusters to solve the semantic equivalence issue presented in Section 2. Section 5 describes the assessment
+process and its results. Section 6 has conclusion and future work descriptions.
+This work presents a novel schema to represent coordinated plans in a MRS. The
+dataset includes non-scalar features such as Boolean conditions  lists of complex
+objects (i.e.  list of behaviors  list of players  list of steps). The dataset schema is
+divided into two levels to deal with the complexity of these non-scalar data types.
+The main motivation to create this schema is to represent the semantic equivalence
+defined in Section 2.2. This work is part of a project that aims to enable domain
+experts to suggest new coordinated plans from real situations in which robots act in
+an MRS. Big datasets  formed by recommendations from several domain experts 
+tend to present a number of semantic equivalent instances. These instances may
+have different features values but the meaning in the abstract human knowledge
+level is the same.
+If learning approaches are applied to the rough dataset  the solution will present
+high computational costs and may present problems with over fitting due to a
+high number of semantic equivalent instances. Therefore  the main goal of this
+work is to propose a dataset schema to organize the original dataset into groups of
+semantic equivalent instances. The concept of semantic equivalence has no strict
+limit  because it is in the human abstract knowledge level. Thus  one instance can
+be semantic equivalent to instances of two different groups with different degrees
+of membership. For this reason  we considered the use of a fuzzy approach to
+organize the dataset.
+The FCM algorithm was used in a two-stage implementation to deal with the
+two-level structure of the proposed dataset schema. The FS clustering validation index was used to assess the cluster configuration generated by the FCM execution.
+ Besides using an objective measure to assess the groups configuration  it
+is important to visually check which instance is assigned to each cluster. Since
+semantic equivalence is an abstract concept  the assessment should consider this
+aspect when evaluating if the cluster configuration makes sense. In our assessment 
+we used a dataset generated in our lab using the SPlanner tool.
+The results show an useful group configuration for future setplays learning
+experiments. The clusters contain semantic equivalents setplays and some hidden
+similarities were discovered due to the fuzzy aspect of the solution used to assess
+the dataset schema. The objective FS measure shows that clusters in the second
+level can be representative of the semantic equivalence or not. Clusters at the first
+level with higher number of instances tend to generate more adequate sub-clusters
+at the second level. It is also possible to use FS to define if a group at the first
+level will be split into two or more groups at the second level or if it should be
+kept as a single group.
+Hence  we can conclude that the proposed dataset schema can be used as a
+base to organize a setplays dataset in an MRS into semantic equivalent groups of
+instances. Using this contribution  it is possible to support the setplays learning
+from a demonstration project. As future work  we plan to use other cluster validity
+indexes to compare the measurements with the results of this work. Larger datasets
+built from different domain experts recommendations will be used to acknowledge
+the results presented. The results of these experiments using real databases will
+be used to assess the setplays learning from demonstration proposal.
+Although this work has applied all the assessment to the robotic soccer domain 
+any MRS using coordinated can benefit from the results presented here. Conditions
+and list of behaviors and steps are common features in any coordinated plans for
+robots in an MRS.
+
+@label
+Multi-Agent Systems (MASs) have been used to solve complex problems which demand intelligent agents working together to reach the desired goals.
+@label
+These Agents should effectively synchronize their individual behaviors so that they
+can act as a team in a coordinated manner to achieve the common goal of the whole
+system.
+@label
+One of the main issues in MASs is the agents’ coordination  being common
+domain experts observing MASs execution disapprove agents’ decisions.
+@label
+Even if the MAS was designed using the best methods and tools for agents’ coordination 
+this difference of decisions between experts and MAS is confirmed. 
+@label
+Therefore  this paper proposes a new dataset schema to support learning the coordinated behavior
+in MASs from demonstration. 
+@label
+The results of the proposed solution are validated
+in a Multi-Robot System (MRS) organizing a collection of new cooperative plans
+recommendations from the demonstration by domain experts.

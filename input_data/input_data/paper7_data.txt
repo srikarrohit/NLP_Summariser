@@ -1,0 +1,34 @@
+
+
+The ability to safely navigate in populated scenes, e.g. airports, shopping malls, and social events, is essential for autonomous robots. The difficulty comes from the fact that people walk closely to the robot cutting ways in front of the robot or between the robot and the goal point. The safety margin for the robot to drive in crowded scenes is pushed to the minimum. In such a case, the navigation system has to trade-off between driving safely close to people and reaching the goal quickly. Furthermore, a previous study of socially compliant navigation {thi2013survey} states three aspects in terms of the robot behaviors -- \textit{comfort} as the absence of annoyance and stress for humans in interaction with robots, \textit{naturalness} as the similarity between the robot and human behaviors, and \textit{sociability} as to abide by general cultural conventions. Among these three aspects, the first aspect essentially reflects safety of the navigation.
+
+Previous studies on socially compliant navigation attempt to solve the problem with various methods, including data-driven approaches for human trajectory prediction {alahi2017slstm,socialgan}, potential field-based {hoeller2007potential} and social force model-based {socialforce} approaches. In particular, reinforcement learning-based methods use reward functions to penalizes improper robot behaviors eliminating the cause of discomfort {chen@2018drl, changan2019crowdrobot}. Inverse reinforcement learning based-methods learn from expert demonstrations {franceschi2019irl}. These methods are hard to generalize due to that a large set of comprehensive expert demonstrations are hard to acquire.
+
+The study of this paper is based on our previous work which uses deep learning in solving the socially compliant navigation problem {navigan}. This paper extends the work in two ways. First, we consider the findings from a previous study {moussaid2010group} that 70\% of people walk in social groups. Crowd behavior can be summarized as flows of social groups, and humans tend to move along the flow. It is our understanding that the behavior of joining the flow that shares similar heading direction is more socially compliant, causing fewer collisions and disturbances to surrounding pedestrians. Our method recognizes social groups and selects the flow to follow. Second, we ensure safety with a multi-layer navigation system. In this system, a deep learning-based global planning layer makes high-level socially compliant behavioral decisions while a geometry-based local planning layer handles collision avoidance at a low-level.
+
+%The study of this paper is based on our previous work which uses deep learning in solving the socially compliant navigation problem {navigan}. This paper extends the work in two ways. First, we observe that humans naturally form groups in densely crowded areas. These groups move in different directions. A person joins a group whose moving direction is roughly aligned with the person's own desired direction. It is our understanding that joining such a group requires less effort to avoid people moving in other directions while the robot reaches the goal. Our method recognizes human grouping behaviors and selects a helpful group to follow. Second, we ensure safety with a multi-layer navigation system. In this system, a deep learning-based global planning layer makes high-level socially compliant behavioral decisions while a geometry-based local planning layer handles collision avoidance at a low-level.
+
+The paper is further related to previous work on modeling aggregate interactions among social groups {moussaid2010group} and leveraging learned social relations in tracking group formations {linder2014groupsvm}. Our main contributions are a deep learning-based method for socially compliant navigation with an emphasis on tracking and joining the crowd flow and an overall system integrated with the deep leaning method capable of safe autonomous navigation in dense crowds.
+
+@label
+
+In densely populated environments, socially compliant navigation is critical for autonomous robots as driving close to people is unavoidable
+@label
+ This manner of social navigation is challenging given the constraints of human comfort and social rules
+@label
+ Traditional methods based on hand-craft cost functions to achieve this task have difficulties to operate in the complex real world
+@label
+ Other learning-based approaches fail to address the naturalness aspect from the perspective of collective formation behaviors
+@label
+ We present an autonomous navigation system capable of operating in dense crowds and utilizing information of social groups
+@label
+ The underlying system incorporates a deep neural network to track social groups and join the flow of a social group in facilitating the navigation
+@label
+ A collision avoidance layer in the system further ensures navigation safety
+@label
+ In experiments, our method generates socially compliant behaviors as state-of-the-art methods
+@label
+ More importantly, the system is capable of navigating safely in a densely populated area ($10+$ people in a $\SI{10}{\meter}\times\SI{20}{\meter}$ area) following crowd flows to reach the goal
+@label
+
+

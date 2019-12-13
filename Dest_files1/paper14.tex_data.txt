@@ -1,0 +1,901 @@
+
+
+
+
+
+
+doi[]20202020
+
+learn-ing
+
+0.99
+
+
+
+
+
+
+
+@#!T
+Multi-Vehicle MixedReality Reinforcement Learning f r Autonomous Multi-Lane Driving
+@#^T
+
+
+
+Rupert Mitchell, Jenny Fletcher, Jacopo Panerati, and Amanda ProrokDepartment of Computer Science and Technology, University of CambridgeWilliam Gates Building, 15 JJ Thomson AveCambridgeUnited KingdomCB3 0FD
+{rmjm3, jlf60, jp872, asp45}@cam.ac.uk
+
+
+
+
+
+
+
+
+@#!A
+  Autonomous driving promises to t ans orm road transport. Multi-vehicle and multi-lane scenarios, however, present unique challenges due to constrained navigation and unpredictable vehicle interactions. 
+Learning-based methods---such as deep reinforcement learning---are emerging as a promising approach to automatically design intelligent driving policies that can cope with thes  challenges. Yet, the process of safely learning multi-vehicle driving behaviours is hard: while collisions---and their near-avoidance---are essential to the learning process, directly executing immature policies on autonomous vehicles raises considerable safety concerns.
+In this article, we present a safe and efficient framework that enables the learning of driving policies for autonomous vehicles operating in a shared workspace, where the absence of collisions cannot be guaranteed. Key to our learning procedure is a sim2real approach that uses real-world online policy adaptation in a mixed-reality setup, where other vehicles and static obstacles exist in the virtual domain. This allows us to perform safe learning by simulating (and learning from) collisions between the learning agent(s) and other objects in virtual reality. Our results demonstrate that, after only a few runs in mixed-reality, collisions are significantly reduced.
+
+@#^A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@#!S
+Introduction
+@#^S
+
+
+The deployment of automated and autonomous vehicles presents us with transformational opportunities for road transport. To date, the number of companies workin  on this technology is substantive, and growing cbsreport. 
+Opportunities reach beyond single-vehi le automation: by enabling groups of vehicles to jointly agree on maneuvers and navigation strategies, real-time coordination promises to improve ov ral  traffic throughput, road capacity, and passenger safety dressler:2014,ferreira2010self. However, drivi g in multivehicle and multi-lane settings still remains a challenging research problem, due to unpredictable vehicle interactions (e.g., non-cooperative cars, unreliable communication), hard workspace limitations (e.g., lane topographies), and constrained platform dynamics (e.g., steering kinematics, driver comfort).
+
+
+
+Le rningbased methods, such as deep reinforcement learning, have proven effective at designing robot control policies for an increasing number of tasks in single-vehicle systems, for applications such as navigation khan2019learning, flight molchanovSimto2019, and locomotion tan2018sim. 
+Leveraging such methods for learning autonomous driving policies is emerging as a particularly promising approach pan2017virtual, shalev2016safe, kuderer2015learning.
+Yet, the process of safely learning autonomous driving involves unique challenges, since the decision models often used in robotics do not lend themselves naturally to the multi-vehicle domain, due to the unpredictable behaviour of other agents. The unapologetic nature of the trial-and-error process in reinforcement learning compounds the difficulty of ensuring functional safety.
+
+
+These adversities call for learning that first takes place in simulation, before transferring to the real world miglino1995evolving, shah2018airsim. 
+This transfer, often referred to as sim2real, is challenging due to discrepancies between conditions in simulation and the real world (such as vehicle dynamics and sensor data) peng2018sim, james2019sim, chebotar2019closing.
+Despite substantial advances in this field, the problem of executing immature policies directly  n an autonomous vehicle still raises considerable safety concerns. These concerns are exacerbated when multiple autonomous vehicle  share the same workspace, risking collisions and un-reparable damage 
+Simultaneously, the act of colliding---or nearly-co lidingis essential to the learning process, enabling future policy roll-outs to incorporate these critical experiences. How are w  to provide safe multi-vehicle learning experiences, without forgoing the realism of high-fidelity training data?
+There is a dearth of work that addresses this challenge.
+
+
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| multi-vehicle multi-lane traffic circuit including one real DeepRacer robot and twelve virtual ones, in beige. Four static virtual vehicles are rendered in blu . The colliding virtual vehicle is rendered in red.
+@@@FIGURE@@@
+
+
+Our goal in this paper is t  develop a safe and efficient framework that allows us to learn driving policies for autonomous  ehicles operating in a shared workspace, where collision-freeness cann t be guaranteed.
+Towards this end, we learn an end-to-end policy for vehicle navigation on a multi-lane tr ck that is shared with other moving vehicles and static obstacles. The learning is based on a model-free method embedded in a distributed training mechanism that we tailor for mixed-reality compatibility. Key to our learning procedure is a sim2real approach that uses real-world online policy adaptation in a mixed-reality setup, where obstacles (vehicles and objects) exist in the virtual domain. This allows us to perform safe learning by simulating (and learning from) collisions between the learning agent(s) and other objects in virtual reality. 
+We apply our framework to a multi-vehicle setup consisting  f one real vehicle, and se eral simulated vehicles (as shown in Figure ||SYMBOLTOKEN|| Experiments show that a significant performance improvement can be obtained after just a few runs in mixed-reality, reducing the number of collisions and increasing reward collection.
+To the best of our knowledge, this is the first demonstration of mixed-reality reinforcement learning for multi-vehicle applications.
+
+
+ 
+
+@#!S
+Related Work
+@#^S
+
+
+Training in simulation before transferring learned policies to the real world provides the benefits of safety and facilitated data collection. Several methods alleviate the difficulty of bridging the reality gap: (i) parameter estimation, which estimates parameters of the real system to achieve a more realistic simulation lowrey2018reinforcement, tan2018sim, (ii) iterative data collection, which learns distributions of dynamics parameters in an iterative manner christiano2016transfer, chebotar2019closing, and (iii) domain randomization, which trains over a distribution of the system dynamics for policies that are more robust against simulator discrepancies from reality peng2018sim, muratore2018domain, james2019sim, ||SYMBOLTOKEN|| Although these met ods contribute significantly to closing the reality gap, the problem of guaranteeing safe policy execution still persists. 
+Moreover, it often proves hard to accommodate all situations the robot may encounter in the real world, where unexpected conditions are the norm. To ease this challenge, researchers have proposed methods for continuous online adaptation in model-based reinforcement learning fu2016one, gu2016continuous. The aim of this approach is to  earn an approximate model and then adapt it at tes  time. However, this can still lead to safety concerns when there is a mismatch between what the model is trained for, and how it is used at test-time. More recent approaches, such as meta-learning, strive to overcome this challenge ||SYMBOLTOKEN|| The commonality of all these approaches, however, is their focus on single-robot systems in isolated work-spaces; guaranteeing safe online-learning in shared workspaces is still an open problem.
+
+The idea of exploiting mixed (and augmented) reality for robotics applications was originally introduced as a tool to facilitate developm nt and prototyping. Early work experiments with virtual humanoids amongst real obstacles stilman2005augmented, leveraging the setup to rapidly prototype and test humanoid sub-components. Chen et al. chen2009mixed use augmented reality to obtain a coherent display of visual feedback during interactions between a real robot and virtual objects. More recently, mixed reality has gained importance in shared human-robot environments williams2018virtual, where combinations of physical and virtua  environments can provide safer ways to test interactions, "... by also allowing a gradual
+transition of the system components into shared physical environments" hoenig2015mixed.
+The introduction of mixed reality to support reinforcement learnin  has barely bee  considered. In mohammadi2019mixed, Mohammadi et al. present an approach for online continuous deep reinforcement learning for a reach-to-grasp task in a mixed-reality environm nt. Although targets exist in the physical world, the learning procedure is carried out in simulation (using real data), before actions are transferred and executed on the actual robot.
+
+The particularity of our work is that we focus on multi-robot settings, where inter-robot interactions contribute significantly to the learning process, but  annot be executed directly on mult ple real platforms without incurring repeated damages.
+Not only does our mixed-reality framework help bridge the reality gap that still stymies progress in reinforcement learning for robotics, but also, it is especially significant for the specific application at hand in this work.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+@#!S
+Problem Statement
+@#^S
+
+
+We consider a multi vehicle system composed of N vehicles on a multi-lane (closed) traffic circuit with M lanes. Each vehicle in the system has a unique target velocity, ||SYMBOLTOKEN|| i.e., vehicl s aim to travel at potentially different speeds. The circuit is obstructed by K obstacles (static vehicles).
+In order to maintain target speeds and avoid collisions, vehicles must learn to change lanes and execute overtaking maneuvers (we do not enforce a ru e regarding which side a vehicle may overtake on). An image of our three-lane setup is shown in Figure ||SYMBOLTOKEN|| for 17 vehicles (one of which is real, those in blue are static).
+
+Assumptions.
+We are especially interested in a vehicle's high-level decision-making process that involves lane changes and speed modulation. We, therefore, consider the availability of a low-level controller that executes reliable trajectory following, allowing the vehicle to remain in the centre of its current lane.
+To facilitate the low-lev l control task, we represent a lane by a sequence of cubic Bezier curves, continuous up to their first derivative (i.e. having no sharp corners). Vehicles are provided reliable (essentially noise-free) positioning information (e.g., through a motion capture system).
+We also assume the ability of basic local communication, such that the desired velocity of each neighboring vehicle is available to the high-level controller. This neighborhood includes the six nearest vehicles within a vision radius, ||SYMBOLTOKEN|| Our goal is to learn a high-level control policy that allows  vehicles to drive as closely as possible to their target velocities, while av iding collisions with other vehicles.
+
+
+
+
+
+ 
+
+@#!S
+Multi-Vehicle System
+@#^S
+
+
+Our multi-vehicle system is based on a physical v hicle, the DeepRacer robot balaji2019deepracer, for which we also develop a virtual counterpart. 
+This platform, its dynamics, and control model are detailed below.
+
+
+
+
+
+
+@ S!S
+The DeepRacer Robot
+@#S^S
+
+The DeepRacer is a 1/18th scale car with a 4MP camera, 4-wheel drive and Ackermann steering. It sports an Intel Atom processor, 4GB of memory, and 32GB of storage. It runs Ubuntu 16.04 LTS and ROS Kinetic Kame. The on-board computer and motors are powered by 13600mAh and 1100mAh batteries, respectively.
+
+
+The DeepRacer was originally designed as a platform for vision-based reinforcement learning, with training carried out in simulation only. 
+This is different to our aim---which includes online training an  but also only focuses on non-vision-based, high-level decision-making. Therefore, we modified the platform to make it more suited to our goal.
+The default ROS launch script was replaced, so that the DeepRacer does not
+run a ROS master but relies on one running on a different device---therefore allowing more than one DeepRacer to be controlled simultaneously. 
+We implemented a new ROS node to communicate with the DeepRacer's servo node to set turning and throttle values. Adding this node also meant that communication to the DeepRacer could be done via UDP, reducing latency. 
+Finally,
+a custom, non-reflective case was designed to allow the integration of the robot with a motion tracking system.
+
+
+@#S!S
+Vehicle Model
+@#S^S
+
+The DeepRacer has Ackermann steering geometry. We approximate its kinematics by the bicycle model, with motion equations:
+ẋ ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYM OLTOKEN|| ||SYMBOLTOKEN|| ϕ_s  s the steering angle, ||SYMBOLTOKEN|| is the forward spee , ||SYMBOLTOKEN|| is the heading, and L is the vehicle's wheel base.
+These equations are numerically integrated in our simulation via the Euler met od to obtain the position of the DeepRacer at each time step.
+For the purpose of collision detect on in mixed-reality, the DeepRacer was modeled by   bounding box of similar size to its physical dimensions (∼ 30cm × 20cm). 
+Virtual vehicles are also identically modeled.
+
+
+
+@#S!S
+Two-Level Driving Strategy
+@# ^S
+
+We segregate the vehicle's driving strategy into two levels: a high-level controller that is responsible for (i) lane-change decisions and (ii) velocity modulation, and a low-level controller that acts upon this infor ation to track desired lanes at desired speeds. In Section ||SYMBOLTOKEN|| the objective of our learning is the high-level control policy only. 
+We assume the existence of background traffic that is deployed with a fixed high-level driving strategy.
+
+
+
+
+Low-level control.
+Two low-level controllers are used for lateral and longitudinal control. A PID controller onboard the DeepRacer maintains the robot's forwards velocity at the value requested by the high-level controller. The steering angle ||SYMBOLTOKEN|| of the DeepRacer is set by a PD controller, keeping the robot on the trajectory chosen by the higher level controller.
+The onboard velocity controller gets a desired velocity ||SYMBOLTOKEN|| from the high-level controller, and pose information from the motion tracking system; it calculates velocity and acceleration towards the desired trajectory. These are used in the PID controller which outputs a throttle value to the motors. This allows the DeepRacer to travel at the speed requested by the high level controller regardless of external factors such as how discharged the battery is.
+
+The objective of the steering angle controller is to minimise the perpendicular distance, ||SYMBOLTOKEN|| between the robot and the desired trajectory. For small deviations, the angle of the robot's heading with respect to th  trajectory, ||SYMBOLTOKEN|| is proportional to d ||SYMBOLTOKEN|| s and th  steering angle of the robot, ||SYMBOLTOKEN|| is proportional to ||SYMBOLTOKEN|| δ/d ||SYMBOLTOKEN|| where s is the trav lled distance. This permits a controller of the form ||SYMBOLTOKEN|| where ||SYMBOLTOKEN||  s the curvature of the trajectory at the nearest point and g and d are gain and damping factors, respectively. The use of ||SYMBOLTOKEN|| in place of ||SYMBOLTOKEN|| the robo  to continue to converge to the desired trajectory even for larger deviations,
+not affecting its behaviour
+for small deviations. Since the controller uses derivatives with respect to s rather than t directly, it behaves the same independently of how the high-level controller changes the robot's speed.
+
+High-level control policy.
+While low-level controller is capable of maintaining a specified velocity and following the centre of a chosen lane, we use a high-level control algorithm to decide when to accelerate or decelerate and when to change lanes. This high-level policy is the learnable policy (described in Section ||SYMBOLTOKEN|| applied to the agent vehicle.
+
+Background traffic.
+For realistic (virtual) background traffic we use a hard-coded algorithm, following the work in ||SYMBOLTOKEN|| This controller has both longitudinal and lateral control components. 
+The longitudinal component is based on the Intelligent Driver Model (IDM) proposed in treiber2000congested.
+Using this control method, a vehicle's forward acceleration is a function of its current velocity, ||SYMBOLTOKEN|| its gap s to the vehicle in front, and the rate at which it is approaching the vehicle in front, ||SYMBOLTOKEN|| v:
+
+###FORMULA###
+
+    ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| α [  1-  ( ||SYMBOLTOKEN|| -  ||SYMBOLTOKEN|| v)/s ||SYMBOLTOKEN||   ],
+
+@@@FORMULA@@@
+
+where ||SYMBOLTOKEN|| is a function determining the desired minimum gap to the preceding vehicle and ||SYMBOLTOKEN|| is a target velocity. This gap is defined as:
+
+###FORMULA###
+
+    ||SYMBOLTOKEN|| v) ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| T ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| v/2 ||SYMBOLTOKEN|| T, ||SYMBOLTOKEN|| β, ||SYMBOLTOKEN|| v_t are parameters and ||SYMBOLTOKEN|| is a jam distance---the distance which cars in a queue will leave between each other.
+
+The lateral component of this high level controller, responsible for lane changes, is based on the MOBIL controller proposed in kesting2007general. 
+The MOBIL strategy is designed to maximise the current vehicle's freedom to accelerate while also considering the interests of nearby vehicles, and maintaining safety. To determine the effect of a lane change on the current vehicle's own acceleration, the MOBIL controller considers the effect ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| the new gap to the next vehicle would have on the chosen acceleration by its longitudinal control algorithm, IDM. The MOBIL controller similarly calculates the effect a proposed lane change would have on the chosen accelerations of nearby vehicles, assuming they were also using IDM. It then compares the expected benefit to a threshold value ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| to determine whether or not to change lane:
+
+###FORMULA###
+Δ a self ||SYMBOLTOKEN|| p ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| Δ ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| Δ ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ar  the effects on the new and old following vehicles, and p is a politeness factor. Safety is maintained by adding the condition that the MOBIL controller does not force the new follower vehicle to decelerate at a rate greater than a safety limit, ||SYMBOLTOKEN|| Since we do not enforce a  ule regarding which side vehicles may overtake on, the MOBIL controller considers changing lanes in both direc ions, and takes the better option if both surpass the threshold ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| 
+
+@#!S
+Learning Framework
+@#^S
+
+
+As anticipated in Section ||SYMBOLTOKEN|| we wish to learn a high-level control policy letting a vehicle avoid collisions while maintaining its desired velocity. We formulate this as a sequential decision problem and solve it with an actor-critic based reinforcement learning approach. We approximate the value function V and the policy function ||SYMBOLTOKEN|| using the cr tic and actor components, respectively.
+
+
+@#S!S
+Reinforcement Learning Problem
+@#S^S
+
+
+Our goal is to safely (collision and damage-free) find an optimal high-level controller, such that each vehicle (agent) is as close as possible to its desired velocity.
+We formalise this high-level control problem as a reinforcement learning problem sutton2011 with state space, O (the agent's observations), and action space A. O contains both information about the agent's own state, ||SYMBOLTOKEN|| as well as the state of other nearby vehicles, ||SYMBOLTOKEN|| such that:
+
+###FORMULA###
+O ||SYMBOLTOKEN|| ||SYMBOLTOKEN||  ||SYMBOLTOKEN|| O_s, an agent observes:
+(i) its current velocit , ||SYMBOLTOKEN|| its target velocity, ||SYMBOLTOKEN|| the number of lanes to its right, ||SYMBOLTOKEN|| the number of lanes to its left, ||SYMBOLTOKEN|| its lane-changing state s (i.e. whether it is changing lane or not).
+An element of ||SYMBOLTOKEN|| is thus represented as a vector of the ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| v_t, ||SYMBOLTOKEN|| l_l, s] ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| the agent observes up to six nearby vehicles (defining its neighbourhood, as introduced in Section ||SYMBOLTOKEN|| If there are less than six vehicles within radius ||SYMBOLTOKEN|| then this vector is padded up to six using "null" vehicles.
+For each nearby vehicle, ||SYMBOLTOKEN|| the agent receives the relative position of ||SYMBOLTOKEN|| in polar coordinates ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| 
+The agent also receives the relative lane-wise velocity, ||SYMBOLTOKEN|| of ||SYMBOLTOKEN|| the number of lanes to ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and the lane-changing state of ||SYMBOLTOKEN|| s_i. An element of ||SYMBOLTOKEN|| is thus represented as 6 vectors of the ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| v_ri, ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| s_i] ||SYMBOLTOKEN|| action space, A, contains pairs of tuples from a (discrete) acceleration space, ||SYMBOLTOKEN|| and a (discrete) lane changing space, ||SYMBOLTOKEN|| such that:
+
+###FORMULA###
+A ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ×A_l.
+
+@@@FORMULA@@@
+
+Set ||SYMBOLTOKEN|| consists of "constant acceleration", "maintaining the current speed", and a "constant deceleration". 
+Set ||SYMBOLTOKEN|| consists of "changing lane left", "right", or "not at all".
+The reinforcement learning reward function
+is designed to prevent  he agent from deviating unnecessarily from its desired speed while avoiding collisions with other cars. This function is expressed as:
+
+###FORMULA###
+
+    ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| p_2),
+
+@@@FORMULA@@@
+
+where ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| are proximity penalty terms defined ||SYMBOLTOKEN|| c_1 ||SYMBOLTOKEN|| - ||SYMBOLTOKEN|| c_2 L - ||SYMBOLTOKEN|| d_a is the distance to the closest nearby vehicle, ||SYMBOLTOKEN|| is the distance to the closest nearby vehicle in the same lane, ||SYMBOLTOKEN|| is the distance between lanes, L is the length of a vehicle, and ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| are parameters (see also Figure ||SYMBOLTOKEN|| 
+These two proximity penalties exist to deter the agent from coming too close to other vehicles. While this specific formalization would admit a solution through discrete action-space methods, such as Double Q-learning hasselt2010, in the following, we present a more general approach based one the actor critic method.
+As a consequence, our approach can generalise to continuous action spaces as well.
+
+
+
+
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| presenting the main components in the observations vectors ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| for a vehicle tackling the rein orcement learning problem described in Subsection ||SYMBOLTOKEN|| Network Architecture
+@#S^S
+
+
+We approximate value V(o) and policy function ||SYMBOLTOKEN|| using a deep neural network containing one actor and two critics (Figure ||SYMBOLTOKEN|| observation vectors ||SYMBOLTOKEN|| the salient  eatures of nearby cars are extracted using a sequence of four linear layers of hidden size ||SYMBOLTOKEN|| with output size ||SYMBOLTOKEN|| These features are then max-pooled across nearby vehicles to get a single size ||SYMBOLTOKEN|| vector of features pertaining to observed vehicles.
+This vector is then concatenated with the agent's own observations ||SYMBOLTOKEN|| to produce the input of the actor and critic networks.
+
+
+The actor network consists of a sequence of three linear layers of hidden and output size ||SYMBOLTOKEN|| followed by two heads, each consisting of a final layer of hidden size ||SYMBOLTOKEN|| and an output size of 3, followed by soft-max activation. These two heads correspond to the two discrete spaces ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| i.e., lane changes and acceleration, respectively.
+We elect to use two critic networks which are similarly composed by a sequence of four linear layers of hidden size ||SYMBOLTOKEN|| though this time each terminating in a one-dimensional evaluation of the value function.
+As proposed by Fujimoto et al. td3, we consider the less extreme of the two evaluations during training to try to reduce the impact of extreme estimationsw of the value function in the early stages. We found these spurious estimates to be detrimental,
+thus, the maximum value from the two is was used when updating ||SYMBOLTOKEN|| g r a p h i c s ||SYMBOLTOKEN|| of the neural network mapping observations ||SYMBOLTOK N|| ||SYMBOLTOKEN|| to (i) actions ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and (ii) value function V(·). We detail this architecture in Subsection ||SYMBOLTOKEN|| and its training in Subsection ||SYMBOLTOKEN|| Training
+@#S^S
+
+
+We develop our reinforcement learning method as an adaptation of Asynchronous Advantage Actor Critic (A3C) a3c, by maintaining an approximation for the value function of a state o, V(o), and for the policy function ||SYMBOLTOKEN|| using explicitly calculated returns over short trajectories. Returns ||SYMBOLTOKEN|| f om actions were calculated ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| t<k for trajectory length k and ||SYMBOLTOKEN|| is the mean of the two value functions. The approximation of the value function was trained to ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| is the Advantage function, ||SYMBOLTOKEN|| policy function is updated using the PPO-Clip ppo loss ||SYMBOLTOKEN|| A_ϕ(o_t, ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||MATHEQUATION|| 1 ||SYMBOLTOKEN|| ϵ) ||SYMBOLTOKEN|| a_t)),
+
+@@@FORMULA@@@
+
+where ϕ are the network parameters, subscript ϕ denotes the evaluation of the network using parameters ϕ, ||SYMBOLTOKEN|| is the clamp function and ϵ is a constant ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| s we do not use mini-batching, the target policy that we compare against is not one computed before a current set of mini-batches (as in ppo), but rather duplicated versions of part of the network (the shaded boxes in Figure ||SYMBOLTOKEN|| with parameters smoothed exponentially in time, ϕ̅, updated to follow the latest parameters, ϕ, according to the ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| (1 - ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| is a parameter set during training.
+We also add to the loss function a term proportional to the negation of the policy entropy, in order to discourage premature convergence. We weight the three contributions to the total network loss with coefficients ||SYMBOLTOKEN|| w_c and ||SYMBOLTOKEN|| corresponding to the PPO loss, the critic loss and the entropy term, respectively.
+
+To improve speed and stability of learning, we use mul iple parallel actors when pre-training a policy in simulat on only. We parallelise this process on two levels. First, we use asynchronous updates, as in a3c, to allow multiple threads acting in the problem environment to send gradients to a separate thread updating the policy parameters, and then returning the new parameters (as shown in Figure ||SYMBOLTOKEN|| In addition, each actor thread simultaneous y acts in multiple environments batch-a2c in orde  to take advantage of vectorisation (Figure ||SYMBOLTOKEN|| Combined, these two pa allelisation strategies substantially improved ||SYMBOLTOKEN|| speed-up) training speed in purely virtual environments.
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| of the distributed training approach presented in Subsection ||SYMBOLTOKEN|| for the network in Figure ||SYMBOLTOKEN|| Setup
+@#^S
+
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| schematics of the propose  multivehicle, mixed-reality reinforcement learning approach. Reinforcement learning of high-level driving policies is handled through PyTorch. Both virtual and real DeepRacer vehicles exist within a ||SYMBOLTOKEN|| simulation that manages the physics of the virtual cars and emulates collisions in mixed-reality. The physics of real-life DeepRacers is captured through OptiTrack's motion  apture system and fed to the simulation. 
+@@@FIGURE@@@
+
+
+
+Our mixed-reality experimental setup seamlessly integrates multiple real-world and virtual components, as illustrated in Figure ||SYMBOLTOKEN|| 
+The learning of high-level policies by DeepRacer agents, using the framework presented in Section ||SYMBOLTOKEN|| is performed during the concurrent execution of all these modules, i.e., in mixed-reality.
+
+
+
+@#S!S
+Simulation Setup
+@#S^S 
+In our setup, a ||SYMBOLTOKEN|| simulation provides the environment in which reinforcement learning agents can act, observe, and learn. As such, it also contains the high-level IDM/MOBIL controllers of the background traffic vehicles.
+We implemented the reinforcement learning approach described in the previous section using Python and the PyTorch library. An interface between the ||SYMBOLTOKEN|| simulation and the Python interpreter was created using the  BOOST.Python ||SYMBOLTOKEN|| library. This interface exposes the ability to create environments as either mixed-real or purely virtual. The simulation provides o servations and reward signals to the Python implementation, according to the state of the environment. Then, it updates its state to reflect the agents' actions, as received from the Python interpreter.
+
+The simulated environment also contains (i) the specifications of the Bezier curves for all lanes in the track, (ii) the states of the vehicles controlled by either reinforcement learning agents or the IDM/MOBIL algorithms, and (iii) K static obstacles. These obstacles are placed far enough apart not to fully block the road, and so that there is at least one in each lane of the circuit. Their exact positions are otherwise randomised. The starting locations of the background traffic and agent vehicle are likewise randomised along with the desired velocities ||SYMBOLTOKEN|| of all vehicles.
+For each of the vehicles in the environment, collision detection is accomplished using bounding boxes of the same shape and size of a DeepRacer.
+
+The simulation was written in ||SYMBOLTOKEN|| in order to provide higher performance, especially when pre-training a network in a purely simulated environment. 
+To the same end, the simulation was designed to be capable of running several simultaneous virtual environments (Figure ||SYMBOLTOKEN|| in order to allow the reinforcement learning algorithm to submit multiple parallel actions and receive multiple parallel observations---thus making a more efficient use of our learning computing hardware.
+
+
+@#S!S
+Real-World Setup
+@#S^S
+
+
+As shown in Figure ||SYMBOLTOKEN|| the physical DeepRacer must interface with the simulation while training in mixed-reality.
+The location and pose of a real-life DeepRacer in the environment is tracked using six OptiTrack Prime 17W cameras and the Motive motion capture software. 
+When multiple real DeepRacers are used, we distinguish them by using unique layouts of reflective markers. 
+The positions of each of the DeepRacers is broadcast by Motive, receive  by a VRPN client and published to a ROS topic, making the data available to all nodes in our ROS environment.
+In order to reduce network load and increase reliability, the frequency at which poses were transmitted was restricted to 50Hz, since this was also the update rate of the physics engine in the simulation. 
+From the perspective of t e tracking system, the centre of a vehicle was defined as the centre of its rear axle. This choice preserves consistency with the simulation's definition of the centre of a car---itself chosen for the sake of simplicity, while using an Ack rmann steering model.
+The vehicles drive on a closed loop track made up of individual trajectories that contain no intersections and are ||SYMBOLTOKEN|| continuous.
+
+
+@#S!S
+Mixed-Reality
+@#S^S
+
+
+Mixed-reality plays a two-fold role in our work: (i) i  fosters an agent's learning, allowing simultaneous real and simulated training, and (ii) it provides us with better evaluation tools, through the ability to visualise the virtual and real agents' interactions.
+
+Learning
+In the mixed-reality environment, the simulation receives live updates on the pose of the DeepRacer through the motion capture system and updates its representation of the environment state accordingly. The simulation sends commands setting the steering angle and velocity of the DeepRacer according to the actions of the high-level controller and the lateral component of  he lowlevel controller.
+
+The simulation is able to detect collisions between the DeepRacer and the virtual vehicles through a collision box identical to that of a virtual vehicle sharing the same pose as the real agent. From the point of view of the high-level controllers, including the reinforcement learning agent,
+the situation is no different from a purely virtual scenario---with the exception of the world's physics affecting the real DeepRacer. Parallelisation of environments is unavailable when training in a mixed-real environment, but since our implementation of A3C uses trajectories of experience with explicitly calculated returns, we substantially in rease their length and generate only a small number of trajectories for each optimisation step. Each of these trajectories is created using a different random initialisation of the environment in order to provide a variety of experiences to the reinforcement learning algorithm, at each optimisation step.
+
+Visualisation
+To vi ualise the interaction between the virtual cars and the DeepRacer, during our tests, we set up a fixed camera to record the entire full-length experiments. From the simulation environment, we collect pose data for both the virtual and real cars and compute whether any vehicle is currently experiencing collisions.
+These data are processed through a Python script importing Blender's API.
+At each timestep, we inser  an animation keyframe of a vehicle model in the pose specified by the previously recorded data and a colour determined by whether the vehicle is (i) a fixed obstacle (blue), (ii) a moving vehicle (beige), or (iii), a vehicle currently in collision (red). 
+In a separate scene, the DeepRacer alias is also animated using the same procedure.
+These two scenes are then composited together using Z-buffer values so that---when the DeepRacer is in front of a virtual vehicle---the area obscured by the Deepracer is transparent. The output can then be overlayed on top of the test footage to create the effect that the real and virtual vehicles are interacting.
+ 
+
+@#!S
+Experiments
+@#^S
+
+
+To demonstrate the effectiveness of our mixed-reality setup---to train agents capable of collision-free driving---we performed experiments 
+on a ||SYMBOLTOKEN|| 3-lane track (see Figure ||SYMBOLTOKEN|| with lanes ||MATHEQUATION|| wide. The track itself fits a 3.5m × 2.2m area, with a lap length of roughly 16.4 metres, i.e., ∼50 times the size of a DeepRacer ||SYMBOLTOKEN|| experiments include ||SYMBOLTOKEN|| (1 real, 12 virtual) vehicles and ||SYMBOLTOKEN|| virtual obstacles.
+The low-level control parameters g and d (see Subsection ||SYMBOLTOKEN|| were set to 3 and 0.4, respectively.
+For the learning parameters (see Section ||SYMBOLT KEN|| selected
+γ ||SYMBOLTOKEN|| 0.9,
+τ ||SYMBOLTOKEN|| 0.7,
+ϵ ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and ||SYMBOLTO EN|| the actor and critics, we used learning rates of 2e-4 and 2e-3.
+Our results are summarized in Figures ||SYMBOLTOKEN|| <ref>, and ||SYMBOLTOKEN|| as well as by additional footage available on the Prorok Lab YouTube ||SYMBOLTOKEN|| g r a p h i c s ||SYMBOLTOKEN|| during training of (i) the number of collisions per minute (top plot, lower is better) and (ii) the average reward collected by the training agent, over a sliding window of 8000 frames (bottom plot, higher is better).
+@@@FIGURE@@@
+
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| distributions at test time of (i) the number of collisions per scenario (top plot, left is best) and (ii) the total collected reward per scenario (bottom plot, right is best) before (blue) and after (red) training in mixedreality.
+@@@FIGURE@@@
+
+
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| of track positions (y axis) against time (x axis) of four static obstacles (horizontal lines), twelve virtual vehicles, and one real-life DeepRacer (thicker line). The colormap captures the velocities of all cars. The red dots represent collisions incurred by the DeepRacer. The top and bottom plots compare behaviours recorded before and after mixed-reality training. 
+
+@@@FIGURE@@@
+
+
+
+
+First,  e want to assess the soundness of our approach by evaluating how well training fares---in terms of incurred collisions and co lected reward.
+This is shown in Figure ||SY BOLTOKEN|| where the two plots describe the evolution over time (measured in frames, i.e., the steps in which an agent receives one set of observations and takes one action) of: (i) the number of collisions per minute (top plot of Fig re ||SYMBOLTOKEN|| and (ii) the average collected reward (bottom plot of Figure ||SYMBOLTOKEN|| training is reflected in a general downward slope of the top plot (fewer collisions) and, conversely, a general upward slope of the bottom plot (greater reward).
+
+
+
+
+
+
+
+Second, we want to quantify the effectiveness of mixed-reality training at test time.
+This is shown in Figure ||SYMBOLTOKEN|| top and bottom plots refer, once more, to collisions and collected reward, re pectively.
+Each one of the two plots compares two density distributions of these perfo mance metrics: one before (in blue) and one after (in red) training in mixed-reality.
+As our simulation environment is partially randomised, the word scenario refers to all the data gathered from a single instantiation.
+On the top plot, we can observe a left-shift (from blue to red, i.e., before and after) of the collisions' density distribution, that is, fewer collisions occurring after mixed-real training.
+On the bottom plot, conversely, a right-shift reflects the improved ability of the agent, trained in mixed-reality, to collect reward.
+
+Finally, Figure ||SYMBOLTOKEN|| presents a qualitative comparison of how a DeepRacer agent's behaviour changes before (top) and after (bottom) mixed-reality training.
+The x axis in Figure ||SYMBOLTOKEN|| shows the passing of time (in seconds) while the y axis captures the position of a vehicle along the track (in metres).
+Four blue horizontal lines represent obstacles (i.e., static virtual vehicles) on the track.
+All other (13) lines represent moving vehicles---the thicker one being the DeepRacer agent.
+A color map is used to encode the speed (in metres per second) of each vehicle.
+Red dots indicate collisions between the real-life DeepRacer and either a virtual obstacle or vehicle.
+Indeed, collisions are rarer after mix dreality training.
+Footage of the mixed-reality experiments in Figure ||SYMBOLTOKEN|| i  also available ||SYMBOLTOKEN|| 
+
+@#!S
+Discussion
+@#^S
+
+
+
+The training stability and effectiveness of the proposed approach is reported in Figure ||SYMBOLTOKEN|| the top plot, one can observe early improvements---i.e., a reduction---in the number of collisions during training. This is followed by two periods of worsening performance (around frames  20'000 and 30'000), and then a more consistent downward trend (from frame 35'000 on .
+The early improvements and performance deterioration (until frame 25' 00) may be explained by the choice of hyper-parameters. Our  earning rates aimed at aggressive policy changes. That is, an agent would have been, at first, too eager to learn how to overly accelerate---and collect more reward---resulting into more early collisions.
+The bottom plot, presenting the collection of reward during training, shows a distinct mirroring (x axis symmetry) of the top plot. This is consistent with what we would expect---that is, fewer collisions leading to higher reward.
+
+
+
+
+Figure ||SYMBOLTOKEN||  emonstrates the performance of our methodology at test time.
+In the top plot, we observe that the density distribution of collisions is significantly shifted to the left after mixed-reality training---indicating that our learning approach can effectively reduc  collisions.
+The after-training distribution is also narrower, suggesting reduced variance and uncertainty.
+The bottom plot presents the slightly more trivial result that reinforcement learning training does, indeed, lead to improved reward collection. Nonetheless, at test time, this is evidence of the ability of our approach to generalize.
+
+
+
+The qualitative results in Figure ||SYMBOLTOKEN|| 
+demonstrate how the learning agent's behaviour changes before and after mixed-reality training.
+In the top plot, a DeepRacer that has not yet been trained in mixed-reality collides remarkably often, with nearly every obs acle.
+This collision-prone behaviour may be d e to the reduced responsiveness of the real DeepRacer hardware---when compared to the simulated vehicle---making it harder for the agent to timely stop or a oid other vehicles.
+After training in mixed-reality, collisions are almost com letely amended.
+In the bottom plot of Figure ||SYMBOLTOKEN|| we can also observe virtual agents (IDM/MOBIL background traffic) either (i) overtaking the learning agent in the longer gaps between obstacles or (ii) piling-up behind it in more constraine  regions of the road---e.g., when the agent is cautiously approaching two near obstacles. 
+Interestingly enough, traffic (e.g., between 50" and 80" in the bottom plot of Figure ||SYMBOLTOKEN|| is lik ly exacerbated by the fact that IDM/MOBIL agents would be willing to give the agent room to accelerate instead of overtaking it---yet, the agent proceeds at a reduced speed. While the learning agent is less dangerous after training, its unexpected prudence can mislead the other driving agents---which are not capable of learning---and reduce throughp t.
+
+
+
+
+
+Finally, it is important to observe that the simulation performance
+of the agents we transferred into our framework was still
+characterised by relatively high entropy.
+This choice was made to minimise the risk of overfitting to the 
+simulation environment and let agents adapt more quickly
+to the mixed-reality setup.
+While we cannot say whether additional simulation-only training
+would have benefited or hurt the agents transferring to mixed-reality,
+our resu ts support the idea that this appro ch led to quick and effective real-world adaptation.
+In future developments of our framework, we will investigate
+more sample-efficient off-policy reinforcement learning methods---e.g., softac which might allow for better performance without the need for a substantial increase in data gathering---and continuous action spaces.
+
+ 
+
+@#!S
+Conclusions
+@#^S
+
+
+
+This work presented a mixed-reality framework for safe and efficient reinforcement learning of driving policies in multi-vehicle systems.
+Our learning algorithm was trained using a distributed mechanism specifically tailored to suit the needs of our mixed-reality setup. 
+We demonstrated successful online policy adaptation in an experimental setup involving one real vehicle and sixteen virtual vehicles. Our results showed that mixed-reality learning is able to provide significant performance improvements, leading to a reduction of collisions in the learned policies.
+
+The particularity of our system is that it focuses on multi-robot settings, where interactions with other dynamic objects contribute significantly to the learning process, but cannot be executed directly on multiple real platforms without incurring repeated damages.
+The proposed framework is a first of its kind: beyond providing specific benefits to the application at hand, it also helps bridge the reality gap that still stymies progress in reinforcement learning for robotics at large.
+Future work will consider multiple learning agents using on-board sensing (e.g., vision), and how our mixed-reality setup enables their gradual introduction into mutually shared spaces.
+
+
+
+
+@#!S
+Acknowledgements
+@#^S
+
+This work was supported by the Engineering and Physical Sciences Research Council (grant EP/S015493/1). Their support is gratefully acknowledged.
+The DeepRace  robots used in this work were a gift to Amanda Prorok from AWS. Their support is gratefully acknowledged. This article solely reflects the opinions and conclusions of its authors and not AWS or any other Amazon entity.
+
+
+
+
+
+
+
+
+     #1       #1#1     #1  #1      #1      #1      #1#1 #1#1[2]#2[2]#2[1]#1[2][]arXiv:#2
+
+[Balaji, Mallya, Genc, Gupta, Dirac, Khare,
+  Roy, Sun, Tao, Townsend, et al.Balaji et al.2019]balaji2019deepracerauthorpersonBharathan Balaji, personSunil
+  Mallya, personSahika Genc, personSaurabh Gupta,
+  personLeo Dirac, personVineet Khare,
+  personGourav Roy, personTao Sun,
+  personYunzhe Tao, personBrian Townsend,
+  et al.year2019.
+DeepRacer: Educational Autonomous Racing Platform
+  for Experimentation with Sim2Real Reinforcement Learning.
+journal arXiv preprint arXiv:1911.01562
+  (year2019).
+
+
+
+[CBSCBS2018]cbsreportauthorpersonCBS.year2018.
+titleCBS Insights Research ||SYMBOLTOKEN||    (year2018).
+(Accessed August 15, 2018).
+
+
+[Chebotar, Handa, Makoviychuk, Macklin, Issac,
+  Ratliff, and FoxChebotar et al.2019]chebotar2019closingauthorpersonYevgen Chebotar, personAnkur
+  Handa, personViktor Makoviychuk, personMiles
+  Macklin, personJan Issac, personNathan Ratliff,
+  andpersonDieter Fox.year2019.
+Closing the sim-to-real loop: Adapting simulation
+  randomization with real world experience. In booktitle 2019
+  International Conference on Robotics and Automation (ICRA). IEEE,
+  pages8973--8979.
+
+
+
+[Chen, MacDonald, and WunscheChen
+  et al.2009]chen2009mixedauthorpersonIan Yen-Hung Chen, personBruce
+  MacDonald, andpersonBurkhard Wunsche.year2009.
+Mixed reality simulation for mobile robots. In
+  booktitle 2009 IEEE International Conference on Robotics and
+  Automation. IEEE, pages232--237.
+
+
+
+[Christiano, Shah, Mordatch, Schneider,
+  Blackwell, Tobin, Abbeel, and ZarembaChristiano et al.2016]christiano2016transferauthorpersonPaul Christiano, personZain
+  Shah, personIgor Mordatch, personJ nas Schneider,
+  personTrevor Blackwell, personJoshua Tobin,
+  personPieter Abbeel, andpersonWojciech Zaremba.year2016.
+Transfer from simulation to real world through
+  learning deep inverse dynamics model.
+journal arXiv preprint arXiv:1610.03518
+  (year2016).
+
+
+
+[Clemente, M rtínez, and
+  ChandraClemente et al.2017]batch-a2cauthorpersonAlfredo V. Clemente,
+  personHumberto Nicolás Castejón Martínez,
+  andpersonArjun Chandra.year2017.
+Efficient Parallel Methods for Deep Reinforcement
+  Learning.
+journal arXiv preprint arXiv:1705.04862
+  (year2017).
+
+
+
+[Dressler, Hartenstein, Altintas, and
+  TonguzDressler et al.2014]dressler:2014authorpersonFalko Dressler, personHannes
+  Hartenstein, personOnur Altintas, andpersonOzan
+  Tonguz.year2014.
+Inter-v hicle communication: Quo vadis.
+journal IEEE Communications Magazinevolume52, number6 (year2014),
+  pages170--177.
+
+
+
+[Ferreira, Fernandes, Conceição,
+  Viriyasitavat, and TonguzFerreira et al.2010]ferreira2010selfauthorpersonMichel Ferreira, personRicardo
+  Fernandes, personHugo Conceição,
+  personWa tanee Viriyasitavat, andpersonOzan K
+  Tonguz.year2010.
+Self-organized traffic control. In
+  booktitle Proceedings of the seventh ACM international
+  workshop on VehiculAr InterNETworking. ACM, pages85--90.
+
+
+
+[Fu, Levine, and AbbeelFu
+  et al.2016]fu2016oneauthorpersonJustin Fu, personSergey Levine,
+  andpersonPieter Abbeel.year2016.
+One-shot learning of manipulation skills with
+  online dynamics adaptation and neural network priors. In
+  booktitle 2016 IEEE/RSJ International Conference on
+  Intelligent Robots and Systems (IROS). IEEE, pages4019--4026.
+
+
+
+[Fujimoto, van Hoof, and MegerFujimoto
+  et al.2018]td3authorpersonScott Fujimoto, personHerke van
+  Hoof  andpersonDavid Meger.year2018.
+Addressing Function Approximation Error in
+  Actor-Critic Methods. In booktitle Proceedings of the 35th
+  International Conference on Machine Learning
+  (seriesProceedings of Machine Learning Research),
+  editorpersonJennifer DyandpersonAndreas Krause (Eds.), Vol. volume80.
+  publisherPMLR, addressStockholmsmässan, Stockholm
+  Sweden, ||SYMBOLTOKEN|| Lillicrap, Sutskever, and LevineGu
+  et al.2016]gu2016continuousauthorpersonShixiang Gu, personTimothy
+  Lillicrap, personIlya Sutskever, andpersonSergey
+  Levine.year2016.
+Continuous deep q-learning with model-based
+  acceleration. In booktitle International Conference on
+  Machine Learning. pages2829--2838.
+
+
+
+[Haarnoja, Zhou, Abbeel, and LevineHaarnoja
+  et al.2018]s ftacauthorpersonTuomas Haarnoja, personAurick
+  Zhou, personPieter Abbeel, andpersonSergey
+  Levine.year2018.
+Soft Actor-Critic: Off-Policy Maximum Entropy Deep
+  Reinforcement Learning with a Stochastic Actor.
+journal arXiv preprint arXiv:abs/1801.01290
+  (year2018).
+
+
+
+[HasseltHasselt2010]hasselt2010authorpersonHado van Hasselt.year2010.
+D uble Qlearning. In booktitle
+  Proceedings of the 23rd International Conference on Neural Information
+  Processing Systems - Volume 2 (seriesNIPS'10).
+  publisherCurran Associates Inc., addressUSA,
+  ||SYMBOLTOKEN|| Milanes, Scaria, Phan, Bolas, and
+  AyanianHoenig et al.2015]hoenig2015mixedauthorpersonWolfgang Hoenig, personChristina
+  Milanes, personLisa Scaria, personThai Phan,
+  personMark Bolas, andpersonNora Ayanian.year2015.
+Mixed reality for robotics. In
+  booktitle 2015 IEEE/RSJ International Conference on
+  Intelligent Robots and Systems (IROS). IEEE, pages5382--5387.
+
+
+
+[Hyldmar, He, and ProrokHyldmar
+  et ||SYMBOLTOKEN|| Hyldmar, personYijun
+  He, andpersonAmanda Prorok.year2019.
+A Fleet of MiniatureCars for Experiments
+  in CooperativeDriving.
+journal IEEE International Conference Robotics and
+  Automation (ICRA) ||SYMBOLTOKEN|| Wohlhart, Kalakrishnan, Kalashnikov,
+  Irpan, Ibarz, Levine, Hadsell, and BousmalisJames et al.2019]james2019simauthorpersonStephen James, personPaul
+  Wohlhart, personMrinal Kalakrishnan, personDmitry
+  Kalashnikov, personAlex Irpan, personJulian Ibarz,
+  personSergey Levine, personRaia Hadsell, andpersonKonstantinos Bousmalis.year2019.
+Sim-to-real via sim-to-sim: Data-efficient robotic
+  grasping via randomized-to-canonical adaptation networks. In
+  booktitle Proceedings of the IEEE Conference on Computer
+  Vision and Pattern Recognition. pages12627--12637.
+
+
+
+[Kesting, Treiber, and HelbingKesting
+  et al.2007]kesting2007generalauthorpersonArne Kesting, personMartin
+  Treiber, andpersonDirk Helbing.year2007.
+General Lane-Changing Model MOBIL for Car-Following
+  Models.
+journal Transportation Research Recordvolume1999, number1 (year2007),
+  ||SYMBOLTOKEN|| Zhang, Li, Wu, Schlotfeldt, Tang,
+  Ribeiro, Bastani, and KumarKhan et al.2019]khan2019learningauthorpersonArbaaz Khan, personChi Zhang,
+  personShuo Li, personJiayue Wu,
+  personBrent Schlotfeldt, personSarah Y Tang,
+  personAlejandro Ribeiro, personOsbert Bastani, andpersonVijay Kumar.year2019.
+Learning safe unlabeled multi-robot planning with
+  motion constraints.
+journal arXiv preprint arXiv:1907.05300
+  (year2019).
+
+
+
+[Kuderer, Gulati, and BurgardKuderer
+  et al.2015]kuderer2015learningauthorpersonMarkus Kuderer, personShilpa
+  Gulati, andpersonWolfram Burgard.year2015.
+Learning driving styles for autonomous vehicles
+  from demonstration. In booktitle 2015 IEEE International
+  Conference on Robotics and Automation (ICRA). IEEE,
+  pages2641--2646.
+
+
+
+[Lowrey, Kolev, Dao, Rajeswaran, and
+  TodorovLowrey et al.2018]lowrey2018reinforcementauthorpersonKendall Lowrey, personSvetoslav
+  Kolev, personJeremy Dao, personAravind Rajeswaran,
+  andpersonEman el Todorov.year2018.
+Reinforcement learning for non-prehensile
+  manipulation: Transfer from simulation to physical system. In
+  booktitle 2018 IEEE International Conference on Simulation,
+  Modeling, and Programming for Autonomous Robots (SIMPAR). IEEE,
+  pages35--42.
+
+
+
+[Miglino, Lund, and NolfiMiglino
+  et al.1995]miglino1995evolvingauthorpersonOrazio Miglino,
+  personHenrik Hautop Lund, andpersonStefano Nolfi.year1995.
+Evolving mobile robots in simulated and real
+  environments.
+journal Artificial lifevolume2,
+  number4 (year1995), pages417--434.
+
+
+
+[Mnih, Badia, Mirza, Graves, Lillicrap, Harley,
+  Silver, and KavukcuogluMnih et al.2016]a3cauthorpersonVolodymyr Mnih,
+  personAdrià Puigdomènech Badia,
+  personMehdi Mirza, personAlex Graves,
+  personTimothy P. Lillicrap, personTim Harley,
+  personDavid Silver, andpersonKoray Kavukcuoglu.year2016.
+Asynchronous Methods for Deep Reinforcement
+  Learning.
+journal arXiv preprint arXiv:1602.01783
+  (year2016).
+
+
+
+[Mohammadi, Zamani, Kerzel, and
+  WermterMohammadi et al.2019]mohammadi2019mixedauthorpersonHadi Beik Mohammadi,
+  personMohammad Ali Zamani, personMatthias Kerzel,
+  andpersonStefan Wermter.year2019.
+Mixed-Reality Deep Reinforcement Learning for a
+  Reach-to-grasp Task. In booktitle International Conference on
+  Artificial Neural Networks. Springer, pages611--623.
+
+
+
+[Molchanov, Chen, Hönig, Preiss, Ayanian, and
+  SukhatmeMolchanov et al.2019]molchanovSimto2019authorpersonArtem Molchanov, personTao
+  Chen, personWolfgang Hönig, personJames A. Preiss,
+  personNora Ayanian, andpersonGaurav S. Sukhatme.year2019.
+Sim-to-(Multi)-Real: Transfer of
+  Low-LevelRobustControlPolicies to MultipleQuadrotors.
+journal arXiv:1903.04628 [cs]
+  ||SYMBOLTOKEN|| 1903.04628.
+
+
+[Muratore, Treede, Gienger, and
+  PetersMuratore et al.2018]muratore2018domainauthorpersonFabio Muratore, personFelix
+  Treede, personMichael Gienger, andpersonJan
+  Peters.year2018.
+Domain r ndomization for simulation-based policy
+  optimization with transferability assessment. In booktitle
+  Conference on Robot Learning. pages700--713.
+
+
+
+[Nagabandi  Clavera, Liu, Fearing, Abbeel,
+  Levine, and FinnNagabandi et ||SYMBOLTOKEN|| Nagabandi, personIgnasi
+  Clavera, personSimin Liu, personRonald S. Fearing,
+  personPieter Abbeel, personSergey Levine, andpersonChelsea Finn.year2019.
+Learning to Adapt in Dynamic, Real-WorldEnvironmentsThroughMeta-ReinforcementLearning.
+journal arXiv:1803.11347 [cs, stat]
+  ||SYMBOLTOKEN|| 1803.11347.
+
+
+[Pan, You, Wang, and LuPan
+  et al.2017]pan2017virtualauthorpersonXinlei Pan, personYurong You,
+  personZiyan Wang, andpersonCewu Lu.year2017.
+Virtual to real reinforcement learning for
+  autonomous driving.
+journal arXiv preprint arXiv:1704.03952
+  (year2017).
+
+
+
+[Peng, Andrychowicz, Zaremba, and AbbeelPeng
+  et al.2018]peng2018simauthorpersonXue Bin Peng, personMarcin
+  Andrychowicz, personWojciech Zaremba, andpersonPieter Abbeel.year2018.
+Sim-to-real transfer of robotic control with
+  dynamics randomization. In booktitle 2018 IEEE International
+  Conference on Robotics and Automation (ICRA). IEEE, pages1--8.
+
+
+
+[Schulman, Wolski, Dhariwal, Radford, and
+  KlimovSchulman et al.2017]ppoauthorpersonJohn Schulman, personFilip
+  Wolski, personPrafulla Dhariwal, personAlec Radford,
+  andpersonOleg Klimov.year2017.
+Proximal Policy Optimization Algorithms.
+journal arXiv preprint arXiv:1707.06347
+  (year2017).
+
+
+
+[Shah, Dey, Lovett, and KapoorShah
+  et al.2018]shah2018airsimauthorpersonShital Shah, personDebadeepta
+  Dey, personChris Lovett, andpersonAshish Kapoor.year2018.
+Airsim: High-fidelity visual and physical
+  simulation for autonomous vehi les. In booktitle Field and
+  service robotics. Springer, pages621--635.
+
+
+
+[Shalev-Shwartz, Shammah, and
+  ShashuaShalev-Shwartz et al.2016]shalev2016safeauthorpersonShai Shalev-Shwartz,
+  personShaked Shammah, andpersonAmnon Shashua.year2016.
+Safe, multi-agent, reinforcement learning for
+  autonomous driving.
+journal arXiv preprint arXiv:1610.03295
+  (year2016).
+
+
+
+[Stilman, Michel, Chestnutt, Nishiwaki, Kagami,
+  and KuffnerStilman et al.2005]stilman2005augmentedauthorpersonMichael Stilman, personPhilipp
+  Michel, personJoel Chestnutt, personKoichi
+  Nishiwaki, personSatoshi Kagami, andpersonJa es
+  Kuffner.year2005.
+Augmented reality for rob t development and
+  experi entation.
+journal Robotics Institute, Carnegie Mellon
+  University, Pittsburgh, PA, Tech. Rep. CMU-RI-TR-05-55volume2, number3 (year2005).
+
+
+
+[Sutton and BartoSutton and Barto2011]sutton2011authorpersonRichard S SuttonandpersonAndrew G Barto.year2011.
+Reinforcement learning: An introduction.
+  (year2011).
+
+
+
+[Tan, Zhang, Coumans, Iscen, Bai, Hafner,
+  Bohez, and VanhouckeTan et al.2018]tan2018simauthorpersonJie Tan, personTingnan Zhang,
+  personErwin Coumans, personAtil Iscen,
+  personYunfei Bai, personDanijar Hafner,
+  personSteven Bohez, andpersonVincent Vanhoucke.year2018.
+Sim-to-real: Learning agile locomotion for
+  quadruped robots.
+journal arXiv preprint arXiv:1804.10332
+  (year2018).
+
+
+
+[Tobin, Fong, Ray, Schneider, Zaremba, and
+  AbbeelTobin et ||SYMBOLTOKEN|| Tobin, personR. Fong,
+  personA. Ray, personJ. Schneider, personW.
+  Zaremba, andpersonP. Abbeel.year2017.
+Domain randomization for transferring deep neural
+  networks from simulation to the real world. In booktitle 2017
+  IEEE/RSJInternationalConference on IntelligentRobots and
+  Systems (IROS). ||SYMBOLTOKEN|| Hennecke, and HelbingTreiber
+  et al.2000]treiber2000congestedauthorpersonMartin Treiber, personAnsgar
+  Hennecke, andpersonDirk Helbing.year2000.
+Congested traffic states in empirical observations
+  and microscopic simulations.
+journal Phys. Rev. Evolume62
+  (dateAugyear2000), pages1805--1824.
+
+Issue ||SYMBOLTOKEN|| Szafir, Chakraborti, and
+  Ben AmorWilliams et al.2018]williams2018virtualauthorpersonTom Williams, personDaniel
+  Szafir, personTathagata Chakraborti, andpersonHeni
+  Ben Amor.year2018.
+Virtual, augmented, and mixed reality for
+  human-robot interaction. In booktitle Companion of the 2018
+  ACM/IEEE International Conference on Human-Robot Interaction. ACM,
+  pages403--404.
+
+
+
+
+
+

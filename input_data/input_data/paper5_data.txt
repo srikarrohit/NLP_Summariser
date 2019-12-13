@@ -1,0 +1,57 @@
+\label{sec:intro}
+In the wake of the DARTS's open-sourcing {liu2018darts}, a diverse number of its variants emerge in the {neural architecture search} community. Some of them extend its use in higher-level architecture search spaces with performance awareness in mind {cai2018proxylessnas,wu2018fbnet}, some learn a stochastic distribution instead of architectural parameters {wu2018fbnet,xie2018snas,zheng2019multinomial,dong2019one,dong2019searching}, and others offer remedies on discovering its lack of robustness {nayman2019xnas,chen2019progressive,liang2019darts,li2019stacnas,zela2019understanding}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.6]{knight-vs-darts-imagenet-dominant-op.pdf}
+	%\vskip -0.2in
+	\caption{The number of dominant operations (in all 19 layers) of DARTS and Fair DARTS searching on ImageNet (in search space $S_2$). In DARTS, skip connections incrementally suppress others. In Fair DARTS, all operations develop independently.}
+	\label{fig:num-skip-imagenet}
+\end{figure}
+
+In spite of these endeavors, %why is random sampling also competitive {li2019random,sciuto2019evaluating} in the DARTS's search space? 
+Why is there an obvious increase in the number of skip connections {chen2019progressive}? (see Figure \ref{fig:num-skip-imagenet}) What makes a one-hot pruned subnetwork perform poorly while its supernet\footnote{Despite minor ambiguities and for simplicity, we hereby refer to the overall network that encompasses all child models as a `supernet'.} converges quite well {zela2019understanding}?
+
+In this paper, we mainly discuss in-depth about these failure modes of DARTS. In particular, the ResNet {he2016deep}-like nature of skip connections interferes with the training of the supernet, which continues boosting their priors against others. Meanwhile, such dominant skip connections in the continuous supernet can't directly be discretized, otherwise causing a dramatic performance drop. To avoid these two major issues, we propose a novel approach named Fair DARTS, in which we discuss current robustifying methods {chen2019progressive,liang2019darts,zela2019understanding} on DARTS with a unified fairness perspective. To summarize, we have the following contributions.
+
+ \textbf{Firstly},  we discover two major causes that hinder better performance of DARTS. The first is what we later define as an \textbf{unfair advantage} that drives skip connections into a monopoly state in an \textbf{exclusive competition}. These two indispensable factors work together to induce a performance collapse. The second is the inherent inequality lying in discretization that can produce a dramatic discrepancy. 
+ 
+\textbf{Secondly}, we propose the first {collaborative competition} approach to resolve these two issues. By offering each operation an independent architectural weight, the unfair advantage no longer prevails. We again minimize the discretization gap with a novel auxiliary loss, called {zero-one loss}, to steer architectural weights towards their extremities, that is, either completely enabled or disabled. The inequality thus decreases to its minimum.
+
+ 
+\textbf{Thirdly},  we provide a unified perspective to view current DARTS cures for skip connections. The majority of these works either make use of dropout {srivastava2014dropout} on skip connections {chen2019progressive,zela2019understanding}, or play with the later termed {boundary epoch} by different early-stopping strategies {liang2019darts,zela2019understanding}. We instead, fundamentally eliminate unfair competition with no other restrictions at all. Moreover, based on our observations, we derive a hypothesis that adding Gaussian noise can also disrupt the unfairness, which is later proved to be effective. 
+
+%Moreover, as a direct anti-collapse strategy guided by our observations, a simple trick on DARTS can also easily alleviate that collapse.
+
+\textbf{Lastly}, we conduct thorough experiments in two widely used  search spaces in both proxy and proxyless ways. Results show that our method can escape from performance collapse. We also achieve state-of-the-art networks on CIFAR-10 and ImageNet.
+
+@label
+
+Differential Architecture Search (DARTS) is now a widely disseminated weight-sharing neural architecture search method
+@label
+ However, there are two fundamental weaknesses remain untackled
+@label
+ First, we observe that the well-known aggregation of skip connections during optimization is caused by an \textbf{unfair advantage} in an \textbf{exclusive competition}
+@label
+ Second, there is a non-negligible incongruence when discretizing continuous architectural weights to a one-hot representation
+@label
+ Because of these two reasons, DARTS delivers a biased solution that might not even be suboptimal
+@label
+
+In this paper, we present a novel approach to curing both frailties
+@label
+ Specifically, as unfair advantages in a pure exclusive competition easily induce a monopoly, we relax the choice of operations to be collaborative, where we let each operation have an equal opportunity to develop its strength
+@label
+ We thus call our method Fair DARTS
+@label
+ Moreover, we propose a \textbf{zero-one} loss to directly reduce the discretization gap
+@label
+ Experiments are performed on two mainstream search spaces, in which we achieve new state-of-the-art networks on ImageNet
+@label
+ Our code is available here\footnote{
+\url{https://github
+@label
+com/xiaomi-automl/fairdarts}}
+@label
+
+

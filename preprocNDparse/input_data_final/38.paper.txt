@@ -1,0 +1,47 @@
+The use of large pretrained neural networks to create contextualized word
+embeddings has drastically improved performance on several natural language processing
+(NLP) tasks. These computationally expensive models have begun to be applied to domainspecific NLP tasks such as re-hospitalization prediction from clinical notes. This paper
+demonstrates that using large pretrained models produces excellent results on common
+learning analytics tasks. Pre-training deep language models using student forum data from a
+wide array of online courses improves performance beyond the state of the art on three text
+classification tasks. We also show that a smaller  distilled version of our model produces the
+best results on two of the three tasks while limiting computational cost. We make both models
+available to the research community at large
+
+In the past year  the field of Natural Language Processing (NLP) has seen the rise of pretrained
+language models such as as ELMo ULMFiT and BERT. These approaches train a deep-learning language model on large volumes of
+unlabeled text  which is subsequently fine-tuned for particular NLP tasks. Applying these models to
+the General Language Understanding Evaluation (GLUE) benchmark introduced by Wang et al. (2018)
+has achieved the best performance to date on tasks ranging from sentiment classification to question
+answering.
+The benefit of these models has also been demonstrated in specialized NLP domains. BioBERT  a version of BERT trained exclusively on biomedical text  was able to significantly increase
+performance on biomedical named entity recognition. Further refining this model on clinical text
+produced an increase in performance in medical natural language inference.
+While large pretrained models offer significantly increased performance  they come with their own
+constraints  as the number of parameters in the classic BERT-base model exceeds 100 million. As such 
+their computational cost can thus be prohibitively high at both training and prediction time (Devlin et
+al.  2019). More recent work has addressed this challenge by ‘distilling’ the models  training smaller
+versions of BERT which reduce the number of parameters to train by 40% while retaining more than
+95% of the full model performance and even outperforming it on two out of eleven GLUE tasks
+This paper shows that using pretrained models in learning analytics holds great potential for advancing
+the field. We apply the BERT approach to the following three previously explored LAK tasks on MOOC
+forum data.Confusion detection  urgency of teacher intervention and sentimentality
+classification. In all three of these tasks  we are able to improve performance past the state of the art. 
+
+EduBERT and EduDistilBERT are fine-tuned on millions of tokens in
+contrast to the billions of tokens required to make the most of the architecture potential. We are actively seeking more data to train models even more capable of producing
+contextualized word representations in the educational domain. We are making EduBERT and
+EduDistilBERT publicly available in the hope that they will facilitate learning analytics research at large.
+
+@label
+The use of large pretrained neural networks to create contextualized word embeddings has drastically improved performance on several natural language processing(NLP) tasks. 
+@label
+These computationally expensive models have begun to be applied to domainspecific NLP tasks such as re-hospitalization prediction from clinical notes. 
+@label
+This paper demonstrates that using large pretrained models produces excellent results on common learning analytics tasks. 
+@label
+Pre-training deep language models using student forum data from a wide array of online courses improves performance beyond the state of the art on three text classification tasks. 
+@label
+We also show that a smaller  distilled version of our model produces the best results on two of the three tasks while limiting computational cost. 
+@label
+We make both models available to the research community at large.

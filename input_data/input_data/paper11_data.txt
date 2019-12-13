@@ -1,0 +1,39 @@
+
+
+Sensing is not without costs. For any given object there are many things that can be known about it. What constitutes a reasonable amount of information to obtain? For instance, to identify an object in a scene a robot could run a DNN recognizer. But, depending on the resources available, this may take a noticeable amount of time. And, while some recognizers have N-ary outputs, others are designed as one-versus-all. In this case, to classify an object a robot might have to run N separate nets. But classification is not the end of the story, there are also properties like color, shape, and pattern. Does it make sense to run all these potential nets on all objects all the time? 
+
+In biology there seems to be a division between the ``where" system and the ``what" system {dorsal-ventral}. That is, an agent is either trying to find something in particular, or has already focused on an item and is trying to identify it. Generally, animals do not seem to try to create a complete description of a scene by finding and identifying every object present. This is one heuristic to limit the load imposed by perception.
+
+Even when an object has already been picked out from the background, humans use a selective version of the ``what'' system. For instance, to identify a bird it is important to pay attention to field marks, such as the color of its legs and whether it has an eye ring. The bird's overall size and color are often less informative. Similarly, to determine the model year of a car one needs to examine the details of the front grill and the shape of the taillights. The obvious gross features of having four wheels and a number of windows are largely irrelevant.
+Moreover, the same object may be viewed in different ways depending on the task at hand. When apprehending bank robbers, the police might instead focus on the face of the driver and the license plate of the getaway car.
+
+The visual information described so far is largely overtly evident and can often be obtained relatively quickly. However, there are cases where an object needs to be manipulated or a new viewpoint sought in order to discover additional information. For example, when a robot is told ``Hand me that bottle" a simple shape predicate is all that is needed. Yet when asked to ``Hand me the Advil" it might need to see that backside of the bottle in order to read the label. Thus, obtaining this information is even more expensive. There have been a number of strategies in computer vision systems including animate vision {Ballard}, purposive vision {Aloimonos}, and active vision {Bajcsy} that try to handle (and synergistically exploit) this interplay between perception and action.
+
+Assessing other predicates can take even more work, such as deciding whether ``Mary likes cake". The robot might have to gather ingredients, mix the batter and cook it, and finally serve it to Mary to see if she smiles. Of course another option would be to simply ask Mary ``Do you like cake?", although this itself takes some time and Mary's response might not be truthful. Yet, even this might not be appropriate (or feasible) in all cases, such as deciding whether the Queen of England likes cake.
+
+Some properties have more serious problems connected with them. 
+A number of predicates require interaction with an object, such as lifting it to estimate its weight or density. This might be fine for items like books, but a bad idea for items like snakes. Similarly, to see if something is sleeping the robot could poke it. This is (sometimes) okay for people, but ill-advised for bears. Finally, consider ``flammable". This can be tested by attempting to light an item on fire. Yet, while this experiment might provide an answer, it can lead to an irreversible state change in which the robot is holding, say, charred shreds instead of the envelope containing a bill that needs to be paid. 
+
+To gather complete information on any one object can potentially take an unlimited amount of time and is fraught with many perils. Deciding how much effort to invest and when certain exploratory procedures are appropriate depends on numerous criteria, some physical, some time-based, and some social. It is clear that a line has to be drawn somewhere, but how? While there have been attempts {cost-sensitive} to design numeric cost-benefit analysis schemes to cover all these cases, it is relatively simple to explain to another human what to do and when. This is the approach taken with the robot described here. It has a language interpreter and associated reasoning engine that makes it capable of receiving and then acting on advice (perceptual and otherwise) supplied by its user. 
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{ALIA_block2} 
+\caption{The ALIA reasoning system uses a set of rules to interpret situations, and a set of operators to generate behaviors. The output of the controller relies on a set of grounding functions intrinsic to the deployment platform, in this case a small forklift robot.}
+\label{fig:block}
+\end{figure*}
+
+@label
+
+The visual world is very rich and generally too complex to perceive in its entirety
+@label
+ Yet only certain features are typically required to adequately perform some task in a given situation
+@label
+ Rather than hardwire-in decisions about when and what to sense, this paper describes a robotic system whose behavioral policy can be set by verbal instructions it receives
+@label
+ These capabilities are demonstrated in an associated video \cite{video-p} showing the fully implemented system guiding the perception of a physical robot in simple scenario
+@label
+ The structure and functioning of the underlying natural language based symbolic reasoning system is also discussed
+@label
+
+

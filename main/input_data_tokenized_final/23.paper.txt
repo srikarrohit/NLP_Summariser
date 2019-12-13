@@ -1,0 +1,61 @@
+We present a robotic setup for real-world testing and evaluation of human-robot
+and human-human collaborative learning . Leveraging the sample-efficiency of the
+Soft Actor-Critic algorithm we have implemented a robotic platform able to learn
+a non-trivial collaborative task with a human partner without pre-training in simulation and using only 30 minutes of real-world interactions . This enables us
+to study Human-Robot and Human-Human collaborative learning through realworld interactions . We present preliminary results showing that state-of-the-art
+deep learning methods can take human-robot collaborative learning a step closer
+to that of humans interacting with each other .
+Artificially intelligent agents are displaying impressive behaviour in diverse individual tasks such
+as skin cancer classification -LSB- 1 -RSB- and complex board games -LSB- 2 -RSB- . Similarly multi-agent environments
+where a degree of teamwork is required are being explored -LSB- 3 -RSB- . Robots on the other hand have
+yet to achieve human level performance in a wide variety of real-world collaborative tasks . To
+approach this challenge this work has created a robotic setup for controlled studies into humanrobot collaborative learning . This is implemented as a deep reinforcement learning -LRB- DRL -RRB- agent in
+a non-trivial physical human-robot collaboration task . See Fig. 1 for an illustration of the robotic
+setup including a human a robot with a tray and a DRL agent driving the robot . For robots to achieve human level of performance in collaborative tasks we need to include their
+human interaction partner not only at deployment but also during training . This way robots will be
+able to build personalised models of human partners a critical trait given the stochasticity of human
+behaviour . Moreover human operators might have specific weaknesses that a robotic interaction
+partner should learn to compensate for . This sets multiple requirements to the simplicity and sampleefficiency of the training process .
+Until recently applying deep learning techniques with humans partaking in training has been impossible due to the enormous amount of data needed to learn even the simplest task . Additionally
+real-world training has been limited by the wear and tear of mechanical systems . This is why most
+deep learning algorithms are trained and evaluated in simulation . However it is not straightforward
+to simulate the dynamics of a real world scenario involving a human collaborator and to effectively
+perform human-agent co-learning of real-world tasks within simulation . Taking learned behaviour
+from simulation to real-world is already a growing research field .
+Within this paper we present a robotic setup enabling the human-robot team to not only solve a
+collaborative task within 30 minutes of real-world training but to have a performance comparable
+to that of a human-human team for the same task . Ultimately showing that the sample-efficiency of
+state-of-the art DRL-methods now allows for human-in-the-loop training from scratch opening the
+door to further studies on collaborative learning .
+We presented a robotic setup for human-robot collaborative learning implemented with a sampleefficient DRL-agent . The agent is able to solve a non-trivial collaborative task with a human partner
+with just 30 minutes of training and less than 4 000 interaction steps . The results proved that the
+agent was able to perform on a level comparable to humans in a physical task which requires
+involvement from both participants to be solved .
+This work has limitations : The collaboration task is designed in such a way that the agent is not
+required to build personalised models to successfully complete it . Additionally the low number of
+trials of random actions required to reach the target means that the same approach might be less
+successful in more complex tasks . Moreover the quantitative measurement of the learning rate of
+the agent has an inherent limitation in its validity : it is difficult to separate between the improved
+performance of the agent and how the human partner learns to adapt to the system .
+This work uses deep learning for the challenge of micro-data reinforcement learning introduced by
+-LSB- 16 -RSB- . We build human models similar to -LSB- 17 -RSB- but with an aim of personalised models . What sets us
+apart from other work is that the complete training is done with the human in the loop from scratch with only real-world interactions . We do not adapt a pre-trained model as done in -LSB- 18 -RSB- . The results
+show that the traditional sample-inefficency of DRL methods does not necessarily prevent us from
+including humans in the training loop . A natural progression of this work would be to increase the
+complexity of the collaborative task preferably including elements that require the agent to learn
+personalised human models followed by extensive evaluation of these models .
+
+@label
+We present a robotic setup for real-world testing and evaluation of human-robot
+and human-human collaborative learning .
+@label
+Leveraging the sample-efficiency of the
+Soft Actor-Critic algorithm we have implemented a robotic platform able to learn
+a non-trivial collaborative task with a human partner without pre-training in simulation and using only 30 minutes of real-world interactions .
+@label
+This enables us
+to study Human-Robot and Human-Human collaborative learning through realworld interactions .
+@label
+We present preliminary results showing that state-of-the-art
+deep learning methods can take human-robot collaborative learning a step closer
+to that of humans interacting with each other .

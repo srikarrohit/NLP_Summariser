@@ -1,0 +1,44 @@
+The deployment of automated and autonomous vehicles presents us with transformational opportunities for road transport. To date, the number of companies working on this technology is substantive, and growing~{cbsreport}. 
+Opportunities reach beyond single-vehicle automation: by enabling groups of vehicles to jointly agree on maneuvers and navigation strategies, real-time coordination promises to improve overall traffic throughput, road capacity, and passenger safety~{dressler:2014,ferreira2010self}. However, driving in multi-vehicle and multi-lane settings still remains a challenging research problem, due to unpredictable vehicle interactions (e.g., non-cooperative cars, unreliable communication), hard workspace limitations (e.g., lane topographies), and constrained platform dynamics (e.g., steering kinematics, driver comfort).
+
+
+
+Learning-based methods, such as deep reinforcement learning, have proven effective at designing robot control policies for an increasing number of tasks in single-vehicle systems, for applications such as navigation~{khan2019learning}, flight~{molchanovSimto2019}, and locomotion~{tan2018sim}. 
+Leveraging such methods for learning autonomous driving policies is emerging as a particularly promising approach~{pan2017virtual, shalev2016safe, kuderer2015learning}.
+Yet, the process of  autonomous driving involves unique challenges, since the decision models often used in robotics do not lend themselves naturally to the multi-vehicle domain, due to the unpredictable behaviour of other agents. The unapologetic nature of the trial-and-error process in reinforcement learning compounds the difficulty of ensuring functional safety. 
+
+
+These adversities call for learning that first takes place in simulation, before transferring to the real world~{miglino1995evolving, shah2018airsim}. 
+This transfer, often referred to as, is challenging due to discrepancies between conditions in simulation and the real world (such as vehicle dynamics and sensor data)~{peng2018sim, james2019sim, chebotar2019closing}.
+Despite substantial advances in this field, the problem of executing immature policies directly on an autonomous vehicle still raises considerable safety concerns. These concerns are exacerbated when \textit{multiple autonomous vehicles share the same workspace}, risking collisions and un-reparable damage.
+Simultaneously, the act of colliding---or nearly-colliding---is essential to the learning process, enabling future policy roll-outs to incorporate these critical experiences. \textit{How are we to provide safe multi-vehicle learning experiences, without forgoing the realism of high-fidelity training data?}
+There is a dearth of work that addresses this challenge.
+
+Our goal in this paper is to develop a safe and efficient framework that allows us to learn driving policies for autonomous vehicles operating in a shared workspace, where collision-freeness cannot be guaranteed.
+Towards this end, we learn an end-to-end policy for vehicle navigation on a multi-lane track that is shared with other moving vehicles and static obstacles. The learning is based on a model-free method embedded in a distributed training mechanism that we tailor for \textit{mixed-reality} compatibility. Key to our learning procedure is a sim2real approach that uses real-world online policy adaptation in a \textit{mixed-reality setup}, where obstacles (vehicles and objects) exist in the virtual domain. This allows us to perform safe learning by simulating (and learning from) collisions between the learning agent(s) and other objects in virtual reality. 
+We apply our framework to a multi-vehicle setup consisting of one real vehicle, and several simulated vehicles (as shown in Figure~). Experiments show that a significant performance improvement can be obtained after just a few runs in mixed-reality, reducing the number of collisions and increasing reward collection.
+To the best of our knowledge, this is the first demonstration of mixed-reality reinforcement learning for multi-vehicle applications.
+
+
+ 
+@label
+  Autonomous driving promises to transform road transport
+@label
+ Multi-vehicle and multi-lane scenarios, however, present unique challenges due to constrained navigation and unpredictable vehicle interactions
+@label
+ 
+Learning-based methods---such as deep reinforcement learning---are emerging as a promising approach to automatically design intelligent driving policies that can cope with these challenges
+@label
+ Yet, the process of multi-vehicle driving behaviours is hard: while collisions---and their near-avoidance---are essential to the learning process, directly executing immature policies on autonomous vehicles raises considerable safety concerns
+@label
+
+In this article, we present a safe and efficient framework that enables the learning of driving policies for autonomous vehicles operating in a shared workspace, where the absence of collisions cannot be guaranteed
+@label
+ Key to our learning procedure is a sim2real approach that uses real-world online policy adaptation in a \textit{mixed-reality setup}, where other vehicles and static obstacles exist in the virtual domain
+@label
+ This allows us to perform safe learning by simulating (and learning from) collisions between the learning agent(s) and other objects in virtual reality
+@label
+ Our results demonstrate that, after only a few runs in mixed-reality, collisions are significantly reduced
+@label
+
+

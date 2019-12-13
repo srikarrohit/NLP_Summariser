@@ -1,0 +1,105 @@
+Many problems can be viewed as games where one or more
+agents try to ensure that certain objectives hold no matter the behavior
+from the environment and other agents. In recent years a number of logical formalisms have been proposed for specifying games among which
+the Game Description Language (GDL) was established as the official
+language for General Game Playing. Although numbers are recurring in
+games the description of games with numerical features in GDL requires
+the enumeration from all possible numeric values and the relation among
+them. Thereby in this paper we introduce the Game Description Logic
+with Integers (GDLZ) to describe games with numerical variables numerical parameters as well as to perform numerical comparisons. We
+compare our approach with GDL and show that when describing the
+same game GDLZ is more compact.
+
+Many problems as multiagent planning or process synchronization can be
+viewed as games where one or more agents try to ensure that certain objectives hold no matter the behavior from the environment and other agents [4].
+Thereby a number of logical formalisms have been proposed for specifying game
+structures and its properties such as the Game Logic the Dynamic
+Game Logic for sequential and simultaneous games  the GameGolog
+language and so on. Among this formalisms the Game Description Language
+(GDL) has been established as the official language for the General Game
+Playing (GGP) Competition. Due to the GDL limitations such as its restriction
+to deterministic games with complete state information several works investigate
+GDL extensions to improve its expressiveness. Zhang and Thielscher
+provide a GDL extension using a modality for linear time and state transition
+structures. They also propose two dual connectives to express preferences in
+strategies.
+
+Another extension is called GDL with Incomplete Information (GDL-II) and
+it was proposed to describe nondeterministic games with randomness and incomplete state knowledge. A different approach to deal with this problem is
+the Epistemic GDL that allows to represent imperfect information games and
+provides a semantical model that can be used for reasoning about game information and players’s epistemic status [6]. GDL with Imperfect Information and
+Introspection (GDL-III) is an extension of GDL-II to include epistemic games
+which are characterized by rules that depend on the knowledge of players.
+In order to model how agents can cooperate to achieve a desirable goal Jiang
+et al.present a framework to combine GDL with the coalition operators
+from Alternating-time Temporal Logic and prioritized strategy connectives.
+Although numbers are recurring in game descriptions (e.g. Monopoly Nim
+game) neither GDL or its extensions incorporate numerical features. In these
+approaches numbers can be designed as index in propositions or actions but not
+directly used as state variables. Thereby describing games with numerical features can lead to an exhaustive enumeration of all possible numeric values and
+the relation between them. In the context of planning problems numerical features have been introduced in Planning Domain Description Language (PDDL)
+by its first versions and improved by PDDL. In PDDL 2.1 a world
+state contains an assignment of values to a set of numerical variables. These
+variables can be modified by action effects and used in expressions to describe
+actions’ preconditions and planning goals.
+Similarly to the approach of PDDL 2.1 in this paper we introduce the
+GDL extension Game Description Logic with Integers (GDLZ) that incorporates
+numerical variables parameters and comparisons. Regarding that board games
+are mainly described with discrete values our approach only considers the integer
+set. We compare our approach with GDL and show that a game description in
+GDLZ is more compact than the corresponding description in GDL.
+This paper is organized as follows. In Section 2 we introduce the framework
+by means of state transition structures and we present the language syntax
+and semantics. In Section 3 we define the translation between GDLZ and GDL
+and we compare both languages. Section 4 concludes the paper bringing final
+considerations.
+
+In this paper we have introduced a GDL extension to describe games with numerical aspects called GDLZ. In GDLZ states are evaluated with propositions
+and an assignment of integer values to numerical variables. This allows us to
+define the terminal and goal states in terms of the numerical conditions. Furthermore we define actions with numerical parameters such that these parameters
+can influence over the action legality and over the state update. The language
+was extended mainly to include the representation of numerical variables and
+integer values as well as to allow numerical comparison.
+We defined translations between GDLZ and GDL game models and formulas.
+Since GDL models have finite components we can not define a complete model
+translation for any GDLZ model. We first defined a partial translation from
+any GDLZ model restricted to a specified path i.e. only a run in the game
+is represented. Second we defined a complete translation from GDLZ models
+with finite components and bounded formulas. We show that in both cases
+a translated GDLZ model path or formula is a GDL model path or formula
+respectively. Furthermore we prove that if a formula is satisfied at a stage in
+a path under a GDLZ model its translation will also be satisfied at the same
+stage in the translated path under the translated model.
+Finally we show that if we have a GDLZ and a GDL description for the
+same (finite) game the GDLZ description is more succinct or equal in terms
+of the quantity of subformulas in the description. More precisely if the GDL
+game description is based on the partial translation from a GDLZ description
+restricted to one path it is linearly larger then the GDLZ description. When we
+consider the complete model translation the GDL description is exponentially
+larger than the GDLZ description.
+Future work may extend GDLZ to define numerical rewards to players stating their achievement when the game ends. It means that numerical variables
+may not have values assigned in some state of the model. Our aim is to investigate this new kind of numerical models. In our framework it is possible to define
+both concurrent and sequential games. However the legality of an agent’s action
+is independent from the actions of other agents. Thereby it may be inappropriate to describe concurrent games where the actions of two agents change the
+same numerical variable. To overcome this limitation future work may explore
+the definition of the legality function over joint actions.
+
+@label
+Many problems can be viewed as games where one or more
+agents try to ensure that certain objectives hold no matter the behavior
+from the environment and other agents
+@label
+In recent years a number of logical formalisms have been proposed for specifying games among which
+the Game Description Language (GDL) was established as the official
+language for General Game Playing
+@label
+Although numbers are recurring in
+games the description of games with numerical features in GDL requires
+the enumeration from all possible numeric values and the relation among
+them
+@label
+Thereby in this paper we introduce the Game Description Logic
+with Integers (GDLZ) to describe games with numerical variables numerical parameters as well as to perform numerical comparisons.
+@label
+We compare our approach with GDL and show that when describing the
+same game GDLZ is more compact

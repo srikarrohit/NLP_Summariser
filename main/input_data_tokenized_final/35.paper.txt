@@ -1,0 +1,97 @@
+We present SafeLife a publicly available reinforcement learning environment that
+tests the safety of reinforcement learning agents . It contains complex dynamic
+tunable procedurally generated levels with many opportunities for unsafe behavior .
+Agents are graded both on their ability to maximize their explicit reward and on
+their ability to operate safely without unnecessary side effects . We train agents to
+maximize rewards using proximal policy optimization and score them on a suite
+of benchmark levels . The resulting agents are performant but not safe -- they tend
+to cause large side effects in their environments -- but they form a baseline against
+which future safety research can be measured .
+
+Safety problems for reinforcement learning -LRB- RL -RRB- have received growing attention in recent years . It has been recognized that the capabilities of RL methods in many
+respects exceed their ability to be made predictable robust free from unintended side effects and
+fully controllable . Although work is underway on all of these problems there exist few environments
+to organize and benchmark progress on them . In most cases the frontiers of RL capabilities research
+are separated from safety except where safety problems prevent tasks from being accomplished at
+all . We know from other fields of machine learning that well-defined benchmarks can be incredibly
+important both for knowing how much progress has happened and for inspiring it .1 As reinforcement
+learning systems get more advanced and closer to deployment in semi-constrained or open-ended
+settings the requirement for more complex more dynamic and higher-fidelity environments for
+simulation of safety problems grows . However when RL safety problems are measured they are
+often assessed in small hand-crafted environments which are correspondingly
+limited in their richness and may not guarantee generalizable solutions -LRB- `` safety by overfitting '' is not
+the kind of safety we are looking for -RRB- . Safety problems are often precisely those problems which are
+difficult to foresee so it is essential that future safety benchmarks include tests of emergent behavior
+over a variety of non-trivial scenarios .
+
+This paper attempts to address current limitations in safety benchmarks by introducing SafeLife a
+family of environments with simple physics and complex emergent dynamics . The SafeLife rules
+allow for a rich and diverse set of levels that can be used to examine and measure reinforcement
+learning safety . We focus at first on the problem of avoiding negative side effects though we plan to
+extend our study to other safety problems in future SafeLife releases .
+
+SafeLife satisfies a set of desiderata that we believe are important for a safety benchmark and for the
+study of side effects in particular . First and foremost the environment has dynamics that allow for
+large and interesting effects . These effects are not ad hoc but are built into the environment definition
+itself . Second to facilitate easier research agents can be trained with only moderate amounts of
+compute . An agent on a single-core CPU can easily make thousands of steps and observations per
+second and an agent can learn to complete its basic tasks -LRB- unsafely -RRB- within a million time steps .
+Third the environment uses procedurally generated levels with numerous tunable characteristics
+and challenges . This is essential in allowing for a diverse set of training environments that do not
+cause agents to be overfit to a particular level layout or goal structure . Finally we think that SafeLife
+presents a fun and interesting challenge for human players .
+In Section 2 we summarize the rules for the SafeLife environment including the environment 's
+dynamics and the player 's -LRB- or agent 's -RRB- scoring function . We describe how side effects are measured
+in Section 3 . Section 4 details the different types of levels used for benchmarking agents and the
+different aspects of the side effects safety problem that they test . In Section 5 we train and test
+baseline agents using proximal policy optimization . We include a very simple side effect impact
+penalty in the baseline performance however it is only able to produce safe behavior in limited
+scenarios . Our hope is that future safer algorithms will be able to improve upon this baseline . Finally
+we conclude with prospects of future work in Section 6 . Appendices include details of the SafeLife
+procedural level generation code and tables of benchmark results .
+SafeLife is open-sourced and publicly available at
+safelife . Although we try to provide a full accounting of the most important environmental and
+training aspects in this paper the code itself2
+should be viewed as the definitive environmental
+description .
+
+Avoidance of negative side effects is a large and unsolved problem in reinforcement learning and AI
+safety . The environment that we have presented here does not try to specify a direct path to a general
+solution but along with our baseline agents it does function as a yardstick against which one can
+measure progress . There are several promising avenues of research through which this progress can
+be achieved . Relative reachability and augmented utility preservation each present side
+effect impact measures through which an agent may learn to moderate its effects although further
+research is required before they can be applied to environments with large dynamic state spaces .
+Inverse reinforcement learning has the potential to teach agents human values including values of
+conservation and preservation . We believe that the complex dynamics in the SafeLife environment
+will challenge these and other methods highlight their failure modes and ultimately make them
+more safe .
+Several aspects of the environment 's goals remain to be addressed in subsequent versioned releases .
+For instance ensuring that nominal difficulty settings are correctly ordered for agents over a range of
+architectures and separating difficulty settings for performance and for safety constraints will both
+facilitate training and allow more nuanced performance assessments .
+The SafeLife environment need not be limited to only side effects problems ; it can and should be
+used to tackle other safety problems as well . The procedural generation and emergent gameplay
+make it well-suited for studying safe exploration and robustness against distributional shift
+for instance . It could also be used as a testbed for meta-learning : complex patterns are built of
+simpler components and an intelligent agent will need to learn how to quickly fit pieces together
+in novel combinations . We are particularly excited about using SafeLife for multi-agent play and
+anticipate many interesting behaviors in cooperative semi-cooperative and competitive settings .
+
+@label
+We present SafeLife a publicly available reinforcement learning environment that
+tests the safety of reinforcement learning agents
+@label
+It contains complex dynamic
+tunable procedurally generated levels with many opportunities for unsafe behavior
+@label
+Agents are graded both on their ability to maximize their explicit reward and on
+their ability to operate safely without unnecessary side effects
+@label
+We train agents to
+maximize rewards using proximal policy optimization and score them on a suite
+of benchmark levels
+@label
+The resulting agents are performant but not safe -- they tend
+to cause large side effects in their environments -- but they form a baseline against
+which future safety research can be measured .

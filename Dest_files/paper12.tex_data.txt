@@ -1,0 +1,558 @@
+2020rm
+/Title (Towards Universal Languages for Tractable Ontology Mediated Query Answering)
+/Author (Heng Zhang, Yan Zhang, Jia-Huai You, Zhiyong Feng, Guifei Jiang)
+
+
+
+OMLcmmbit
+
+
+
+||#1[[#1]]
+
+
+thmTheoremcor[thm]Corollarylem[thm]Lemmaprop[thm]PropositionfactFactclmClaimdefinitiondefnDefinitionremarkremRemarkdefinitionexmExampleathmTheoremacor[athm]Corollaryalem[athm]Lemmaaprop[athm]Proposition
+
+
+
+@#!T
+Towards Universal Languages for Tractable Ontology Mediated Query Answering
+@#^T
+Heng Zhang, 1 Yan Zhang, 2,3 Jia-Huai You, 4 Zhiyong Feng, 1 Guifei Jiang  5
+
+ 1College of Intelligence and Computing, Tianjin University, Tianjin, China
+ 2School of Computing, Engineering and Mathematics, Western Sydney University, Penrith, Australia
+ 3School of Computer Science and Technology, Huazhong University of Technology and Science, Wuhan, China
+ 4Department of Computing Science, University of Alberta, Edmonton, Canada
+ 5College of Software, Nankai University, Tianjin, China
+
+heng.zhang@tju.edu.cn, yan.zhang@westernsydney.edu.au, jyou@ualberta.ca, zyfeng@tju.edu.cn, g.jiang@nankai.edu.cn
+
+
+
+
+
+@#!A
+
+An ontology language for ontology mediated query answering (OMQA-language) is universal for a family of OMQA-languages if it is the most expressive one among this family. In this paper, we focus on three families of tractable OMQA-languages, including first-order rewritable languages and languages whose data complexity of the query answering is in AC^0 or PTIME. On the negative side, we prove that there is, in general, no universal language for each of these families of languages. On the positive side, we propose a novel property, the locality, to approximate the first-order rewritability, and show that there exists a language of disjunctive embedded dependencies that is universal for the family of OMQA-languages with locality. All of these results apply to OMQA with query languages such as conjunctive queries, unions of conjunctive queries and acyclic conjunctive queries.
+
+@#^A
+
+
+
+@#!S
+Introduction
+@#^S
+
+
+Ontology mediated query answering (OMQA) is a paradigm that generalizes the traditional database querying by enriching the database with a domain ontology PoggiLCGLR08. This paradigm has played an important role in the semantic web calvanese:DL-lite2007,lutz:ijcai05, data modelling BerardiCG05, data exchange FKMP05 and data integration Lenzerini02, and has recently emerged as one of the central issues in knowledge representation as well as in databases.
+
+A long-term major topic for OMQA is to identify proper languages that specify ontologies. There have been a large number of ontology languages proposed for OMQA since the mid 2000s. For instance, in description logics, the DL-Lite family calvanese:DL-lite2007, EL-family lutz:ijcai05 and other variants have been proposed and extensively studied. More recently, the Datalog± family, a.k.a. existential rule languages, or dependencies in databases, have been rediscovered as promising languages for OMQA, see, e.g., BLMS11,CaliGL12,CaliGP12. Most of these languages enjoy good computational properties such as the first-order rewritability or PTIME data complexity.
+
+While all these languages are of their specific features and hence are useful in different applications, it is not realistic to implement OMQA-systems for all of them. So a natural question arises: Can we find the largest one (in the expressiveness) among the family of first-order rewritable (or PTIME-tractable) OMQA-languages? Let us call the largest language in the above sense a  universal language. Clearly, it is of great theoretical and practical importance to identify the existence of universal language w.r.t. some kind of tractability, which is also the main task of this paper.
+
+It is worth noting that the universality is one of the major principles for designing languages in both computer science and logic. For example, almost all the traditional programming languages, including C, Java and Prolog, are known to be universal for the family of Turing complete programming languages; propositional logic can express all boolean functions; and by the well-known Lindström theorem the first-order logic is the largest one among the logics that enjoy both the compactness and the Löwenheim-Skolem property; see, e.g., EbbinghuasFT1994. In databases, first-order language is shown to be universal for the family of query languages with data complexity in AC^0, and Datalog universal for the family of query languages with data complexity in PTIME; see, e.g., Immerman99.
+
+Some recent work in OMQA has been done along the line of identifying universal languages. CalvaneseGLLR13 CalvaneseGLLR13 proved that, under a certain syntactic classification, some languages in the DL-Lite family are the maximal fragments of description logic with the first-order rewritability. By regarding OMQA as traditional database querying, GRS2014 GRS2014 showed that weakly-guarded tuple-generating dependencies (TGDs) capture the class of EXPTIME queries; RudolphT2015 RudolphT2015 proved that general TGDs capture the class of recursively enumerable queries. In the setting of schema mapping, ZhangZY15 ZhangZY15 showed that the language of weakly-acyclic TGDs is universal for languages of TGDs with finite semi-oblivious chase. All of these results shed new insights on understanding the expressiveness of existential rules, but it is worth noting that OMQA is significantly different from both traditional database querying and schema mapping. To understand the expressiveness in the framework of OMQA, ZhangZY16 ZhangZY16 proved that the language of disjunctive embedded dependencies is universal for the family of recursively enumerable OMQA-languages. Along this line, this paper will focus on tractable OMQA.
+
+Aimed at exploiting universal languages for the tractable OMQA, in this paper we focus on three families of OMQA-languages, including first-order rewritable languages and languages whose data complexity is in AC^0 or PTIME. Our contributions are summarized as follows. On one hand, we prove that there is, in general, no universal language for each of the above families of languages. On the other hand, by restricting the number of database constants involved in query answering, we propose a novel property, called the  locality, to approximate the first-order rewritability, and identify the existence of universal language for the family of local OMQA-languages. All of these results hold for OMQA with query languages such as conjunctive queries, unions of conjunctive queries and acyclic conjunctive queries.
+
+
+@#!S
+Preliminaries
+@#^S
+
+
+ Databases and Instances. We use a countably infinite set of  constants and a countably infinite set of  variables, and assume they are disjoint. Every  term is either a constant or a variable. A  relational schema R consists of a set of  relation symbols. Each relation symbol has an  arity which is a natural number. An  atoms over R (or R-atom) is either an equality, or a  relational atom built upon terms and relation symbols in R. A  fact is a variable-free relational atom. Each  instance over R (or  R-instance) consists of a set of facts over R. Instances that are finite are called  databases. Suppose I is an instance. Let adom(I) denote the set of constants that occur in I. Let DB[R] denote the class of all databases over schema R. Given a set A of constants, by I|_A we denote the subset of I in which each fact involves only constants in A.
+
+Let I and J be instances over a relational schema R, and C⊆ adom(I)∩ adom(J). Then every  C-homomorphism from I to J is a function h:adom(I)→ adom(J) such that (i) R(a⃗)∈ I implies R(h(a⃗))∈ J for all relation symbols R∈R and all tuples a⃗ of constants, and (ii) h(c)=c for all c∈ C. If such h exists, we say that I is  C-homomorphic to J, and write I→_C J; in addition, we write I_C J if h is injective. For simplicity, C will be dropped if it is empty.
+
+ Queries. Fix R as a relational schema. By a  query over R (or R-query) we mean a formula built upon atoms over R in some logic. The logic could be first-order logic, second-order logic, or other variants. A query is  boolean if it has no free variables. For convenience, given any query q, let const(q) denote the set of constants that occur in q.
+
+Every first-order formula is called a  first-order query. A  conjunctive query (CQ) is a query of the form ∃y⃗.φ(x⃗,y⃗) where φ is a finite but nonempty conjunction of relational atoms. Let q be a boolean CQ. We use [q] to denote the database that consists of all the atoms that appear in q, where variables in atoms are regarded as special constants. The  Gaifman graph of q is an undirected graph with each term in q as a vertex, and with each pair of distinct terms as an edge if they cooccur in some atom in q. A boolean CQ is called  acyclic if its Gaifman graph is acyclic. A  union of conjunctive query (UCQ) is a first-order formula built upon atoms by connectives ∧,∨ and quantifier ∃. Clearly, every UCQ is equivalent to a disjunction of CQs.
+
+Every  Datalog^ program consists of a finite set of  rules of the form ∀x⃗∀y⃗(φ(x⃗,y⃗)→α(x⃗)), where α is a relational atom and φ is a finite conjunction of atoms or negated atoms; α and φ are called the  head and the  body of the rule, respectively. Each variable in x⃗ should have at least one positive occurrence in φ. A relation symbol is called  intentional if it has at least one occurrence in the head of some rule, and  extensional otherwise. No intensional relation symbol is allowed to appear in a negated atom. A  Datalog^ query is of the form (Π,P)(x⃗) where Π is a Datalog^ program, P an extensional relation symbol, and x⃗ a variable tuple of a proper length. It is well-known that every Datalog^ query can be translated to an equivalent formula in least fixpoint logic, see, e.g., EbbinghuasF95.
+
+Only boolean queries will be used in this work.
+For convenience, we employ CQ, ACQ and UCQ to denote the classes of boolean CQs, boolean acyclic CQs and boolean UCQs, respectively. Let FO denote the class of boolean first-order queries,  FO(+,×) denote the class of boolean first-order queries that involve two built-in arithmetic relations + and ×, and Datalog^(<) denote the class of boolean Datalog^ queries that involve a built-in successor relation Succ, and special constants min and max, denoting the minimum and the maximum elements, respectively, under the underlying order. Given a class C of queries and a relational schema R, let C[R] denote the class of R-queries that belong to C.
+
+In the theory of descriptive complexity Immerman99, it was proved that FO(+,×) and Datalog^(<) exactly capture complexity classes AC^0 and PTIME respectively, where AC^0 denotes the class of languages recognized by a uniform family of circuits with constant depth and polynomial size, and PTIME denotes the class of languages recognized by a deterministic Turing machine in polynomial time.
+
+ Dependencies. A  disjunctive embedded dependency (DED) over a relational schema R is a sentence σ of the form
+
+###FORMULA###
+∀x⃗∀y⃗(ϕ(x⃗,y⃗)→∃z⃗_1.ψ_1(x⃗,z⃗_1)∨...∨∃z⃗_k.ψ_k(x⃗,z⃗_k))
+
+@@@FORMULA@@@
+
+where k> 0, ϕ is a conjunction of relational R-atoms involving terms from x⃗∪y⃗ only, each ψ_i is a conjunction of atoms over R involving terms from x⃗∪z⃗_i only, and each variable in x⃗ has at least one occurrence in ϕ. In particular, σ is called a  tuple-generating dependency (TGD) if it is equality-free and k=1. For simplicity, we omit the universal quantifiers and the brackets appearing outside the atoms.
+
+Let D be a database, Σ a set of (first-order) sentences, and q a boolean query; all of them are over a common relational schema R. We write D∪Σq if, for all R-instances I with D⊆ I, if Iσ for all sentences σ∈Σ then Iq, where the satisfaction relation  is defined in the standard way.
+
+
+@#!S
+Ontologies and Languages in OMQA
+@#^S
+
+
+Before identifying the existence of universal languages for OMQA, we need some notions to clarify what an ontology in OMQA is, and what an ontology language in OMQA is. To make the presented results more applicable, we will define these notions in a language-independent way.
+
+To define ontologies in OMQA, below we generalize the notion introduced in ZhangZY16 from CQs to more general query languages such as UCQs.
+
+Let D and Q be relational schemas, and Q a class of queries. A  quasi-OMQA[Q]-ontology over (D,Q) is a set of ordered pairs (D,q), where D is a D-database and q a boolean Q-query in Q such that const(q)⊆adom(D).
+
+Moreover, a quasi-OMQA[Q]-ontology O over (D,Q) is called an  OMQA[Q]-ontology if all of the following hold: 
+
+  * O is  closed under query conjunctions, i.e.,
+ (D,q)∈ O & (D,p)∈ O & q∧p∈Q(D,q∧p)∈ O.
+
+  * O is  closed under query implications, i.e.,
+ (D,q)∈ O & p∈Q & q p(D,p)∈ O. 
+
+  * O is  closed under injective database homomorphisms, i.e.,
+ (D,q)∈ O & D_const(q) D'(D',q)∈ O. 
+
+
+Given any logical theory Σ, we can interpret it as a quasi-OMQA[Q]-ontology over (D,Q) as follows:
+
+###FORMULA###
+
+[[Σ]]_D,Q^Q={(D,q):D∈DB[D] & q∈Q[Q] & D∪Σq}.
+
+@@@FORMULA@@@
+
+It is easy to see that, for theories Σ in almost all the classical logic, [[Σ]]_D,Q^Q is indeed an OMQA[Q]-ontology.
+
+With the notion of ontology, we are then able to present an abstract definition for ontology languages in OMQA. 
+
+Let V be a finite but nonempty set, D and Q relational schemas, and Q a class of queries. Then every  OMQA[Q]-language L over (D,Q) (with vocabulary V) is defined as an ordered pair (T, M) such that:
+
+  * T consists of a decidable set of  theories, each of which is a finite string over V (i.e., an element of V^∗);
+
+  * M is a  semantic mapping, i.e., a function that maps each theory in T to an OMQA[Q]-ontology over (D,Q).
+
+
+
+Let D and Q be relational schemas, Q a class of queries, and T a decidable class of finite sets of DEDs. Let M be a function that maps each set Σ∈ T to [[Σ]]_D,Q^Q.
+It is easy to see that L=(T,M) is an OMQA[Q]-language.  
+
+
+The language L defined above is called a  DED-language over (D,Q) (induced by T). In particular, if T consists of all finite sets of DEDs, we call it the  full DED-language over (D,Q). Unfortunately, it had been proved in Vardi1982 that query answering with the full DED-language is uncomputable. In this work, we thus focus on tractable OMQA-languages. We will consider two kinds of tractability:
+
+
+Let D and Q be relational schemas, C and Q classes of queries, and K a complexity class. An OMQA[Q]-language L=(T,M) over (D,Q) is 
+
+  * C-rewritable if there is a computable function rew that maps each ordered pair (t,q)∈ T×Q[Q] to a boolean query φ_t,q∈C[D] such that (D,q)∈M(t) iff Dφ_t,q; in this case, rew is called a  C-rewriting function of L.
+
+  * K-compilable if there is a computable function com that maps each ordered pair (t,q)∈ T×Q[Q] to a Turing machine M_t,q, whose running time belongs to the class K, such that (D,q)∈M(t) iff M_t,q accepts on the input D; in this case, com is called a  K-compiler of L.
+
+
+
+According to CaliGL12, the language of linear TGDs is both FO-rewritable and AC^0-compilable, and the language of guarded TGDs is both Datalog^(<)-rewritable and PTIME-compilable.
+
+
+
+Clearly, there is a nonuniform way to redefine notions in Definition <ref> by allowing rewriting functions and compilers to be uncomputable. However, it is worth noting that languages defined in such a way could be intractable. In fact, there is a nonuniform FO-rewritable OMQA-language in which the query answering is highly undecidable.  
+
+
+Next we give the definition of universal OMQA-language.
+
+
+Let Q be a class of queries, D and Q relational schemas, and L=(T,M) and L'=(T',M') OMQA[Q]-languages over (D,Q). Then we say that L' is  at least as expressive as L, written L<L', if for each theory t∈ T there is a theory t'∈ T' such that M(t)=M'(t); and L'  has the same expressiveness as L if both L<L' and L'<L.
+
+An OMQA[Q]-language L is called  universal for a family L of  OMQA[Q]-languages over (D,Q) if (i) L∈L, and (ii) for all languages L'∈L, we have that L'<L. 
+
+
+
+@#!S
+Nonexistence for the General Case
+@#^S
+
+
+One ambitious goal in OMQA is to find some universal language for the tractable OMQA. Unfortunately, the following theorem shows that this goal is in general unachievable.
+
+
+Let D and Q be relational schemas such that Q contains a relation symbol of arity > 2, and suppose C∈{FO,FO (+,×),Datalog^(<)} and ACQ ⊆ Q⊆UCQ. Then there is no universal language for the family of C-rewritable OMQA[Q]-languages over (D,Q).
+
+
+Since AC^0 and PTIME are exactly captured by FO(+,×) and Datalog^(<) respectively, by Theorem <ref> we have
+
+
+Let D and Q be relational schemas such that Q contains at least one relation symbol of arity > 2, and suppose K∈{AC^0, PTIME} and ACQ ⊆ Q⊆UCQ. Then there is no universal language for the family of K-compilable OMQA[Q]-languages over (D,Q).
+
+
+
+
+To prove Theorem <ref>, the general idea is to implement a diagonalization argument as follows. Assume by contradiction that there is a universal language for the desired family. We first give an effective enumeration for all nontrivial ontologies defined in the universal language. With this enumeration, we then construct a new OMQA[Q]-ontology O and a new language L' in which O is definable; Finally we show that L' is still C-rewritable, which leads to a contradiction.
+
+
+Only consider the case where C=FO and Q=UCQ. Assume by contradiction that there is a universal language for FO-rewritable OMQA[UCQ]-languages over (D,Q). Let L=(T,M) be such a language. Our task is to define another FO-rewritable OMQA[UCQ]-language that is strictly more expressive than L. To do this, we first construct an ontology that is not definable in L.
+
+Before we present the construction, some notations are needed. W.l.o.g., we assume that there is a binary relation symbol R in Q. Note that, by a repetition of the parameters, R can be always simulated by another relation symbol of arity >2. For example, one can use S(x,x,y) to simulate R(x,y). With this assumption, we first define a sequence of acyclic CQs. For all integers n> 1, we define
+
+###FORMULA###
+
+q_n= ∃ x_0...∃ x_n(R(x_0,x_1)∧...∧ R(x_n-1,x_n)).
+
+@@@FORMULA@@@
+
+Intuitively, q_n asserts that there is a cycle-free path (via R) of length n+1 in the intended model.
+
+Let s⃗=(s_1,s_2,...) be an effective enumeration[I.e., there is a Turing machine to generate such an enumeration.] of all the theories in T. Such an enumeration clearly exists. Now our task is to construct countably infinite sequences N⃗ and t⃗, where N⃗=(N_1,N_2,...) is a sequence of positive integers, and t⃗=(t_1,t_2,...) is a sequence of theories in T. The sequences are required to have the following properties:
+
+  * N⃗ is monotonic increasing, i.e., N_i< N_j if i<j;
+
+  * For all k> 1 there exists a database D with (D,q_k)∈ M(t_k) and |adom(D)|< N_k;
+
+  * For all t∈ T∖t⃗ there exists i>0 such that |adom(D)|>N_i+1 for all databases D with (D,q_i)∈ M(t). 
+
+
+Procedure <ref> is devoted to generate the desired sequences. 
+
+	n← 1  i← 1  ∞n← n  ∞j← 1  n∃ D s.t. (D,q_i)∈ M(s_j)   &  |adom(D)|< n goto line 9
+	        			∃ D s.t. (D,q_i)∈ M(s_j)   &  |adom(D)|< n+1
+	        				n← n+1   goto line 9  
+		N_i⟵ n   
+		t_i⟵ s_j  
+		delete s_j from s⃗  Generating Sequences t⃗ and N⃗
+
+Now we have the following property:
+
+ Claim 1. The sequences N⃗ and t⃗ generated by Procedure <ref> satisfy Properties (1-3).
+
+
+Properties 1 and 2 are clear from Procedure 1. So it remains to show Property 3.
+Suppose t=s_k for some k> 1. Since t has no occurrence in t⃗, according to Procedure 1, we know that, whenever lines 5 and 6 are executed  for j=k, conditions in both "if" statements must be false. (Otherwise we will have t∈t⃗.) In addition, as n increases arbitrarily, we know that line 6 must be executed. This means that there is some  i> 1 such that |adom(D)|>N_i+1 for all databases D with (D,q_i)∈ M(t), which then yields the claim.  
+
+
+
+Now we are able to construct the desired ontology. To do this, we first define some notations. For n> 1, let λ_n denote the sentence ∃ x_1... x_n_1< i<j< n(x_i=x_j), which asserts that the intended domain contains at least n elements. Given a boolean UCQ q, if there exists an integer k> 1 such that q_k q, let φ_q denote λ_N_m+1 where m is the least integer among such ks, and let φ_q denote the sentence ∃ x(x=x) (always false) if no such ks exist. Furthermore, we define
+
+###FORMULA###
+
+O={(D,q):D∈DB[D] & q∈UCQ[Q] & Dφ_q}.
+
+@@@FORMULA@@@
+
+
+It is not difficult to prove the following properties:
+
+ Claim 2. Let p and p' be boolean UCQs. Then we have:
+
+  * If p p' then φ_pφ_p';
+
+  * φ_p∧ p'≡φ_p∧φ_p'
+
+
+
+
+1. For the case where there exists no integer i> 1 such that q_i p, we have that φ_p=∃ x (x=x), which is always unsatisfiable. This implies that φ_pφ_p' trivially.
+
+Now it remains to show the case where there exists i> 1 such that q_i p. Let m be the least integer such that q_m p. Then we have φ_p=λ_N_m+1. From p p', we then have q_m p'. Let n be the least integer such that q_n p'. Then it is clear that n< m. According to Property 1, we also know that N_n< N_m, which implies that λ_N_m+1λ_N_n+1, or equivalently, φ_pφ_p'. This proves Statement 1.
+
+2. For the case where there is no integer i> 1 such that q_i p, we have that
+φ_p=∃ x(x=x)=φ_p∧ p', 
+which implies the desired equivalence. The same argument applies to the case where there is no integer i> 1 such that q_i p'.
+
+Now, it remains to consider the case where there are integers i and j such that q_i p and q_j p'. Let m and n denote the least integers among such is and js, respectively. W.l.o.g., suppose m> n. Then we have both q_m q_n p' and q_m p. Combining both of them, we know that m is the least integer such that q_m p∧ p'. Thus, we have that φ_p=λ_N_m+1=φ_p∧ p'. On the other hand, it is also clear that λ_N_m+1λ_N_n+1, or equivalently φ_pφ_p', which implies that φ_p∧φ_p'≡φ_p. Consequently, we obtain that φ_p∧ p'≡φ_p∧φ_p', which completes the proof.
+
+
+
+ Claim 3. O is an OMQA[UCQ]-ontology.
+
+
+The closure property of O under injective database homomorphisms is clear since, for any boolean UCQ q, φ_q is preserved under injective homomorphisms.
+
+Next we show that O is closed under query conjunctions. Suppose (D,p)∈ O and (D,p')∈ O. By definition, we have both Dφ_p and Dφ_p', which means that Dφ_p∧φ_p'. By Statement 2 of Claim 2, we then have that Dφ_p∧ p', which implies that (D,p∧ p')∈ O as desired.
+
+Now it remains to show the closure of O under query implications. Suppose (D,p)∈ O and p p'. We need to prove (D,p')∈ O. From (D,p)∈ O we have Dφ_p, and from p p', we have φ_pφ_p' by Statement 1 of Claim 2. Combining both of these, we obtain Dφ_p'. By definition, it follows that (D,p')∈ O, which completes the proof. 
+
+
+
+ Claim 4. O M(t) for any theory t∈ T.
+
+
+First consider the case where t occurs in t⃗, and suppose t=t_k for some k> 1. 
+According to the definition of t⃗, we know that there is a database D with (D,q_k)∈ M(t_k) and |adom(D)|< N_k. On the other hand, by the definition of φ_q_k has no model D with |adom(D)|< N_k, which means that there is no database D with (D,q_k)∈ O and |adom(D)|< N_k. Consequently, we have O M(t).
+
+Now it remains to consider the case where t does not occur in t⃗. By Claim 1, it suffices to show that for every integer k> 1 there exists a database D with (D,q_k)∈ O and |adom(D)|< N_k+1, or equivalently, φ_q_k has a model that contains at most N_k+1 elements. According to the definition of φ_q_k, the latter is indeed true. This also implies that O M(t), and completes the proof immediately.
+
+
+
+With Claims 3 and 4, we are now in the position to prove the desired theorem. Let t' be a binary string such that t'∈ T, and let T'=T∪{t'}. Following the decidability of T, we have the decidability of T'. Let M' be a function that extends M by mapping t' to O, and let L'=(T',M'). By Claim 3, we know that L' is an OMQA[UCQ]-language. Suppose rew is an FO-rewriting function. Let rew' be a function that extends rew by mapping (t',q) to φ_q for all boolean UCQs q. By a slight modification to Procedure <ref>, one can easily devise an algorithm to compute N_i (and s_i) on given integer i> 1. This implies that rew' is computable. By definition, we know that rew is an FO-rewriting function, which implies that L' is FO-rewritable. By Claim 4, we also know that L' is strictly more expressive than L, a contradiction as desired. And this completes the proof. 
+
+
+
+Since the sentence φ_q defined in the above proof is also an FO(+,×)-sentence, so the proof directly applies to the case of FO(+,×). For a proof of the remaining case, one can convert φ_q to a Datalog^(<)-program.
+
+
+
+@#!S
+Locality to the Rescue
+@#^S
+
+
+In the last section, we proved that there is no universal language for tractable OMQA in general. Then, a natural question arises as to whether one can find a natural property that approximates the tractability but still allows the existence of a universal language. The challenge here is that the property should be manageable enough to avoid a diagonalization argument (see the proof of Theorem <ref>). Below we propose a property as an approximation of the FO-rewritability.
+
+
+@#S!S
+Locality as Approximation of FO-rewritability
+@#S^S
+
+
+A  bound function is a computable function ℓ:N→N such that ℓ(n)> n for n∈N. To simplify the presentation, we fix a way to represent bound functions, e.g., one can represent each bound function by a Turing machine that computes it. A class of bound functions is called  decidable if the class of representations of those bound functions is decidable.
+
+To measure the size of a query, we fix a computable function · that maps each UCQ to a positive integer. Clearly, there are many methods to define ·. The only restriction is that we require  p∧ q> p+ q for all UCQs p and q.
+
+
+Let D and Q be relational schemas, and Q a class of queries, O an OMQA[Q]-ontology over (D,Q), and ℓ a bound function. Then O is called ℓ-local if for all boolean Q-queries q∈Q and all D-databases D there is a set A, which consists of at most ℓ(q ) constants, such that 
+
+###FORMULA###
+
+(D,q)∈ O   iff   (D|_A,q)∈ O.
+
+@@@FORMULA@@@
+
+
+Furthermore, given an OMQA[Q]-language L, a bound function ℓ and a class F of bound functions, L is called  ℓ-local if all-OMQA[Q] ontologies defined in L is ℓ-local, and L is F-local if it is ℓ'-local for some bound function ℓ'∈F. 
+
+
+One might question why the bounded locality is a good approximation to the first-order rewritability. Let ∃^+FO() denote the class of first-order sentences built on atoms and inequalities by using connectives ∧,∨ and the quantifier ∃. Obviously, this class is exactly the class of UCQs with inequalities. It had been observed by Benedikt16 that ∃^+FO() captures the class of first-order sentences that preserved under injective homomorphisms Benedikt16. It remains open whether such a preservation theorem holds on finite structures (or databases). If this is indeed true, by the following proposition we then have that an OMQA-language is FO-rewritable iff it is ℓ-local for some bound function ℓ.
+
+
+Let D and Q be relational schemas, O an OMQA[UCQ]-ontology over (D,Q), and ℓ a bound function. Then O is ℓ-local iff for each boolean Q-UCQ q there is a ∃^+FO()-sentence φ involving at most ℓ(q ) terms such that (D,q)∈ O iff Dφ for all D-databases D.
+
+
+ 
+For the direction of "if", let us assume that for each boolean Q-UCQ q there is a ∃^+FO()-sentence φ involving at most ℓ(q ) terms such that (D,q)∈ O iff Dφ for all D-databases D. We need to show that O is ℓ-local. Let q be a boolean Q-UCQ, and φ a ∃^+FO()-sentence involving at most ℓ(q ) terms such that (D,q)∈ O iff Dφ for all D-databases D. By the assumption, such a sentence does exist. Suppose φ=∃x⃗ψ where ψ is a quantifier-free existential positive first-order formula with inequalities and involving at most ℓ( q) terms. Let D be a D-database. If Dφ, then let A={s(x):x∈x⃗}∪ const(φ), where s is an assignment such that Dψ[s]. Otherwise, let A be any subset of adom(D) such that |A|< k. In both cases we have the following: (i) |A|< k, and (ii) Dφ iff D|_Aφ. From the latter, we know that (D,q)∈ O iff (D|_A,q)∈ O. We thus yields that O is ℓ-local as desired.
+
+Conversely, suppose O is ℓ-local. Let q be a boolean Q-UCQ. Given a D-database D, let A⊆ adom(D) be a witness of the locality of O w.r.t. q, let φ_D denote the conjunction of all facts in D; let φ̂_D be the formula obtained from φ_D by replacing each constant that does not occur in q by a fresh variable; and let ψ_D denote the sentence ∃x⃗(φ̂_D∧λ_x⃗), where x⃗ is the tuple of all variables occurring in φ̂_D, and λ_x⃗ denotes the conjunction of x_i x_j for each pair of distinct variables x_i,x_j∈x⃗. It is easy to see that, up to logical equivalence, there is only a finite number of ψ_D for all D-databases D such that (D,q)∈ O. Let ψ_q be a disjunction of ψ_D for all D-databases D with |adom(D)|<ℓ(q ) and (D,q)∈ O. Clearly, ψ_q is equivalent to a ∃^+FO()-sentence that involves at most ℓ(q ) terms. To complete the proof, it suffices to show the following property:
+
+ Claim. (D,q)∈ O iff Dψ_q for all databases D over D.
+
+
+Now it remains to prove the claim. Let D be a database over D. We first prove the direction of "only if". Suppose (D,q)∈ O. Since O is ℓ-local, there should be a D-database D'⊆ D such that (D',q)∈ O and |adom(D')|<ℓ(q ). By the definition of ψ_q, we know that ψ_D' is equivalent to a disjunct of ψ_q. It is clear that D'ψ_D'. From D'⊆ D we the have Dψ_D', which implies Dψ_q as desired.
+
+For the converse, we assume that Dψ_q. Then there is a database D' over D with |adom(D')|<ℓ(q ) such that (i) (D',q)∈ O and (ii) ψ_D' is a disjunct of ψ_q. From (ii) we have Dψ_D', which means that there is an injective C-homomorphism from D' to D, where C=const(q).  As O is closed under injective database homomorphisms, we have (D,q)∈ O as desired, which completes the proof.
+
+
+
+
+Proposition <ref> reveals an intrinsic connection between the bounded locality and the complexity of rewritings. We will elaborate this in an extended version of this paper.
+
+
+
+@#S!S
+Universal Language for Local OMQA
+@#S^S
+
+
+Now it remains to know whether the bounded locality allows the existence of universal languages. For convenience, in the rest of this section, we  fix F as a decidable class of bound functions; fix D and Q as a pair of disjoint relational schemas. The disjointness will not introduce any real limitation. For instance, in a DED-language, given any set Σ of DEDs, one can construct another set Σ' of DEDs by introducing a fresh relation symbol R' for each R∈D, and adding copy rules of the form R'(x⃗)→R(x⃗). Clearly, Σ' has the same behaviour over (D',Q) as Σ over (D,Q), where D' denotes the schema consisting of all the fresh symbols.
+
+Surprisingly, we have the following result.
+
+
+Let Q be a decidable class of UCQs. Then there exists a DED-language that is universal for the family of F-local OMQA[Q]-languages over (D,Q).
+
+
+Let ℓ be any bound function in F. To prove Theorem <ref>, the general idea is to develop a transformation that converts every DED set to an ℓ-local DED set. In addition, for each DED set that is already ℓ-local, the transformation is required to preserve the semantics of query answering. If such a transformation exists, since DED is universal for the family of OMQA-languages in which query answering is recursively enumerable, we then obtain a universal language for the family of F-local OMQA-languages.
+
+Let us begin with a finite set Σ of DEDs over a relational schema R⊇D∪Q. To implement the desired transformation, we first show how to construct an ℓ-local OMQA[Q]-ontology from Σ. As a natural idea, one may expect to define the desired ontology by removing all the pairs (D,q) from the original ontology (defined by Σ) where q is not ℓ-local on D. Unfortunately, the ontology defined above is in general not well-defined. To construct the desired ontology, the ℓ-locality and the closure under both query conjunctions and query implications should be maintained simultaneously.
+
+Below we explain how to construct the ontology. We need to fix a strict linear order ≺ over Q-UCQs firstly. The strict linear order is required to satisfy p≺ q for all Q-UCQs p and q such that  p< q. Clearly, such an order always exists. For the given set Σ of DEDs, let S_Σ be the set that consists of the ordered pair (D,q) if D is a D-database, q is a Q-UCQ in Q, and the following condition holds:
+
+###FORMULA###
+∀ p&∈Q[Q]: p<pr(q) & pr(q) p
+
+&∃ A⊆adom(D) s.t. |A|<ℓ( p) & D|_A∪Σ p
+
+@@@FORMULA@@@
+
+where pr(q) is the set of boolean UCQs p such that p≺ q and (D,p)∈ S_Σ, and pr(q) denotes the conjunction of q and all UCQs in pr(q). Moreover, we define O_Σ as the minimum superset of S_Σ that is closed under query conjunctions, query implications and injective database homomorphisms.
+
+The constructed ontology enjoys several properties which will play important roles in our proof for Theorem <ref>.
+
+
+If Σ^Q_D,Q is ℓ-local, then O_Σ=Σ^Q_D,Q.
+
+
+
+Follows from the definition of O_Σ.
+
+
+
+O_Σ is an ℓ-local OMQA[Q]-ontology.
+
+
+
+We first claim that, for all UCQs q with (D,q)∈ O_Σ, there exists an integer k> 1 and UCQs p_1,...,p_k such that (D,p_i)∈ S_Σ for each p_i and p_1∧...∧ p_k q. This can be proved by a routine induction of the construction of O_Σ.
+
+With the claim, w.l.o.g., we assume p_1≺ p_2≺...≺ p_k. Let p denote the query p_1∧...∧ p_k. Obviously, it holds that pr(p_k) p, which implies that pr(p_k) q immediately. On the other hand, by definition we know that p_i is ℓ-local on D, i.e., there is a set A_i⊆ adom(D) such that D|_A_i∪Σ p_i. Let A=A_1∪...∪ A_k. We then have D|_A∪Σ p and 
+|A|<ℓ( p_1)+...+ℓ( p_k)<ℓ( p_1+...+ p_k)<ℓ( p).
+Consequently, we obtain that p is ℓ-local on D.
+
+Now, it remains to show that q is ℓ-local on D. For the case where  p< q, from p q and D|_A∪Σ p, we obtain that D|_A∪Σ q, which implies that q is ℓ-local on D. For the other case, it must be true that  p> q. From the fact that pr(p_k)> p, we know that pr(p_k)> q. Since (D,p_k)∈ S_k is true, by Condition (<ref>) we know that there is a set B⊆ adom(D) such that D|_B∪Σ q, which means that q is ℓ-local on D. This then completes the proof.
+
+
+
+O_Σ is recursively enumerable. 
+
+
+
+The lemma is a corollary of the following facts:
+(1) The validity problem for inference in first-order logic is recursively enumerable;
+(2) The query containment problem for UCQs is decidable;
+(3) There are only a finite number of boolean Q-UCQs p with  p<pr(q); 
+(4) There are only a finite number of subsets of adom(D).
+(5) Both ℓ and · are computable.
+(6) Q is decidable.
+
+
+Now, to define the transformation, it remains to show how to encode the ontology O_Σ by another set of DEDs. Suppose D is the underlying database, and q the underlying query. The encoding will be implemented in the following way: 
+
+  * Simulate the query answering of q under O_Σ and D.
+
+  * If the answer of Stage 1 is positive, then nondeterministically copy disjuncts of q to generate the universal models. 
+
+
+The main challenges of implementing the above encoding are as follows. Firstly, instead of a single universal model, we need to generate a set of universal models in Stage 2. It is not clear whether the technique of generating universal model in ZhangZY16 can be applied to this situation. Secondly, to encode the computation in Stage 1, a successor relation is needed. But it seems  impossible to define such a relation in the language of DEDs explicitly.
+
+Below we explain how to implement the encoding.
+
+ Defining Successor and Arithmetic Relations.   
+To implement the desired encoding, a successor relation needs to be defined so that the constants in the underlying database D can be ranged over. 
+As there is no negation in the body of DEDs, it seems impossible to construct DEDs to traverse ALL constants in adom(D). Fortunately, thanks to the closure of OMQA-ontologies under injective database homomorphisms, we do not need a successor relation on the full domain. The reason is as follows. Suppose we want to show that a query q is derivable from the database D under some ontology O. As O is closed under injective database homomorphisms,  it is equivalent to show  whether there is a subset A of adom(D) such that q is derivable from D|_A under O.
+
+To range over subsets of adom(D), we employ the  partial successor relations on adom(D), each of which is a successor relation on some subset of adom(D). Clearly, there is a partial successor relation for each subset A of adom(D). With the mentioned property, we will define some DEDs to generate partial successor relations on adom(D). To check whether q is derivable from D under O, it would be sufficient to test whether the computation of Stage 1 halts with "accept" under a certain partial successor relation.
+
+Our method to generate partial successor relations was inspired by RudolphT2015's technique to define successor relations in the language of TGDs RudolphT2015. In that paper they showed that every homomorphism-closed database query can be defined by a set of TGDs. It is worth noting that the ontology mediated queries focused on this paper are not necessary to be closed under homomorphisms. So their technique cannot be applied directly. 
+Fortunately, a linear order on adom(D) can be easily defined by a set of DEDs, and with this order, we are able to use their idea to generate all partial successor relations that are compatible with the defined order. Now we show how to implement this idea.
+
+Let AD be a unary relation symbol that will be interpreted as adom(D). Clearly, such a relation can be easily defined by some DEDs.
+With the relation AD, a linear order relation Less over AD can then be defined in a routine way: 
+AD(x)∧AD(y)→Less(x,y)∨ x=y∨Less(y,x)
+Less(x,y)∧Less(y,z)→Less(x,z)
+Less(x,x)→
+
+To generate all partial successor relations compatible with Less, we link each constant c in adom(D) with a  alias a by the relation Link(c,a). Suppose a_1 and a_2 are aliases of constants c_1 and c_2 respectively, by Next(a_1,a_2) we mean that c_2 is the immediate successor of c_1 in the underlying successor relation. The head (resp., the tail) of a partial successor relation is denoted by First(a) (resp., Last(b)). In particular, we use a as the  name of the underlying relation. Every partial successor relation is required to have a head and a tail. To generate these relations, we use the following DEDs:
+AD(x)→∃ v Link(x,v)∧Last(v)∧First(v)
+AD(x)→∃ v Link(x,v)∧Last(v)∧Partial(v)
+Less(x,y&)∧Link(y,v)∧Partial(v)
+
+&→ ∃ u Link(x,u)∧Next(u,v)∧First(u)
+
+Less(x,y&)∧Link(y,v)∧Partial(v)
+
+&→ ∃ u Link(x,u)∧Next(u,v)∧Partial(u)
+
+To understand how these DEDs work in more detail, please refer to the following example.
+
+###FIGURE###
+< g r a p h i c s >The Instance Generated in Example <ref>.
+@@@FIGURE@@@
+
+
+
+Let D be a database which involves only constants c_1,c_2 and c_3, and suppose the linear order defined by Less is c_1>c_2>c_3. By an exhaustive application of DEDs (<ref>-<ref>),[To make the figure simple, we use the semi-oblivious chase.] we obtain an instance as illustrated by Figure <ref>.
+
+As seen in Figure <ref>, there are 7 partial successor relations s_1,...,s_7 generated in the instance. For instance, s_1 defines the partial successor relation involving only c_1; s_5 defines the relation c_2>c_3; s_7 defines the relation c_1>c_2>c_3.
+
+
+To encode Stage 1 mentioned before, we need to generate a linear order and the corresponding successor relation on a countably infinite domain, making sure they are compatible with the underlying partial successor relation on adom(D).
+More relations are needed to do this. Zero(o,a) means that a is the least element under the order o; DMax(o,a) states that a is the largest element in adom(D) under the order o; Succ(o,a,b) denotes that b is the immediate successor of a under the order o; and LT(o,a,b) asserts that a is less than b under the order o. For a technical reason, we also need some auxiliary relations. TC(o,a) denotes that a is not less than the largest element in adom(D) under the order o, and RT(o,a,c) means that a is an alias of c and it is used to build the order o.
+All of these are defined by the following DEDs:
+First(w)∧Link(x,w)→Zero(w,x)∧RT(w,w,x)
+Next(u,v)∧RT(w,u,&x)∧Link(y,v)
+
+&→Succ(w,x,y)∧RT(w,v,y)
+
+Last(v)∧RT(w,v,x))→DMax(w,x)∧TC(w,x)
+TC(v,x)→∃ z.Succ(v,x,y)∧TC(v,y)
+Succ(v,x,y)→LT(v,x,y)
+LT(v,x,y)∧LT(v,y,z)→LT(v,x,z)
+
+
+With these relations, it is routine to define arithmetic relations such as Add(o,a,b,c) (asserting that c=a+b under the order o) and Bit_i(o,a,b) (asserting that the b-th bit of the binary representation of a is i). We omit the details here.
+
+ Simulating Query Answering under O_Σ.   With a partial successor relation and the related arithmetic relations, we are now in the position to define some DEDs to simulate the query answering of q under O_Σ and D.
+
+Our encoding that implements the simulation of query answering is almost the same as that in Section 5.3 of ZhangZY16. 
+As proved by ZhangZY16 (see Proposition 6 of ZhangZY16), all recursively enumerable OMQA-ontologies can be recognized by a certain class of Turing machines, called convergent 2-bounded nondeterministic Turing machines. Although the queries involved in that work are only boolean CQs, by a similar argument one can show that the result can be generalized to the case where boolean UCQs are involved. The only difference is that, to deal with UCQs, we have to change the format of input slightly. Due to the space limit, we omit the details here.
+
+With the result mentioned above, we can then find a convergent 2-bounded nondeterministic Turing machine M_Σ to recognize O_Σ. By employing the DEDs defined in Section 5.3 of ZhangZY16 (with a slight modification to specify the partial successor relation), we are then able to simulate the computation of M_Σ on the input (D,q).
+
+To restore the result of the query answering, we use a binary relation symbol Accept. By Accept(o,a) we mean that the machine M_Σ halts on input (D,q) with "accept", and o is the partial successor relation to implement the computation.
+
+ Generating Universal Models.   By applying all the DEDs that we have constructed, we will obtain the class of boolean UCQs that are derivable from D under O_Σ. With such a class of UCQs, now our task is to construct a universal model set.
+
+Given a class D of databases and a set C of constants, let 
+
+###FORMULA###
+⊕_CD={D^∗:D∈D}
+@@@FORMULA@@@
+ where, for each database D∈D, D^∗ is an isomorphic copy of D such that, for any pair of distinct databases D_1,D_2∈D, only constants from C will be shared by D^∗_1 and D^∗_2.
+
+Let D be a D-database, and O an OMQA[UCQ]-ontology over (D,Q). Given a boolean UCQ q, let D_q denote the set consisting of [p] for each disjunct (a boolean CQ) of q. Let 
+
+###FORMULA###
+Γ(O,D)={D_q: (D,q)∈ O}.
+
+@@@FORMULA@@@
+ 
+Let U(O,D) denote the set that consists of 
+
+⊕_CH
+
+for each minimum hitting set H of Γ(O,D), where C=adom(D).
+
+
+
+Let O be an OMQA[UCQ]-ontology over (D,Q), let D be a D-database, and let q be a boolean Q-UCQ such that const(q)⊆adom(D). Then (D,q)∈ O iff I q for all instances I∈U(O,D).
+
+
+
+Let Λ denote the set of all boolean UCQs p such that (D,p)∈ O. We first show a property as follows.
+
+ Claim. Λ q iff I q for all instances I∈U(O,D).
+First consider the direction of "only if". Suppose we have Λ q, and let I be any instance in U(O,D). We need to prove that I q. According to the definition of U(O,D), we know that there is a minimum hitting set H of Γ(O,D) such that I=⊕_adom(D)H. This implies that for each UCQ q_0∈Λ there is a disjunct p (which is a boolean CQ) of q_0 such that [p] has an isomorphic copy in I. Consequently, we have that I q_0 for all boolean UCQs q_0∈Λ. From the assumption that Λ q, we conclude I q as desired.
+
+Next let us turn to the direction of "if". Suppose I q for all instances I∈U(O,D). Now our task is to prove that Λ q. Let J be an arbitrary instance such that J p for all boolean UCQs p∈Λ. Take p as any boolean UCQ in Λ. W.l.o.g., we write p as the form p_1∨...∨ p_n where each p_i is a boolean CQ. Let φ_p∈{p_1,...,p_n} be any disjunct of p such that Jφ_p. Such a disjunct always exists because J p. Suppose φ_p is of the form ∃x⃗_pψ_p, where ψ_p is a conjunction of atoms and x⃗_p a tuple of variables. Let s_p be an assignment such that Jψ_p[s_p]. Let H denote the set that consists of [φ_p] for each UCQ p∈Λ, and let I denote the instance ⊕_adom(D)H. Let h be a mapping that maps the isomorphic copy of x in I to s_p(x) if p∈Λ and x∈x⃗_p, and maps each constant in adom(D) to itself. Clearly, h is an adom(D)-homomorphism from I to J. By the assumption made in the begin of this paragraph, we know I q. As q is preserved under adom(D)-homomorphisms, we conclude J q, which completes the proof of the claim.
+
+
+According to the above claim, to prove the desired proposition, it suffices to show that (D,q)∈ O iff Λ q. The direction of "only if" is trivial since from (D,q)∈ O we already have q∈Λ. It thus remains to show the converse. Suppose Λ q. According to the compactness, there is a finite subset Λ_0 of Λ such that Λ_0 q. Let q_0 denote the conjunction of all UCQs in Λ_0. Obviously, q_0 is also a boolean UCQ. By the definition of Λ, we know that for each UCQ q∈Λ_0 we have (D,q)∈ O. Since O is closed under query conjunctions, we obtain (D,q_0)∈ O. By Λ_0 q, it also holds that q_0 q. Furthermore, by applying the closure property of O under query implications, we conclude (D,q)∈ O, which completes the proof of the proposition immediately. 
+
+
+With Proposition <ref>, we are now able to construct a set of DEDs to generate U(O,D). Several relations are needed to access the encoding of a query. We use UCQ(o,a) to denote that, under the order o, a is the representation (e.g., the Gödel number) of a boolean UCQ, and use Union(o,a,b,c) to assert that, under the order o, the boolean UCQ a is the disjunction of a boolean CQ b and a boolean UCQ c. By CQ(o,a) we mean that a is the encoding of some boolean CQ under the order o, and by QVar(o,a,b) we means that b is a variable that occurs in the boolean CQ encoded by a under the order o. Moreover, we assume that Q_1,...,Q_n enumerates all the relation symbols in Q. For i=1,...,k, let HasQ_i(o,a,t⃗) denote that Q_i(t⃗) is an atom in the CQ encoded by a. It is easy to see that all these relations can be defined by standard arithmetic relations.
+
+Now, we use the following DEDs to nondeterministically choose which disjunct of a boolean UCQ to be true:
+Accept(v,x)→True(v,x)
+True(v,x)∧Union(v,x,y,z)→True(v,y)∨True(v,z)
+where True(o,a) states that the boolean CQ encoded by a under the order o is chosen to be true in the intended model.
+
+
+To generate a copy of a boolean CQ in the intended universal model, we employ the following DEDs:
+CQ(v,x)∧QVar(v,x,y)→∃ z Copy(v,x,y,z)
+CQ(v,x)∧AD(y)→Copy(v,x,y,y)
+True(v,x)∧CQ(v,x&)∧HasQ_i(v,x,y⃗)
+
+&∧Copy(v,x,y⃗,z⃗)→Q_i(z⃗)
+
+where Copy(v,x,y⃗,z⃗) denotes _1< j< kCopy(v,x,y_j,z_j) if y⃗=y_1... y_k, z⃗=z_1... z_k, and k is the arity of Q_i. Intuitively, the first rule generates a copy for each variable in the CQ q, the second one asserts that the constant in q will not change, and the third one then copy atoms in q into the universal model and implement some necessary substitutions.
+
+
+Let loc^ℓ(Σ) denote the set of DEDs that we have defined in this section. From the encoding and Proposition <ref> we have 
+
+[[loc^ℓ(Σ)]]_D,Q^Q=O_Σ.
+
+
+Clearly, given the representation of any bound function ℓ and any finite set Σ of DEDs, constructing loc^ℓ(Σ) is computable. Let T_F consist of loc^ℓ(Σ) for each finite set Σ of DEDs and each bound function ℓ∈F. Since F is decidable, we know that T_F is also decidable. Let L_F be the DED-language induced by T_F. By Lemmas <ref>, <ref> and <ref>, L_F must be universal for the family of F-local OMQA-languages.
+
+
+@#!S
+Concluding Remarks
+@#^S
+
+
+We have established the nonexistence of universal language for both FO-rewritable and PTIME-tractable OMQA. As a rescue, we also proposed a novel property, called the locality, as an approximation to the FO-rewritability, and proved that there is some language of DEDs which is universal for OMQA with bounded locality. In spite of the unnaturalness of the constructed language, we believe that the proposed property would shed light on finding natural universal languages, as well as on identifying new tractable languages.
+
+aaairef

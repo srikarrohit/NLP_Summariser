@@ -1,0 +1,110 @@
+A sememe is defined as the minimum semantic unit of human
+languages . Sememe knowledge bases -LRB- KBs -RRB- which contain
+words annotated with sememes have been successfully applied to many NLP tasks . However existing sememe KBs are
+built on only a few languages which hinders their widespread
+utilization . To address the issue we propose to build a unified sememe KB for multiple languages based on BabelNet a
+multilingual encyclopedic dictionary . We first build a dataset
+serving as the seed of the multilingual sememe KB . It manually annotates sememes for over 15 thousand synsets -LRB- the
+entries of BabelNet -RRB- . Then we present a novel task of automatic sememe prediction for synsets aiming to expand the
+seed dataset into a usable KB . We also propose two simple
+and effective models which exploit different information of
+synsets . Finally we conduct quantitative and qualitative analyses to explore important factors and difficulties in the task
+A word is the smallest element of human languages that can
+stand by itself but not the smallest indivisible semantic unit .
+In fact the meaning of a word can be divided into smaller
+components . For example one of the meanings of `` man ''
+can be represented as the composition of the meanings
+of `` human '' `` male '' and `` adult '' . In linguistics a sememe
+-LRB- Bloomfield 1926 -RRB- is defined as the minimum semantic unit
+of human languages . Some linguists believe that meanings
+of all the words in any language can be decomposed of a
+limited set of predefined sememes which is related to the
+idea of universal semantic primitives -LRB- Wierzbicka 1996 -RRB- .
+Sememes are implicit in words . To utilize them in practical applications people manually annotate words with predefined sememes to construct sememe knowledge bases
+-LRB- KBs -RRB- . HowNet -LRB- Dong and Dong 2003 -RRB- is the most famous one which uses about 2 000 language-independent sememes to annotate senses of over 100 thousand Chinese
+and English words . Figure 1 illustrates an example of how
+words are annotated with sememes in HowNet .
+Different from most linguistic KBs like WordNet -LRB- Miller
+1995 -RRB- which explain meanings of words by word-level relations sememe KBs like HowNet provide intensional definitions for words using infra-word sememes . Sememe KBs
+have two unique strengths . The first one is their sememe-toword semantic compositionality which endows them with
+special suitability for integration into neural networks -LRB- Gu
+et al. 2018 ; Qi et al. 2019a -RRB- . The second one is their nature that limited sememes can represent unlimited meanings
+which makes sememes very useful in low data regimes e.g.
+improving embeddings of low-frequency words -LRB- Sun and
+Chen 2016 ; Niu et al. 2017 -RRB- . In fact sememe KBs have been
+proven beneficial to various NLP tasks such as word sense
+disambiguation -LRB- Duan Zhao and Xu 2007 -RRB- and sentiment
+analysis -LRB- Fu et al. 2013 -RRB- .
+Most languages have no sememe KBs which prevents
+NLP applications of these languages benefiting from sememe knowledge . However building a sememe KB for a
+new language from scratch is time-consuming and laborintensive -- the construction of HowNet takes several linguistic experts more than two decades . To tackle this challenge
+Qi et al. -LRB- 2018 -RRB- present the task of cross-lingual lexical sememe prediction -LRB- CLSP -RRB- aiming to facilitate the construction of a new language 's sememe KB by predicting sememes
+for words in that language . However CLSP can predict sememes for only one language at a time which means
+repetitive efforts including manual correctness checking
+conducted by native speakers are required when constructing sememe KBs for multiple languages .
+To solve this problem we propose to build a unified sememe KB for multiple languages namely a multilingual
+sememe KB based on BabelNet -LRB- Navigli and Ponzetto
+2012a -RRB- which is a more economical and efficient way to
+transfer sememe knowledge to other languages . BabelNet is
+a multilingual encyclopedic dictionary and comprises over
+15 million entries called BabelNet synsets . Each BabelNet
+synset contains words in multiple languages with the same
+meaning -LRB- multilingual synonyms -RRB- and they should have the
+same sememe annotation . Therefore building a multilingual
+sememe KB by annotating sememes for BabelNet synsets
+can actually provide sememe annotation for words in multiple languages simultaneously -LRB- Figure 2 shows an example -RRB- .
+To advance the creation of a multilingual sememe KB we
+build a seed dataset named BabelSememe which contains
+about 15 thousand BabelNet synsets manually annotated
+with sememes . Also we present a novel task of automatic
+sememe prediction for BabelNet synsets -LRB- SPBS -RRB- aiming to
+gradually expand the seed dataset into a usable multilingual
+sememe KB . In addition we exploratively put forward two
+simple and effective models for SPBS which utilize different information incorporated in BabelNet synsets . The first
+model exploits semantic information and recommends similar sememes to semantically close BabelNet synsets while
+the second uses relational information and directly predicts
+relations between sememes and BabelNet synsets . In experiments we evaluate sememe prediction performance of
+the two models on BabelSememe finding they achieve satisfying results . Moreover the ensemble of the two models
+yield obvious performance enhancement . Finally we conduct detailed quantitative and qualitative analyses to explore
+the factors influencing sememe prediction results aiming to
+point out the characteristics and difficulties of the SPBS task .
+In conclusion our contributions are threefold : -LRB- 1 -RRB- first
+proposing to construct a multilingual sememe KB based on
+BabelNet and presenting a novel task SPBS ; -LRB- 2 -RRB- building
+the BabelSememe dataset containing over 15 thousand BabelNet synsets manually annotated with sememes ; and -LRB- 3 -RRB- proposing two simple and effective models and conducting
+detailed analyses of factors in SPBS . In this paper we propose and formalize a novel task of Sememe Prediction for BabelNet Synsets -LRB- SPBS -RRB- which is
+aimed at facilitating the construction of a multilingual sememe KB based on BabelNet . We also build a dataset named
+BabelSememe which serves as the seed of the multilingual
+sememe KB . In addition we preliminarily propose two simple and effective SPBS models . They utilize different kinds
+of information and can be combined to achieve better performance . Finally we conduct quantitative and qualitative
+analyses aiming to point out characteristics and difficulties
+of the SPBS task .
+
+@label
+A sememe is defined as the minimum semantic unit of human
+languages .
+@label
+Sememe knowledge bases -LRB- KBs -RRB- which contain
+words annotated with sememes have been successfully applied to many NLP tasks .
+@label
+However existing sememe KBs are
+built on only a few languages which hinders their widespread
+utilization .
+@label
+To address the issue we propose to build a unified sememe KB for multiple languages based on BabelNet a
+multilingual encyclopedic dictionary .
+@label
+We first build a dataset
+serving as the seed of the multilingual sememe KB .
+@label
+It manually annotates sememes for over 15 thousand synsets -LRB- the
+entries of BabelNet -RRB- .
+@label
+Then we present a novel task of automatic sememe prediction for synsets aiming to expand the
+seed dataset into a usable KB .
+@label
+We also propose two simple
+and effective models which exploit different information of
+synsets .
+@label
+Finally we conduct quantitative and qualitative analyses to explore important factors and difficulties in the task

@@ -1,0 +1,30 @@
+
+Communication is ubiquitous in nature, but communication---i.e., natural language---is unique to humans. There are inherent difficulties in determining how language may have evolved---i.e., out of simpler communicative precursors (). On the one hand, it is difficult to define what constitutes language---it is always in flux, it is infinitely flexible, and it is one of the most complex behaviours known p{Christiansen-Kirby-2003}. On the other hand, there is a paucity of direct evidence available with which to confirm current theories---language does not fossilise, nor can we go back in time to observe the actual precursors of human-level linguistic capacities.
+
+Language origins research may appear to be a purely epistemic project; however, this programme finds application in contemporary machine learning and artificial intelligence (ML/AI). Understanding the fundamental principles that are involved in the (biological and cultural) evolution of effective communication may lead to innovative communication methods for use by interacting AI agents and multi-robot systems p{Wagner-et-al-2003}. AI agents need a common language to coordinate successfully and to communicate with humans. Furthermore, given the close relationship between language and thought, a clear understanding of how languages arise and persist in a population may also lend some additional insight into human cognitive capacities, helping lead the way in creating an artificial {\it general} intelligence (AGI).
+
+The similar goals of language origins research (from a philosophical, biological, bio-linguistic, and cognitive systems perspective) and emergent communication research (from a computational perspective) should be apparent. One of the questions asked in contemporary machine learning is
+it How can emergent communication become more like natural language?
+This question finds parallel expression in language origins research:
+it How might something like natural language evolve out of a simple communication system?
+Thus, progress in language origins may help direct research in emergent communication and vice-versa. However, there has been relatively little dialogue between these two approaches.
+
+To explain how language evolved out of simpler precursors, it is necessary to understand the salient differences between language and simple communication, or signalling. Most researchers (in both programmes) working on these questions take {\it compositionality} (productivity, openness, hierarchical structure, generative capacity, complex syntax, etc.) as their primary target. Demonstrating how compositionality may have evolved is supposed to be (at least partially) sufficient for explaining how language evolved. Furthermore, narrowing one's explanatory target from the formidable question of how {\it language} evolved to the question of how one component of language---e.g.,  {\it complex syntax}---evolved affords some degree of analytic tractability. 
+
+However, there is reason to think that compositionality is the wrong target, on the biological side (and so the wrong target on the ML side). As such, the purpose of this paper is to explore this claim. %, %
+%the titular conditional statement, 
+%focusing upon the consequences for potential research in emergent communication. %As a result, I will not argue about {\it whether} gradualism is the correct approach to language origins research; this will be beside the point since, of course, one cannot deny a conditional statement by denying the antecedent. Thus, I will assume that the antecedent is true and then proceed to discuss why the consequent follows from this assumption. 
+This has theoretical implications for language origins research more generally, but the focus here will be the % significant 
+implications for research on {\it emergent communication} in computer science and ML---specifically regarding the types of programmes that might be expected to work, and those which will not. My hope, then, is that this work will help to direct future research in fruitful new directions. 
+
+@label
+
+    Many researchers in language origins and emergent communication take {\it compositionality} as their primary target for explaining how simple communication systems can become more like natural language
+@label
+ % %Demonstrating how compositionality may have evolved is supposed to be (at least partially) sufficient for explaining how language evolved
+@label
+
+    I suggest that, if machine learning research in emergent communication is to take cues from biological systems and language origins, then compositionality is not the correct target
+@label
+
+

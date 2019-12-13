@@ -1,0 +1,341 @@
+2020
+
+rm
+
+
+/Title (Learning Neural Search Policies for Classical Planning)
+/Author (Pawel Gomoluch, Dalal Alrajeh, Alessandra Russo, Antonio Bucchiarone)
+
+@#!T
+Learning Neural Search Policies for Classical Planning
+@#^T
+
+Paweł Gomoluch, 1 Dalal Alrajeh, 1 Alessandra Russo, 1 Antonio Bucchiarone 2
+ 1Department of Computing, Imperial College London,  2Fondazione Bruno Kessler, Trento, Italy
+{pawel.gomoluch14,dalal.alrajeh,a.russo}@imperial.ac.uk, bucchiarone@fbk.eu
+
+
+
+
+
+
+
+@#!A
+
+Heuristic forward search is currently the dominant paradigm in classical planning.
+Forward search algorithms typically rely on a single, relatively simple variation of bestfirst search and remain fixed throughout the process of solving a planning problem.
+Existing work combining multiple search techniques usually aims at  upporting best-first search with an additional exploratory mechanism, triggered using a handcrafted criterion.
+A notable exception is very recent work which combines various search techniques using a trainable policy. It is, however, confined to a discrete action space comprising several fixed subroutines.
+
+In this paper, we introduce a parametrized search algorithm template which combines various search techniques within a single routine. The template's parameter space defines an infinite space of search algorithms, including, among others, BFS, local and random search. We further introduce a neural architecture for designating the values of the search parameters given the state of the search. This enables expressing neural search policies that change the values of the parameters as the search progresses. The policies can be learned automatically, with the objective of maximizing the planner's performance on a given distribution of planning problems. We consider a training setting based on a stochastic optimization a gorithm known as the cross-entropy method (CEM).
+Experimental evaluation of our approach shows that it is capable of finding effective distribution-specific search policies, outperforming the relevant baselines.
+
+@#^A
+
+
+
+
+@#!S
+Introduction
+@#^S
+
+
+Modern classical planners usually rely on heuristic forward search. Much research effort in rec nt years has been devoted to the development of advanced domain-independent heuristic functions (e.g. Hoffmann2001,Helmert2006,Richter2010,Domshlak2015). In contrast, the search algorithms at the core of many successfu  planners have largely remained simple variations of best-first search, such as greedy best-fir t search Helmert2006 or weighted A* Richter2010. In recent years, some work has sought to combine best-first search with additional exploratory mechanisms, such as randomized order of node expansion Valenzano2014,Asai2017, random walks and local search Xie2014 or novelty search Lipovetzky2017. The motivation behind these approaches is to enable the search to escape local minima and plateaus of the heuristic function.
+
+Introducing even a single auxiliary exploration mechanism necessarily comes with a number of nontrivial design choices, such as when to switch between the main and auxiliary search approach. In addition, many of the exploration mechanisms come with a number of parameters of their own, such as the length and number of random walks to perform. The values of the parameters are typically selected by human experts. Furthermore, they stay fixed through ut the process of solving the problem.
+
+The work introduced in this paper aims at automating the design of multi-technique search algorithms. To achieve it, we first construct a parametrized search algorithm which combines multiple search techniques in a flexible manner. Depending on the values of the parameters, the search algorithm can take form of BFS, iterated local search or random search, among others. Rather than choosing fixed values of the parameters, we introduce a tr inable model mapping the current state of the search to an assignment over the parameters. We then train the model using the cross-entropy method (CEM) to obtain search policies tailored to specific problem distributions. To the best of our knowledge no existing work has focused on a similar problem, except a very recent one Gomoluch2019. That approach, however, is limited to selection from a discrete set of several fixed search routines. We discuss it in more detail in the following section.
+
+We implement our approach within the Fast Downward planning system Helmert2006 and evaluate it using five domains from the Internati nal Planning Competition (IPC). The learned search policies outperform baselines built around the component techniques, as well as a fixed hand-crafted combination all the techniques available to the parametrized planner.
+
+
+@#!S
+Related Work
+@#^S
+
+
+By using learning to improve the performance of a planner, our work joins the ranks of numerous learning approaches in classical planning. Over the years, learning has been used to acquire macro operators Fikes1972,Coles2007,Gerevini2009, heuristic functions Yoon2008,Virseda2013,Garrett2016 and search control rules Leckie1998,Yoon2008.
+
+Little work has sought to learn directly in the space of possible search algorithms until very recently, when policy gradient was used to learn search strategies Gomoluch2019. That work is closely related to ours in combining various search techniques in a single search run and in learning how to best do so, given a particular distribution of planning problems. The most important difference is the space of possible search policies. In that work, a policy is trained to choose a search subroutine out of a set of five. While shown to be effective, this approach imposes somewhat arbitrary restrictions on the action and policy spaces. For example, the planner can choose to perform ϵ-greedy search, but not the value of epsilon. It can choose to perform random walks but not set their length. The span of local search is also effectively determined by one of the hyperparameters. Further, local and ϵ-greedy search are made mutually exclusive, although in some domains it may be beneficial to combine the two, i.e. randomize the order of node expansion in local search. In our approach, various search techniques are merged into a single parametrized search routine that subsumes each of the subroutines on its own for some specific assignment of the parameters. In reinforcement learning terms, the previous work deals with a discrete action space while our is close in spirit to continuous action spaces.[The action space is not strictly continuous as some of the search parameters take integer values. However, the presence of real-valued parameters makes the space infinite.]
+
+Another important difference is the representation of the search policies. The existing work Gomoluch2019 adopts a tabular approach with four states generated by two binary features. In our work, we use numeric features and a function approximator mapping them into the values of search parameters.
+
+A different approach to planning with multiple search techniques is to divide the available time and perform a number of se arate search runs. The original Fast Forward planner Hoffmann2001 first attempts to solve the problem using enforced hill climbing. If this fails, it falls back to best-first search. The LAMA planner Richter2010 follows greedy search with a number of weighted A* runs with decreasing weights in order to find the first solution as quickly as possible and then keep improving on it while the time permits. The idea is taken even further in the planner portfolios which run a number of potentially unrelated solvers independently (e.g. Fawcett2011,Helmert2011,Cenamor2016). Our approach differs from the portfolios by dealing with a single search run and learning how to best proceed with the current search frontier. In doing so, it is complementary to portfolio approaches. For example, future work could consider building portfolios composed of parametrized planners optimized for various problem distributions.
+
+
+@#!S
+Background
+@#^S
+
+
+
+@S#S!S
+Classical Planning
+@S#S^S
+ Planning is the problem of finding sequences of actions leading from an given initial state to state in which a given goal is satisfied. Classical planning in particular relies on a perfect and deterministic world model known to the planner. Formally, the classical planning task is given by a tuple 〈 ||SYMBOLTOKEN|| where V is a set of finite-domain variables, O is the set of operators, ||SYMBOLTOKEN|| is the initial state and g is the goal. The initial state ||SYMBOLTOKEN|| is an assignment over the variables of V. The goal g is a partial assignment over V. The operators o ||SYMBOLTOKEN|| O are themselves defined by specifying their preconditions pre(o) and effects eff(o), both of which are partial assignments over V. Operator o can be applied in state s if and only if its preconditions are satisfied in the state, pre(o) ⊆ s. The state resulting from applying an operator o to state s, o(s) is determined by setting the values of variables covered by eff(o) to the corresponding values, and keeping all the other variables unchanged. The task is to find a sequence of operators ||SYMBOLTOKEN|| o_1, ||SYMBOLTOKEN|| such that applying them in order leads to satisfaction of the goal g: g ⊆ ||SYMBOLTOKEN|| most common approach to classical planning is forward search. Forward search starts by inserting a node containing the initial state ||SYMBOLTOKEN|| in the open list. It proceeds by iteratively removing nodes from the list and expanding them by applying all of the operators applicable in the given state an  adding the resulting nodes to the open list. This is repeated until a state satisfying the goal g is reached or the open list becomes empty, which indicates the the problem is unsolvable. Best-first search (BFS)  lways expands the node n with the lowest value of some evaluat on function f(n). If f(n) depends solely on the heuristic estimate of the distance to the goal ||SYMBOLTOKEN|| the search becomes greedy best-f rst search (GBFS).
+
+
+@S#S!S
+Cross-Entropy Method
+@S#S^S
+ The cross-entropy method is a gradient-free stochastic optimization technique originating from rare event simulation Rubinstein1999,DeBoer2005. It belongs to a wider family of population-based optimization techniques known as Evolution Strategies (ES), which also includes approaches such as Covariance Matrix Adaptation Hansen2O01 and Natural Evolution Strategies Wierstra2014. In recent years, various forms of evolution strategies have been successfully applied as policy search methods in a number of challenging reinforcement learning domains Manno 2003,Salimans2017,Chrabaszcz2018,Conti2018. The common idea underlying ES is to maintain a population of candidate solutions and iteratively update it towards solutions of higher quality.
+
+Given a (possibly stochastic) function s(x), ||SYMBOLTOKEN|| the cross-entropy method introduces an auxiliary distribution ||SYMBOLTOKEN|| over the possible solutions. The distribution is itself parametrized by a vector v. For example if the distribution is a multivariate Gaussian, v can contain its mean and flattened covariance matrix. At each iteration t, n candidate solutions ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| are sampled from the distribution and evaluated. The parameters of the distribution are then updated to maximize the likelihood of the m best candidate solutions ||SYMBOLTOKEN|| To select the best solutions, a performance threshold ||SYMBOLTOKEN|| is introduced, equal to the m/n·100-th percentile of the candidate scores ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ... ||SYMBOLTOKEN|| The value of v for the next iteration is designated by ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN||  ||SYMBOLTOKEN||  is the indicator variable of the event  ||SYMBOLTOKEN|| , i.e. it is 1 if the score of sample i is higher than the threshold ||SYMBOLTOKEN|| and 0 otherwise.
+
+In the particular case when the auxiliary distribution is a multivariate Gaussian, solving the Equation ||SYMBOLTOKEN|| amounts to setting ||SYMBOLTOKEN|| to the mean and covariance of the m samples above the threshold ||SYMBOLTOKEN|| of using the solution of Equation ||SYMBOLTOKEN|| directly for the next iteration's distribution ||MATHEQUATION|| it is also possible to perform a smoothed ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| process can be repeated for a fixed number of iterations or until a specific stopping criterion is met. After the final iteration n the result can be obtained by extracting the mean of the final distribution from ||SYMBOLTOKEN|| Search
+@#^S
+
+
+The key idea underlying this work is that multiple forward search techniques can be combined in a single forward search algorithm. For instance, the algorithm can interleave between global and local best first search by performing a number of standard node expansions and then a number of local expansions. Both local and global expansions can optionally be followed by a number of random walks started from the expanded node. Additionally, both global and local search can randomize the order of node expansion, by choosing a random node from the open list instead of the one with lowest h, with the probability of ϵ.
+
+Pseudocode implementing this idea is presented in Algorithm ||SYMBOLTOKEN|| Typically for a forward approach, the search starts by initializing the open list to contain the initial state ||SYMBOLTOKEN|| (line ||SYMBOLTOKEN|| The main loop of the algorithm (lines ||SYMBOLTOKEN|| performs a number of search steps using the global open list (lines ||SYMBOLTOKEN|| Then it initializes a new local open list with a single node popped from the global list (line ||SYMBOLTOKEN|| The local list is used to perform a number of local search steps (lines ||SYMBOLTOKEN|| After the local search, all the nodes from the local list are merged into the global one (line ||SYMBOLTOKEN|| The number of global and local search steps in a single iteration of the main loop is controlled by two parameters: C is the total number of steps while c is the proportion of local steps. One iteration of the main loop consists of (1-c) · C global and c · C local steps.
+
+A search step (lines ||SYMBOLTOKEN|| involves a single node expansion (lines ||SYMBOLTOKEN|| optionally followed by N random walks of length L, starting at the expanded node (lines ||SYMBOLTOKEN|| One of the details omitted from Algorithm ||SYMBOLTOKEN|| is keeping track of the lowest known heuristic value ||SYMBOLTOKEN|| The value is initialized to the heuristic evaluation of the initial state and then updated whenever a state with lower evaluation is encountered. Similarly, the algorithm needs to keep track of the number of node expansions performed since the last update of ||SYMBOLTOKEN|| This value is used to decide whether to follow the current node expansion with random walks (line ||SYMBOLTOKEN|| The walks are triggered on condition that no decrease of ||SYMBOLTOKEN|| has been observed during the last S expansions. The S parameter plays a role analogous to the ||SYMBOLTOKEN|| parameter used by Xie2014 to decide when to switch from GBFS to the auxiliary exploration technique.
+
+If the step is using the local list and it turns out to be empty, another node is moved from the global list to the local one (line ||SYMBOLTOKEN|| If the global list becomes empty without reaching the goal, the search fails (lines ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| the search parameters include:
+
+  * ||MATHEQUATION|| the probability of selecting a random node from the open list; 
+    
+  * S -- the number of expansions without progress ne essary to trigger a random walk;
+    
+  * R -- the number of random walks following a single node expansion;
+    
+  * L -- the length of a random walk;
+    
+  * C -- the number of node expansions in the global-local cycle;
+    
+  * c -- the proportion of local search in the global-local cycle.
+
+
+Assigning the values of the parameters positions the resulting algorithm in the space between various search approaches. For example, with ||SYMBOLTOKEN|| R=0 and ||SYMBOLTOKEN|| the algorithm becomes greedy BFS, independently of the remaining parameters. With ||SYMBOLTOKEN|| R=0, ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| the algorithm performs iterated local search with a span of 100. Intermediate values of c result in interleaving of global and local search, with random walks optionally added in both phases, as determined by remaining parameters.
+
+The values of the search parameters can be changed during execution of the algorithm. It is convenient to update them at the beginning of every iteration of the main loop (line ||SYMBOLTOKEN|| and keep them fixed throughout the iteration. In the following sections we introduce the task of learning search policies, whose purpose is to set the values of the parameters, given the current state of the search.
+
+Parametrized ||SYMBOLTOKEN|| g, O ||SYMBOLTOKEN||  ||SYMBOLTOKEN|| true ϵ, S, R, L, C, c ||SYMBOLTOKEN|| i ||SYMBOLTOKEN|| 1 ... (1-c) · ||SYMBOLTOKEN|| local_open  ||SYMBOLTOKEN|| i ||SYMBOLTOKEN|| 1 ... c · ||SYMBOLTOKEN|| merge ||SYMBOLTOKEN|| into ||SYMBOLTOKEN|| Stepopen, O, gopen is emptyopen is ||SYMBOLTOKEN|| return failure return from ||SYMBOLTOKEN|| is empty return failure return from Planner ||SYMBOLTOKEN||  ||SYMBOLTOKEN||  s pop(open, ϵ) s ||SYMBOLTOKEN|| g plan ||SYMBOLTOKEN||     return plan return from Planner ||SYMBOLTOKEN||  xpand(s, O)
+ add(open, success ||SYMBOLTOKEN|| expansions_without_progress ||SYMBOLTOKEN|| Si ||SYMBOLTOKEN|| 1 ... R ||SYMBOLTOKEN|| random_walk(s, L)
+     add(open, ||SYMBOLTOKEN|| return ||SYMBOLTOKEN|| return to the Planner loop
+
+
+@#!S
+Search State Representation
+@#^S
+
+
+To facilitate learning of state-dependent search policies, we introduce a high-level representation of the state of the planner. In particular, we consider the following features of the planner's state:
+
+  * the heuristic value of the initial state ||SYMBOLTOKEN||    
+  * the lowest heuristic value encountered within the search ||SYMBOLTOKEN||    
+  * the time elapsed since the search started;
+    
+  * the number of node expansions performed since the last change in the value of ||SYMBOLTOKEN||    
+  * the number of states the search has generated;
+    
+  * the number of unique states the search has generated;
+    
+  * the total number of nodes the search has expanded.
+
+Intuitively, the features capture important information about the state of the search. For example, a large number of node expansions performed since the last decrease in ||SYMBOLTOKEN|| indicates that the planner is facing a local minimum or a plateau of the heuristic function. In such a situation, increasing the amount of exploratory behavior is likely to be beneficial. Comparing the current value of the heuristic with ||SYMBOLTOKEN|| enables estimating the relative progress towards the goal. If the values are close, the search has likely made little progress towards the goal. On the other hand, a value of ||SYMBOLTOKEN|| close to 0 can suggest that the search frontier is close to the goal. Naturally, the reliability of such estimates will depend on how well the heuristic function correlates with actual distance to the goal in the cu rent domain. This information can be particularly useful in conjunction with the elapsed time t. If sufficient progress is being made at early stage of the search, there may be no incentive to deploy techniques making rapid progress towards the goal at the cost of sacrificing the plan quality (for example random walks in logistics-style domains). On the other hand, if time is running out while significant distance remains to be covered, more aggressive approach may be desirable in order to avoid failure due timeout.
+
+In the following section, these features are used as the state representation for learning search policies.
+
+
+@#!S
+Learning Search Policies
+@#^S
+
+
+We consider a search policy to be a vector valued function mapping the state of the search to the values of the search parameters. Formally, ||SYMBOLTOKEN|| where Y  s a vector of the search parameters 〈ϵ, S, R, L, C, c〉, introduced in Section ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| is the vector of state features listed in Section ||SYMBOLTOKEN|| model
+@#S^S
+
+
+We represent the search policies using a parametric function approximator ||SYMBOLTOKEN|| with trainable p rameters ||SYMBOLTOKEN|| we use a feed-forward neural network. The inputs of the network are the planner's state features and its outputs are the search parameters. The network contains one hidden layer of 7 units with sigmoid activation function ||SYMBOLTOKEN|| The treatment of the network's output depends on the search parameter it represents. For real-valued search parameters (ϵ and c) taking values from range (0,1), the network outputs are pa sed through a sigmoid function. For search parameters taking nonnegative integer values (S, R, L and C) the outputs are restricted to nonnegative values ||SYMBOLTOKEN|| and truncated to the integer part.
+
+Because the planner's state features differ in order of magnitude, we scale them before passing them through the network. We choose the scaling factors on a per-domain basis, by running our parametrized planner with fixed parameter values on a separate batch of problems from the domain and recording the maximum values ||SYMBOLTOKEN|| of all the features observed in the process. The maximum values are then used to scale each of the features ||SYMBOLTOKEN|| so that value 1 of the scaled feature represents the highest value recorded on the batch of problems. The scales remain unchanged throughout training and testing of the system.
+
+Similarly,  e scale the outputs of the network. With the exception of ϵ and c, whose values are put in the range of (0,1) by the sigmoid, we scale the outputs so that the value of 1 results in moderate use of the corresponding search technique. Concretely, we multiply the number of random walks R by 5, the length of the walks L by 10, the stall condition S by 10 and the length of the global-local cycle C by 100.
+
+
+@#S!S
+Policy evaluation
+@#S^S
+
+
+To learn search policies in an evolutionary process, it is necessary to establish a way of evaluating candidate policies. In this work, we adopt an approach based on the scoring function used in the satisficing track of the International Planning Competition (IPC) since the 2008 ||SYMBOLTOKEN|| For a failed problem, a planner receives a score of 0. For a solved one the score is defined as:
+ g ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| c is the cost of the found plan, and ||SYMBOLTOKEN|| is the lowest known cost of a plan solving the problem. In practice, ||SYMBOLTOKEN|| is often the lowest cost of a plan returned by any of the competing planners. The score obtained on a set of problems is the sum of scores for each of the problems.
+ G ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| In our training setting, detailed in the next section, the candidate policies are put in competition against each other: ||SYMBOLTOKEN|| is the lowest solution cost found by any of the candidate policies. This is convenient since the problems are generated randomly for each iteration, and so no reference costs are known a priori. We remark that when training on a fixed set of problems, the lowest plan cost could be retained between iterations or designated using a set of reference planners.
+
+
+@#S!S
+Policy learning
+@#S^S
+
+
+To learn search policies best suited to specific problem distributions, we employ the cross-entropy method Rubinstein1999,Mannor2003. We introduce a multivariate Gaussian distribution over the policy parameters ||SYMBOLTOKEN|| itself parametrized by the mean vector ||SYMBOLTOKEN|| and covariance matrix ||SYMBOLTOKEN|| Σ)
+We initialize ||SYMBOLTOKEN|| with a zero vector and ||SYMBOLTOKEN|| with an identity matrix.
+
+At each iteration i, n samples ||SYMBOLTOKEN|| are drawn from ||SYMBOLTOKEN|| Σ). The resulting policies are evaluated on set of training problems. The mean and covariance of the parameter distribution are then updated towards the mean and covariance of the m candidate solutions with the best ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| is a smoothing factor and ||SYMBOLTOKEN|| are the m best scoring candidates of iteration t.
+
+The pseudocode of the learning approach is presented in Algorithm ||SYMBOLTOKEN|| The inputs of the algorithm include a distribution of planning problems (P), the number of iterations (u), the number of planning problems sampled at each iteration (r), the number of policies sampled at each iteration (n) and the number of elite policies used to update the policy distribution (m).
+
+The main loop of the algorithm starts by randomly generating a set of problems following the target distribution (line ||SYMBOLTOKEN|| Generally, the problems ||SYMBOLTOKEN|| do not have to be independently and identically distributed. As detailed in Section ||SYMBOLTOKEN|| in our experiments we use problem distributions resembling the IPC problem sets, which contain problems of varying difficulty. In the absence of problem generators, this step could be replaced by sampling from a fixed set of training problems.
+
+Further, n policies are sampled from the current policy distribution (line ||SYMBOLTOKEN|| Each of the policies is used to tackle each of the generated problems (lines ||SYMBOLTOKEN|| The results are used to compute IPC score for each policy (line ||SYMBOLTOKEN|| The policies are then sorted according to their scores in order to select the n best performing ones. The new mean of the policy distribution is obtained by averaging the n samples and performing a weighted sum with the old mean (line ||SYMBOLTOKEN|| The algorithm returns the final mean of the policy distribution as the resulting policy (line ||SYMBOLTOKEN|| learningtrainP, u, r, n, m initialize ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| 
+i ||SYMBOLTOKEN|| 1 ... u ||SYMBOLTOKEN|| ... ||SYMBOLTOKEN|| P sample r problems ||SYMBOLTOKEN|| ... ||SYMBOLTOKEN|| N(μ, ||SYMBOLTOKEN|| sample n policiesj ||SYMBOLTOKEN|| 1 ... nk ||SYMBOLTOKEN|| 1 ... r run policy ||SYMBOLTOKEN|| on ||SYMBOLTOKEN|| record plan cost ||SYMBOLTOKEN||         ||SYMBOLTOKEN||  compute IPC score for ||SYMBOLTOKEN|| ... ||SYMBOLTOKEN||  sort ||SYMBOLTOKEN|| by scores ||SYMBOLTOKEN|| (highest first)
+     update ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| according to Equations ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| return ||SYMBOLTOKEN|| 
+
+
+@#!S
+Experiments
+@#^S
+
+
+We have implemented the parametrized planner as a component of the Fa t Downward Helmert2006 planning system. The source code of the planner and learner is available online[URL removed for blind review].
+
+We evaluate our approach on five IPC domains: Elevators, Floortile, No-mystery, Parking and Transport. These are all the domains of the learning track of IPC 2014, with the exception of the Spanner domain. The latter was designed specifically not to work well with delete-relaxation heuristics, such as the Fast Forward heuristic Hoffmann2001, which we use throughout our experiments. For problem generation, we use the problem generators published by the organisers of the learning ||SYMBOLTOKEN|| ipc2014/>]. In terms of problem size, we use problem distributions of the satisficing track of IPC 2011, which is the last edition in which the domains occurred together. Note that by a problem distribution we mean the values of the parameters passed to the problem generators, which do not necessarily give full account of the difficulty of the actual IPC 2011 problem sets. This is because the selection of the competition problems may have involved additional criteria not captured by the generator parameters, for example manual rejection of problems that have empirically proven too easy or too hard for some set of reference planners. For both training and evaluation we use a time limit of 3 minutes per problem, which is lower than the 30 minutes traditionally used in IPC. The primary motivation for this is the training setting, which requires multiple planner runs at every iteration. We remark that training with a larger time limit is equally possible, although significantly more expensive, as it requires up to 10 times more computation time.
+
+
+@#S!S
+Training
+@#S^S
+
+
+We train a separate model for each of the domains. At every iteration, we randomly generate 20 problems of difficulty roughly corresponding to the problem sets of the satisficing track of IPC. Every batch of randomly generated problems preserves the generator parameters used for the competition set. For example, if the Parking set of the 2011 competition contains 20 problems including two problems with 22, three problems with 24 cars, three problems with 26 cars and so on, then the same holds for every of the training batches.
+
+The training setup follows Algorithm ||SYMBOLTOKEN|| with the number of policies sampled at each iteration ||SYMBOLTOKEN|| and the the number of elite policies ||SYMBOLTOKEN|| The smoothing factor is ||SYMBOLTOKEN|| as suggested by Mannor2003. For each of the domains, we train the model for 48 hours using 32 CPUs. Depending on the domain, this allows the training process to perform between 41 (Floortile) and 91 (Elevators) iterations. However, most of the policy improvement seems to happen in the first several iterations of the training process. This can be seen in Figure ||SYMBOLTOKEN|| The plots show the average IPC score obtained by the policies sampled at each iteration. Note that the policies themselves are not the only source of variability: the training problems are randomly sampled for each iteration and some of them turn out to be harder than others despite using the same generator parameters. Even with this caveat, the plots suggest that most of the progress is made in the early iterations. In the extreme case of Floortile, it is not clear from the plot wh ther the learner makes any progress at all. However, the results discussed in the next section suggest that a reasonably effective policy is still learned.
+
+
+###FIGURE###
+
+###TABLE###
+< g r a p h i c s ||SYMBOLTOKEN|| & ||SYMBOLTOKEN|| g r a p h i c s ||SYMBOLTOKEN||         Elevators & Floortile ||SYMBOLTOKEN|| g r a p h i c s ||SYMBOLTOKEN|| &
+         ||SYMBOLTOKEN|| g r a p h i c s ||SYMBOLTOKEN||         No-mystery & Parking ||SYMBOLTOKEN|| g r a p h i c s ||SYMBOLTOKEN|| average IPC score (y-axis) obtained on the training batch by the ||SYMBOLTOKEN|| policies sampled at each iteration of the learning process (x-axis). Note that the variance is in large part due to random generation of the training batch (every iteration has a newly generated set of problems). The dynamic of the scores suggests that most of the policy improvement happens in the first handful of iterations.
+@@@FIGURE@@@
+
+
+
+@#S!S
+Quantitative evaluation
+@#S^S
+
+
+We perform two separate evaluations of the trained policies. For the first one we use the actual problem sets from the satisficing track of IPC 2011. For every domain and planner configuration we perform 10 test runs on the problem set and average the scores. In the second evaluation, we use unseen problems generated in the same manner as the training ones. The motivation for the second approach is twofold. First, it allows for performing each of the 10 test runs on a different set of problems and in doing so allows u  to assess the planners over a total of 200 rather than just 20 problems. Second, by removing any manual filtering of the problems, it allows us to observe the planners performance on problems unseen in training, but still exactly following the training distribution.
+
+We compare the learned policies against four fixed search routines making use of one of the search techniques available to the parametrized planner. For greedy best-first search we use the Fast Downward's implementation. The other baselines are implemented by setting the parameters of our parametrized planner accordingly. Overall the set of baseline planners includes:
+
+  * plain greedy BFS [GBFS];
+    
+  * ϵ-greedy BFS with ||SYMBOLTOKEN|| (R=0, ||SYMBOLTOKEN|| [ϵ-greedy];
+    
+  * greedy BFS following node expansion with ||SYMBOLTOKEN|| random walks of length ||SYMBOLTOKEN|| on condition that the lowest known heuristic value ||SYMBOLTOKEN|| has not changed for last ||SYMBOLTOKEN|| expansions ||SYMBOLTOKEN|| [RW];
+    
+  * local BFS with a span of ||SYMBOLTOKEN|| expansions ||SYMBOLTOKEN|| c=1) [Local];
+    
+  * a combination of all of the above, instantiating the parametrized planner template with ||SYMBOLTOKEN|| S=10, ||SYMBOLTOKEN|| L=10, ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| [Mixed].
+
+
+The motivation behind the mixed configuration is to assess performance of an algorithm making a balanced use of all the available techniques. In this configuration the planner interleaves between 100 expansions using the global open list and 100 expansions of local search. It follows the expansions with random walks if the search has not progressed for the last 10 expansions. A random node is selected for expansion instead of the one with lowest heuristic value with the probability of 0.5.
+
+We remark that a direct compa ison of our system against recent related work Gomoluch2019 would be di ficult because of its requirement to train on substantially smaller problems under time limits of the order of 5 seconds.
+
+The IPC scores obtained by each of the considered planners are reported in Table ||SYMBOLTOKEN|| (IPC problem sets) and Table ||SYMBOLTOKEN|| (generated test sets). The learned policies score higher than any of the baselines in all cases except No-mystery set from IPC, where it narrowly trails plain greedy BFS. In general, in No-mystery performance of greedy and ϵ-greedy search and the learned policy is very similar. In Transport and Parking the baseline reaching performance closest to the learner is local search.
+Importantly, the default configuration obtains the lowest overall scores, clearly showing the advantage of a learned policy over a naive combination of all the search techniques.
+
+
+###TABLE###
+
+###TABLE###
+
+                  & E              & F            & N             & P              & T             & Sum            
+
+GBFS              & 16.15          & 4.17         & 8.84 & 8.08           & 0             & 37.24          
+
+ϵ-greedy & 13.64          & 6.05         & 8.43          & 5.91           & 0             & 34.03          
+
+RW                & 14.77          & 2.35         & 6.58            6.59           & 0.52          & 30.81          
+
+Local             & 15.36          & 4.55         & 5.79          & 10.9           & 1             & 37.6           
+
+Mixed             & 10.98          & 2.87         & 7.49          & 5.5            & 0.45          & 27.29          
+
+Learned           & 16.71 & 6.5 & 8.56          & 11.77 & 1.11 & 44.64
+
+@@@TABLE@@@
+IPC scores for IPC problem sets (average of 10 runs). Elevators (E), Floortile (F), No-mystery (N), Parking (P) and Transport (T).
+@@@TABLE@@@
+
+
+
+###TABLE###
+
+###TABLE###
+
+                  & E              & F             & N             & P              & T            & Sum            
+
+GBFS              & 14.69          & 2.27          & 8.19          & 9.3            & 2.6          & 37.05          
+
+ϵ-greedy & 13.09          & 2.68          & 8.95          & 7.49           & 2.75         & 34.97          
+
+RW                & 14.68          & 0.47          & 6.78          & 8.07           & 3.75         & 33.75          
+
+Local             & 15.99          & 1.93          & 7.16          & 12.23          & 4.67         & 41.97          
+
+Mixed             & 11.65          & 1.26          & 6.7           & 6.22           & 3.01         & 28.84          
+
+Learned           & 16.42 & 3.31 & 9.06 & 13.36 & 5.3 & 47.44
+
+@@@TABLE@@@
+IPC scores for randomly generated test problems (average over 10 sets). Elevators (E), Floortile (F), No-mystery (N), Parking (P) and Transport (T).
+@@@TABLE@@@
+
+
+
+@#S!S
+Qualitative evaluation
+@#S^S
+
+
+In this section, we examine the search policies learned for each of the domains. We do so by recording the search parameters designated by the policies while solving selected validation problems and interpreting the resulting search behaviour.
+
+
+@S#S!S
+Elevators
+@S#S^S
+ In this domain, the easiest problems are solved with GBFS ||SYMBOLTOKEN|| ϵ≈ 0.01). A large number ||SYMBOLTOKEN|| of relatively short random walks (3 steps) is used when the search fails to progress for around 30 node expansions. In larger instances, the value of ϵ is even smaller ||SYMBOLTOKEN|| 0.001), the random walks get longer (9 steps) and there is more of them ||SYMBOLTOKEN|| This makes intuitive sense in the logistics-style domain of Elevators: random walks may increase the chance of finding a solution but also increase its cost. Consequently, long random walks are better avoided when the problem is likely to be solved in time without them. On the other hand, they are useful when the time limit becomes an issue. For large problems, a small number of local expansions is performed towards the end of the search (2 in a cycle of 50), but it is not clear whether this has substantial effect on the results.
+
+
+@S#S!S
+Floortile
+@S#S^S
+ In Floortile the policy results mostly in ϵ-g eedy BFS. It starts with a very high value of ||SYMBOLTOKEN|| 0.8, which means that the heuristic value is ignored most of the time. This is not entirely surprising given the performance of baseline planners guided by the same heuristic. For the largest problems solved within the time limit, the value of ϵ gradually falls towards the end of the search. The policy performs better than the baselines, but still fails to solve most of the problems.
+
+
+@S#S!S
+No-mystery
+@S#S^S
+ The values of ϵ in No-mystery are even more extreme than in Floortile, ranging between 0.75 and 0.98 and increasing as ||SYMBOLTOKEN|| decreases. Neither random walks nor local search are used. On the one hand, the policy shows how a delete relaxation heuristic is of limited use. On the other hand, it also brings up a limitation of the parametrized search algorithm in its current form. While the value of the heuristic is virtually unused, it still needs to be computed for every encountered state, for the purpose of ordering the open list. We aim to address this issue in future work. 
+@S#S!S
+Parking
+@S#S^S
+ In small Parking instances the policy's behaviour is close to best-first search. Interestingly, this is achieved by setting the cycle length C to a very small value (a cycle with 0 or 1 local expansion is equivalent to global search). For larger instances, this approach is mixed with evenly balanced cycles of several global and local expansions. The ϵ values a e typically around 0.1.
+
+
+@S#S!S
+Transport
+@S#S^S
+ On smaller Transport problems the learned policy's behaviour is close to global ϵ-greedy BFS, with the value ϵ ranging between 0.08 and 0.2. This is achieved by using a very short cycle with no local expansions. In larger instances the policy performs iterated local search of varying span. The number of expansions in a single cycle is typically varies through the search, between the values of 10 and 150. Extensive use of local search makes intuitive sense in the logistics-style Transport dom in, where focusing on a subset of the search space can often allow for faster progress. Occasionally, the search approaches global BFS by decreasing C to very low values. The value of ϵ increases as the search progresses, up to about 0.25.
+
+
+@#!S
+Conclusion
+@#^S
+
+
+We have introduced a parametrized search algorithm flexibly combining multiple search techniques in a way determined by the values of its parameters. We further constructed a simple neural policy model for designating the values of the algorithm's parameters given a high-level representation of the current state of the search. Using the cross-entropy method we have trained the model on problems from five different planning domains. The empirical evaluation shows that the learner is able to discover effective distribution-specific search policies.
+
+Besides the strengths of the approach, the empir cal evaluation has also shown some of its limitations. While the current approach has the capacity to ignore the value of a heuristic it finds m sleading, it can neither replace it nor stop computing it for the all encountered states, even if the value is not going to be used. One possible solution would be to make to choice of heuristic subject to the learning process, for example by allowing the algorithm to work with multiple open lists. It is also be possible to extend the algorithm with other state-of-the-art techniques from classical planning, such as preferred operators or novelty-based search Lipovetzky2017.
+
+Another direction of future work is the representation of the planner's state. Capturing the relevant information in a domain-independent manner is a huge challenge and the key to improve the expressiveness of the learned policies.
+
+aaaireferences
+
+

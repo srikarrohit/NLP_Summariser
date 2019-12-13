@@ -1,0 +1,91 @@
+We describe SemEval2017 Task 3 on Community Question Answering . This year
+we reran the four subtasks from SemEval2016 : -LRB- A -RRB- Question -- Comment Similarity -LRB- B -RRB-
+Question -- Question Similarity -LRB- C -RRB- Question --
+External Comment Similarity and -LRB- D -RRB- Rerank
+the correct answers for a new question in Arabic
+providing all the data from 2015 and 2016 for
+training and fresh data for testing . Additionally
+we added a new subtask E in order to enable experimentation with Multi-domain Question Duplicate Detection in a larger-scale scenario using
+StackExchange subforums . A total of 23 teams
+participated in the task and submitted a total of
+85 runs -LRB- 36 primary and 49 contrastive -RRB- for subtasks A -- D. Unfortunately no teams participated
+in subtask E . A variety of approaches and features were used by the participating systems to
+address the different subtasks .
+
+Community Question Answering -LRB- CQA -RRB- on web
+forums such as Stack Overflow1
+and Qatar Living 2
+is gaining popularity thanks to the flexibility
+of forums to provide information to a user -LRB- Moschitti et al. . 2016 -RRB- . Forums are moderated only indirectly via the community rather open and subject to few restrictions if any on who can post and
+answer a question or what questions can be asked .
+On the positive side a user can freely ask any
+question and can expect a variety of answers . On
+the negative side it takes efforts to go through the
+provided answers of varying quality and to make
+sense of them . It is not unusual for a popular question to have hundreds of answers and it is very
+time-consuming for a user to inspect them all .
+Hence users can benefit from automated tools to
+help them navigate these forums including support for finding similar existing questions to a
+new question and for identifying good answers
+e.g. by retrieving similar questions that already
+provide an answer to the new question .
+Given the important role that natural language
+processing -LRB- NLP -RRB- plays for CQA we have organized a challenge series to promote related research for the past three years . We have provided
+datasets annotated data and we have developed
+robust evaluation procedures in order to establish
+a common ground for comparing and evaluating
+different approaches to CQA .
+In greater detail in SemEval-2015 Task 3 `` Answer Selection in Community Question Answering '' -LRB- Nakov et al. . 2015 -RRB- 3 we mainly targeted
+conventional Question Answering -LRB- QA -RRB- tasks
+i.e. answer selection . In contrast in SemEval2016 Task 3 -LRB- Nakov et al. . 2016b -RRB- we targeted
+a fuller spectrum of CQA-specific tasks moving
+closer to the real application needs 4 particularly in
+Subtask C which was defined as follows : `` given
+-LRB- i -RRB- a new question and -LRB- ii -RRB- a large collection of
+question-comment threads created by a user community rank the comments that are most useful
+for answering the new question '' . A test question
+is new with respect to the forum but can be related to one or more questions that have been previously asked in the forum . The best answers can
+come from different question -- comment threads .
+The threads are independent of each other the lists
+of comments are chronologically sorted and there
+is meta information e.g. date of posting who is
+the user who asked/answered the question category the question was asked in etc. .
+The comments in a thread are intended to answer
+the question initiating that thread but since this is
+a resource created by a community of casual users
+there is a lot of noise and irrelevant material in addition to the complications of informal language
+use typos and grammatical mistakes . Questions
+in the collection can also be related in different
+ways although there is in general no explicit representation of this structure .
+
+We have described SemEval-2017 Task 3 on Community Question Answering which extended the
+four subtasks at SemEval-2016 Task 3 with a new subtask on multi-domain
+question duplicate detection . Overall the task attracted 23 teams which submitted 85 runs ; this is
+comparable to 2016 when 18 teams submitted 95
+runs . The participants built on the lessons learned
+from the 2016 edition of the task and further experimented with new features and learning frameworks . The top systems used neural networks with
+distributed representations or SVMs with syntactic
+kernels for linguistic analysis . A number of new
+features have been tried as well .
+Apart from the new lessons learned from this
+year 's edition we believe that the task has another
+important contribution : the datasets we have created as part of the task and which we have released for use to the research community should
+be useful for follow-up research beyond SemEval .
+Finally while the new subtask E did not get any
+submissions mainly because of the need to work
+with a large amount of data we believe that it is
+about an important problem and that it will attract
+the interest of many researchers of the field .
+
+@label
+We describe SemEval2017 Task 3 on Community Question Answering .
+@label
+This year we reran the four subtasks from SemEval2016 : -LRB- A -RRB- Question -- Comment Similarity -LRB- B -RRB- Question -- Question Similarity -LRB- C -RRB- Question -- External Comment Similarity and -LRB- D -RRB- Rerank the correct answers for a new question in Arabic providing all the data from 2015 and 2016 for training and fresh data for testing .
+@label
+we added a new subtask E in order to enable experimentation with Multi-domain Question Duplicate Detection in a larger-scale scenario using StackExchange subforums . A total of 23 teams participated in the task and submitted a total of 85 runs for subtasks A -- D. Unfortunately no teams participated in subtask E.
+@label
+A variety of approaches and features were used by the participating systems to address the different subtasks .
+@label
+These scores are better than the baselines especially for subtasks A -- C.
+
+

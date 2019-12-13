@@ -1,0 +1,427 @@
+2020rm
+/Title (Towards Universal Languages for Tractable Ontology Mediated Query Answering)
+/Author (Heng Zhang, Yan Zhang, JiaHuai You, Zhiyong Feng, Guifei Jiang)
+
+
+
+OMLcmmbit
+
+
+
+||#1[[#1]]
+
+
+thmTheoremcor[thm]Corollarylem[thm]Lemmaprop[thm]PropositionfactFactclmClaimdefinitiondefnDefinitionremarkremRemarkdefinitionexmExampleathmTheoremacor[athm]Corollaryalem[athm]Lemmaaprop[athm]Proposition
+
+
+
+@#!T
+Towards Universal Languages for Tractable Ontology Mediated Query Answering
+@#^T
+Heng Zhang, 1 Yan Zh ng, 2,3 Jia-Huai You, 4 Zhiyong Feng, 1 Guifei Jiang  5
+
+ 1College of Intelligence and Computing, Tianjin University, Tianjin, China
+ 2School of Computing, Engineering and Mathematics, Western Sydney University, Penrith, Australia
+ 3School of Computer Science and Technology, Huazhong University of Technology and Science, Wuhan, China
+ 4Department of Computing Science, University of Alberta, Edmonton, Canada
+ 5College of Software, Nankai University, Tianjin, China
+
+heng.zhang@tju.edu.cn, yan.zhang@westernsydney.edu.au, jyou@ualberta.ca, zyfeng@tju.edu.cn, g.jiang@nankai.edu.cn
+
+
+
+
+
+@#!A
+
+An ontology language for ontology mediated query answering (OMQA-language) is universa  for a family of OMQA-languages if it is the most expressive one among this family. In this paper, we focus on three families of tra table OMQAlanguages, including first-order rewritable languages and languages whose data complexity of the query answering is in ||SYMBOLTOKEN|| or PTIME. On the negative side, we prove that there is, in general, no universal language for each of these families of languages. On the positive side, we propose a novel property, the locality, to approximate the first-order rewritability, and show that there exists a language of disjunctive em edded dependencies that is universal for the family of OMQA-languages with locality. All of these results apply to OMQA with query languages such as conjunctive queries, unions of conjunctive queries and acyclic conjunctive queries.
+
+@#^A
+
+
+
+@#!S
+Introduction
+@#^S
+
+
+Ontology mediated query answering (OMQA) is a paradigm that generalizes the traditional database querying by enriching the database with a domain ontology PoggiLCGLR08. This paradigm has played an important role in the semantic web calvanese:DL-lite2007,lutz:ijcai05, data modelling BerardiCG05, data exchange FKMP05 and data integration Lenzerini02, and has recently emerged as one of the ce tral issues in knowledge representation as well as in databases.
+
+A long-term major topic for OMQA is to identify proper languages that specify ontologies. There have been a large number of ontology languages proposed for OMQA since the m d 2000s. For instance, in description logics, the DL-Lite family calvanese:DL-lite2007, EL-family lutz:ijcai05 and other variants have been proposed and extensively studied. More recently, the Datalog± family, a.k.a. existential rule languages, or dependencies in databases, have been rediscovered as promising languages for OMQA, see, e.g., BLMS11,CaliGL12,CaliGP12. Most of these languages enjoy good computational properties such as the first-order rewritability or PTIME data complexity.
+
+While all these languages a e of their specific features and hence are useful in different applications, it is not realistic to implement OMQA-sys ems for all of them. So a natural question arises: Can we find the largest one (in the expressiveness) among the family of first-order rewritable (or PTIME-tractable) OMQA-languages? Let us call the largest language in the above sense a  universal language. Clearly, it is of great theoretical and practical importance to identify the existence of universal language w.r.t. some kind of tractability, which is also the main task of this paper.
+
+It is worth noting that the universality is one of the major principles for designing languages in both computer science and logic. For example, almost all the traditional programming languages, including C, Java and Prolog, are known to  e universal for the f mily of Turing complete programming languages; propositional logic can express all boolean functions; and by the well-known Lindström theorem the first order logic is the largest one among the logics that enjoy both the compactness and the Löwenheim-Skolem property; see, e.g., EbbinghuasFT1994. In databases, first-order language is shown to be universal for the family of query languages with data complexity in ||SYMBOLTOKEN|| and Datalog universal for the family of query languages with data complexity in PTIME; see, e.g., Immerman99.
+
+Some recent work in OMQA has been done along the line of identifying universal languages. C lvaneseGLLR13 CalvaneseGLLR13 proved that, under a certain syntactic classification, some lang ages in the DLLite family are the maximal fragments of description logic with the first-order rewritability. By regarding OMQA as traditional database querying, GRS2014 GRS2014 showed that weakly-guarded tuple-generating dependencies (TGDs) capture the class o  EXPTIME queries; RudolphT2015 RudolphT2015 proved  hat general TGDs capture the class of recursively enumerable queries. In the setting of schema mapping, ZhangZY15 ZhangZY15 showed that the language of weakly-acyclic TGDs is universal for languages of TGDs with finite semi-oblivious chase. All of these results shed new insights on understanding the expressiveness of existential rules, but it is worth noting that OMQA is significantly different from both traditional database querying and schema mapping. To understand the expressiveness in the framework of OMQA, ZhangZY16 ZhangZY16 proved that the language of disjunctive embedded dependencies is universal for the family of recursively enumerable OMQA-languages. Along this line, this paper will focus on tractable OMQA.
+
+Aimed at exploiting universal languages for the tractable OMQA, in this paper we focus on three families of OMQA-languages, including first-order rewritable languages and languages whose data complexity is in ||SYMBOLTOKEN|| or PTIME. Our contributions are summarized as follows. On one hand, we prove that there is  in general, no universal language for each of the above families of languages. On the other hand, by restricting the number of database constants involved in query answering, we propose a novel property, called the  locality, to approximate the first-order rewritability, and identify the existence of universal language for the family of local OMQA-languages. All of these results hold for OMQA with query languages such as conjunctive queries, unions of conjunctive queries and acyclic conjunctive queries.
+
+
+@#!S
+Preliminaries
+@#^S
+
+
+ Databases and Instances. We use a countably infinite set of  constants and a countably infinite set of  variables, and assume they are disjoint. Every  term is either a constant or a variabl . A  relational schema R consists of a set of  relation symbols. Each relation symbol has an  arity which is a natural number. An  atoms over R (or R-atom) is either an equality, or a  relational atom built upon terms and relation symbols in R. A  fact is a variable-free relational atom. Each  instance over R (or  R-instance) consists of a set of facts over R. Instances that are finite are called  databases. Suppose I is an instance. Let adom(I) denote the set of constants that oc ur in I. Let DB[R] denote the class of all databases over schema R. Given a set A of constants, by ||SYMBOLTOKEN|| we denote the subset of I in which each fact involves only constants in A.
+
+Let I and J be instances over a relational schema R, and C⊆ adom(I)∩ adom(J). The  every  Chomomorphism from I to J is a function h:adom(I)→ adom(J) such that (i) ||SYMBOLTOKEN|| I implies ||SYMBOLTOKEN|| J for all relation symbols ||SYMBOLTOKEN|| and all tuples a⃗ of constants, and (ii) ||SYMBOLTOKEN|| for all ||SYMBOLTOKEN|| C. If such h exists, we  ay tha  I is  Chomomorphic to J, and write ||SYMBOLTOKEN|| J; in addition, we write ||SYMBOLTOKEN|| J if h is injective. For simplicity, C will be dropped if it is empty.
+
+ Queries. Fix R as a relational s hema. By a  query ov r R (or Rquery) we mean a formula built upon atoms over R in some logic. The logic could be first-order logic, second-order logic, or other variants. A query is  boolean if it has no free variables. For convenience, given any query q, let const(q) denote the set of constants that occur in q.
+
+Every first-order formula is called a  first-order query. A  conjunctive query (CQ) is a query of the form ||SYMBOLTOKEN|| where ||SYMBOLTOKEN|| is a finite but nonempty conjunction of relational atoms. Let q be a boolean CQ. We use [q] to denote the database that consists of all the atoms that appear in q, where variables in atoms are regarded as special constants. The  Gaifman graph of q is an undirected graph with each term in q as a vertex, and with each pair of distinct terms as an edge if they cooccur in some atom in q. A boolean CQ is called  acyclic if its Gaifman graph is acyclic. A  union of conjunctive query (UCQ) is a first-order formula built upon atoms by connectives ∧,∨ and quantifier ||SYMBOLTOKEN|| Clearly, every UCQ is equivalent to a disjunction of CQs.
+
+Every  ||SYMBOLTOKEN|| program consists of a finite set of  rules of the form ||SYMBOLTOKEN|| where ||SYMBOLTOKEN|| is a relational atom and ||SYMBOLTOKEN|| is a finite conjunction of atoms or negated atoms; ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| are called the  head and the  body of the rule, respectively. Each variable in x⃗ should have at least one positive occurrence in ||SYMBOLTOKEN|| A relation symbol is called  int ntional if it has at least one occurrence in the head of some rule, and  extensional otherwise. No intensional relation symbol is allowed to appear in a negated atom. A  ||SYMBOLTOKEN|| query is of the form ||SYMBOLTOKEN|| where ||SYMBOLTOKEN|| is a ||SYMBOLTOKEN|| program, P an extensional relation symbol, and x⃗ a variable tuple of a proper l ngth. It is well-known that every ||SYMBOLTOKEN|| que y can be translated to a  equivalent formula in least fixpoint logic, see, e.g., EbbinghuasF95.
+
+Only boolean queries will be used in this work.
+For con enience, we employ CQ, ACQ and UCQ to denote the classes of boolean CQs, boolean acyclic CQs and boolean UCQs, respectively. Let FO denote the class of boolean first-order queries,  ||SYMBOLTOKEN|| denote the class of boolean first order queries that involve two built-in arithmetic relations ||SYMBOLTOKEN|| and ×, and ||SYMBOLTOKEN|| denote the class of boolean ||SYMBOLTOKEN|| queries that involve a built-in successor relation Succ, and special constants min and max, denoting the minimum and the maximum elements, respectively, under the underlying order. Given a class C of queries and a relational schema R, let C[R] denote the class of R-queries that belong to C.
+
+In the theory of descriptive complexity Immerman99, it was proved that ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| exactly capture complexity classes ||SYMBOLTOKEN|| and PTIME respectively, where ||SYMBOLTOKEN|| denotes the class of languages recognized by a uniform family of circuits with co stant depth and polynomial size, and PTIME denotes the class of languages recognized by a deterministic Turing machine in polynomial time.
+
+ Dependencies. A  disjunctive embedded dependency (DED) over a relational schema   is a sentence ||SYMBOLTO EN|| of the ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| 0, ϕ is a conjunction of relational R-atoms involving terms from x⃗∪y⃗ only, each ||SYMBOLTOKEN|| is a conjunction of atoms over R involving terms from ||SYMBOLTOKEN|| only  and each variable in x⃗ has at least one occurrence in ϕ. In particular, ||SYMBOLTOKEN|| is called a  tuple-generating dependency (TGD) if it is equality-free and ||SYMBOLTOKEN|| For simplicity, we omit the universal quantifiers and the brackets appearing outside the atoms.
+
+Let D be a database, ||SYMBOLTOKEN|| a set of (first-order) sentences, and q a boolean query; all of them are over a common relational schema R. We write ||SYMBOLTOK N|| if, for all Rinstances I with D⊆ I, if ||SYMBOLTOKEN|| for all sentences ||SYMBOLTOKEN|| then Iq, where the satisfaction relation  is defined in the standard way.
+
+
+@#!S
+Ontologies and Languages in OMQA
+@#^S
+
+
+Before identifying the existence of universal languages for OMQA, we nee  some notions t  clarify what an ontology in OMQA is, and what an ontology language in OMQA is. To make the presented results more applicable, we will define these notions in a language-independent way.
+
+To define ontologies in OMQA, below we generalize the notion introduced in ZhangZY16 from CQs to more general query languages such as UCQs.
+
+Let D and Q be relational schemas, and Q a class of queries. A  quasi-OMQA[Q]-ontology over (D,Q) is a set of ordered pairs (D,q), where D is a D-database and q a boolean Q-query in Q such that const(q)⊆adom(D).
+
+Moreover, a quasi-OMQA[Q]-ontology O over (D,Q) is called an  OMQA[Q]-ontology if all of the following hold: 
+
+  * O is  closed under query conjunctions, i.e.,
+ ||SYMBOLTOKEN|| O & ||SYMBOLTOKEN|| O & ||SYMBOLTOKEN|| O.
+
+  * O is  closed under query implications, i.e.,
+ ||SYMBOLTOKEN|| O & ||SYMBOLTOKEN|| & q ||SYMBOLTOKEN|| O. 
+
+  * O is  closed under injective database homomorphisms, i.e.,
+ ||SYMBOLTOKEN|| O & ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| O. 
+
+
+Given any logical theory ||SYMBOLTOKEN|| we can interpret it as a quasi-OMQA[Q]-ontology over (D,Q) as ||SYMBOLTOKEN|| & ||SYMBOLTOKEN|| & ||SYMBOLTOKEN|| is easy to see that, for theories ||SYMBOLTOKEN|| in almost all the classical logic, ||SYMBOLTOKEN|| is indeed an OMQA[Q]-ontology.
+
+With the notion of ontology, we are then able to present an abstract definition for ontology languages in OMQA. 
+
+Let V be a finite but nonempty set, D and Q relational schemas, and Q a class of queries. Then every  OMQA[Q]-language L over (D,Q) (with vocabulary V) is defined as an ordered pair (T, M) such that:
+
+  * T consists of a decidable set of  theories, each of which is a finite string over V (i.e., an element of ||SYMBOLTOKEN |  * M is a  semantic mapping, i.e., a function that maps each theory in T to an OMQA[Q]-onto ogy over (D,Q).
+
+
+
+Let D and Q be relational schemas, Q a class of queries, and T a decidable class of finite sets of DEDs. Let M be a function that maps each set ||SYMBOLTOKEN|| T to ||SYMBOLTOKEN|| is easy to see that ||SYMBOLTOKEN|| is an OMQA[Q]-language.  
+
+ 
+The language L defined above is called a  DED-language over (D,Q) (induced by T). In particular, if T consists of all finite sets of DEDs, we call it the  full DED-language over (D,Q). Unfortunately, it had been proved in Vardi1982 that query answering with the full DED-language is uncomputable. In this work, we thus focus on tractable OMQA-languages. We will consider two kinds of tractability:
+
+
+Let D and Q be relational schemas, C and Q classes of queries, and K a complexity class. An OMQA[Q]-language ||SYMBOLTOKEN|| over (D,Q) is  
+  * Crewritable if there is a computable function rew that maps each ordered pair ||SYMBOLTOKEN|| T×Q[Q] to a boolean query ||SYMBOLTOKEN|| such that ||SYMBOLTOKEN|| iff ||SYMBOLTOKEN|| in this case, rew is called a  C-rewriting function of L.
+
+  * K-compilable if there is a computable function com that maps each ordered pair ||SYMBOLTOKEN|| T×Q[Q] to a Turing machine ||SYMBOLTOKEN|| whose running time belongs to the class K, such that ||SYMBOLTOKEN|| iff ||SYMBOLTOKEN|| accepts on the input D; in this case, com is called a  K-compiler of L.
+
+
+
+According to CaliGL12, the language of linear TGDs is both FO-rewritable and ||SYMBOLTOKEN|| and the language of guarded TGDs is both ||SYMBOLTOKEN|| and PTIME-compilable.
+
+
+
+Clearly, there is a nonuniform way to redefine notions in Definition ||SYMBOLTOKEN|| by allowing rewriting functions and compilers to be uncomputable. However, it is worth noting that languages defined in such a way could be intractable. In fact, there is a nonuniform FO-rewritable OMQA-language in which the query answering is highly undecidable.  
+
+
+Next we give the definition of universal OMQA-language.
+
+
+Let Q be a class of queries, D and Q relational schemas, and ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| OMQA[Q]-languages over (D,Q). Then we say that L' is  at least as expressive as L, written ||SYMBOLTOKEN|| if for each theory ||SYMBOLTOKEN|| T there is a theory ||SYMBOLTOKEN|| T' such that ||SYMBOLTOKEN|| and L'  has the same expressiveness as L if both ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| OMQA[Q]-la guage L is called  universal for a family L of  OMQA[Q]-languages over (D,Q) if (i) ||SYMBOLTOKEN|| and (ii) for all languages ||SYMBOLTOKEN|| we have that ||SYMBOLTOKEN|| 
+
+
+
+@#!S
+Nonexistence for the General Case
+@#^S
+
+
+One ambitious goal in OMQA is to find some universal language for the tractable OMQA. Unfortunately, the following theorem shows that this goal is in general unachieva le.
+
+
+Let D and Q be relational schemas such that Q contains a relation symbol of arity ||SYMBOLTOKEN|| 2, and suppose ||SYMBOLTOKEN|| (+,×),Datalog^(<)} and ACQ ⊆ Q⊆UCQ. Then there is no universal language for the family of C-rewritable OMQA[Q]-languages over (D,Q).
+
+
+Since ||SYMBOLTOKEN|| and PTIME are exactly captured by ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| respectively, by Theorem ||SYMBOLTOKEN|| we have
+
+
+Let D and Q be relational schemas such that Q contains at least one relation symbol of arity ||SYMBOLTOKEN|| 2, and suppose ||SYMBOLTOKEN|| PTIME} and ACQ ⊆ Q⊆UCQ. Then there is no universal language for the family of K-compilable OM A[Q]languages over (D,Q).
+
+
+
+
+To prove Theorem ||SYMBOLTOKEN|| the general idea is to implement   diagonalization argument as follows. Assume by contradiction that there is a universal language for the desired family. We first give an effective enumeration for all nontrivial ontologies defined in the universal language. With this enumeration, we then construct a new OMQA[Q]-ontology O and a new language L' in which O is definable; Finally we show that L' is still C-rewritable, which leads to a contradiction.
+
+
+Only consider the case where ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| Assume by contradiction that there is a universal language for FO-rewritable OMQA[UCQ]-languages over (D,Q). Let ||SYMBOLTOKEN|| be such a language. Our task is to define another FO-rewritable OMQA[UCQ]-languag  that is strictly more expressive than L. To do this, we first construct an ontology that is not definable in L.
+
+Before we present the construction, some notations are needed. W.l.o.g., we assume that there is a binary relation symbol R in Q. Note that, by a repetition of the parameters, R can be always simulated by another relation symbol of arity ||SYMBOLTOKEN|| For example, one can use S(x,x,y) to simulate R(x,y). With this assumption, we first define a sequence of acyclic CQs. For all integers ||SYMBOLTOKEN|| 1, we ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| x_n(R(x_0,x_1)∧...∧ ||SYMBOLTOKEN|| q_n asserts that there is a cycle-free path (via R) of length ||SYMBOLTOKEN|| in the intended model.
+
+Let ||SYMBOLTOKEN|| be an effective enumeration[I.e., there is a Turing machine to generate such an enumeration.] of all the theories in T. Such an enumeration clearly exists. Now our task is to construct countably infinite sequences N⃗ and t⃗, where ||SYMBOLTOKEN|| is a sequence of positive integers, and ||SYMBOLTOKEN|| is a sequence of theories in T. The sequences are required to have the following properties:
+
+  * N⃗ is monotonic increasing, i.e., ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| if ||SYMBOLTOKEN||  * For all ||SYMBOLTOKEN|| 1 there exists a database D with ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| ||SYMBOLTOKEN||  * For all ||SYMBOLTOKEN|| T∖t⃗ there exists ||SYMBOLTOKEN|| such that ||SYMBOLTOKEN|| for all databases D with ||SYMBOLTOKEN|| M(t). 
+
+
+Procedure ||SYMBOLTOKEN|| is devoted to generate the desired sequences. 
+
+	n← 1  i← 1  ∞n← n  ∞j← 1  ||SYMBOLTOKEN|| D s.t. ||SYMBOLTOKEN|| ||SYMBOLTOKEN||   &  ||SYMBOLTOKEN|| n goto line 9
+	        ||SYMBOLTOKEN|| D s.t. ||SYMBOLTOKEN|| ||SYMBOLTOKEN||   &  ||SYMBOLTOKEN|| n+1
+	        				n← ||SYMBOLTOKEN||   goto line 9  ||SYMBOLTOKEN|| n   ||SYMBOLTOKEN|| s_j  
+		delete ||SYMBOLTOKEN|| from s⃗  Generating Sequences t⃗ and N⃗
+
+Now we have the following property:
+
+ Claim 1. The sequences N⃗ and t⃗ generated by Procedure ||SYMBOLTOKEN|| satisfy Properties (1-3).
+
+
+Properties 1 and 2 are clear from Procedure 1. So it remains to show Property 3.
+Suppose ||SYMBOLTOKEN|| for some ||SYMBOLTOKEN|| 1. Since t has no occurrence in t⃗, according to Procedure 1, we know that, whenever lines 5 and 6 are executed  for ||SYMBOLTOKEN|| conditions in both "if" statements must be false. (Otherwise we will have ||SYMBOLTOKEN|| In addition, as n increases arbitrarily, we know that line 6 must be executed. This means that there is some  ||SYMBOLTOKEN|| 1 such that ||SYMBOLTOKEN|| for all databases D with ||SYMBOLTOKEN|| M(t), which then yields the claim.  
+
+
+
+Now we are able to construct the desired ontology. To do this, we first define some notations. For ||SYMBOLTOKEN|| 1, let ||SYMBOLTOKEN|| denote the sentence ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| i<j< ||SYMBOLTOKEN|| which asserts that the intended domain contains at least n elements. Given a boolean UCQ q, if there exists an integer ||SYMBOLTOKEN|| 1 such that ||SYMBOLTOKEN|| q, let ||SYMBOLTOKEN|| denote ||SYMBOLTOKEN|| where m is the least integer among such ks, and let ||SYMBOLTOKEN|| denote the sentence ||SYMBOLTOKEN|| x(x=x) (always false) if no such ks exist. Furthermore, we define
+
+###FORMULA###
+
+O={(D,q):D∈DB[D] & ||SYMBOLTOKEN|| & ||SYMBOLTOKEN|| is not difficult to prove the following properties:
+
+ Claim 2. Let p and p' be boolean UCQs. Then we have:
+
+  * If p p' then ||SYMBOLTOKEN||  * ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| For the case where there exists no integer ||SYMBOLTOKEN|| 1 such that ||SYMBOLTOKEN|| p, we have that ||SYMBOLTOKEN|| x ||SYMBOLTOKEN|| which is always unsatisfiable. This implies that ||SYMBOLTOKEN|| trivially.
+
+Now it remains to show the case where there exists ||SYMBOLTOKEN|| 1 such that ||SYMBOLTOKEN|| p. Let m be the least integer such that ||SYMBOLTOKEN|| p. Then we have ||SYMBOLTOKEN|| From p p', we then have ||SYMBOLTOKEN|| p'. Let n be the least integer such that ||SYMBOLTOKEN|| p'. Then it is clear that ||SYMBOLTOKEN|| m. According to Property 1, we also know that ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| which implies that ||SYMBOLTOKEN|| or equivalently, ||SYMBOLTOKEN|| This proves Statement 1.
+
+2. For the case where there is no integer ||SYMBOLTOKEN|| 1 such that ||SYMBOLTOKEN|| p, we have ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| p', 
+which implies the desired equivalence. The same argument applies to the case where there is no integer ||SYMBOLTOKEN|| 1 such that ||SYMBOLTOKEN|| p'.
+
+Now, it remains to consider the case where there are integers i and j such that ||SYMBOLTOKEN|| p and ||SYMBOLTOKEN|| p'. Let m and n denote the least integers among such is and js, respectively. W.l.o.g., suppose ||SYMBOLTOKEN|| n. Then we have both ||SYMBOLTOKEN|| q_n p' and ||SYMBOLTOKEN|| p. Combining both of them, we know that m is the least integer such that ||SYMBOLTOKEN|| p∧ p'. Thus, we have that ||SYMBOLTOKEN|| p'. On the other hand, it is also clear that ||SYMBOLTOKEN|| or equivalently ||SYMBOLTOKEN|| which implies that ||SYMBOLTOKEN|| Consequently, we obtain that ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| which completes the proof.
+
+
+
+ Claim 3. O is an OMQA[UCQ]-ontology.
+
+
+The closure property of O under injective database homomorphisms is clear since, for any boolean UCQ q, ||SYMBOLTOKEN|| is preserved under injective homomorphisms.
+
+Next we show that O is closed under query conjunctions. Suppose ||SYMBOLTOKEN|| O and ||SYMBOLTOKEN|| O. By definition, we have both ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| which means that ||SYMBOLTOKEN|| By Statement 2 of Claim 2, we then have that ||SYMBOLTOKEN|| p', which implies that (D,p∧ ||SYMBOLTOKEN|| O as desired.
+
+Now it remains to show the closure of O under query implications. Suppose ||SYMBOLTOKEN|| O and p p'. We need to prove ||SYMBOLTOKEN|| O. From ||SYMBOLTOKEN|| O we have ||SYMBOLTOKEN|| and from p p', we have ||SYMBOLTOKEN|| by Statement 1 of Claim 2. Combining both of these, we obtain ||SYMBOLTOKEN|| By definition, it follows that ||SYMBOLTOKEN|| O, which completes the proof. 
+
+
+
+ Claim 4. O M(t) for any theory ||SYMBOLTOKEN|| T.
+
+
+First consider the case where t occurs in t⃗, and suppose ||SYMBOLTOKEN|| for some ||SYMBOLTOKEN|| 1. 
+According to the definition of t⃗, we know that there is a database D with ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| On the other hand, by the definition of ||SYMBOLTOKEN|| has no model D with ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| which means that there is no database D with ||SYMBOLTOKEN|| O and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| Consequently, we have O M(t).
+
+Now it remains to consider the case where t does not occur in t⃗. By Claim 1, it suffices to show that for every integer ||SYMBOLTOKEN|| 1  here exists a database D with ||SYMBOLTOKEN|| O and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| or equivalently, ||SYMBOLTOKEN|| has a model that contains at most ||SYMBOLTOKEN|| elements. According to the definition of ||SYMBOLTOKEN|| the latter is indeed true. This also implies that O M(t), and completes the proof immediately.
+
+
+
+With Claims 3 and 4  we are now in the position to prove the desired theorem. Let t' be a binary string such that ||SYMBOLTOKEN|| T, and let ||SYMBOLTOKEN|| Following the decidability of T, we have the decidability of T'. Let M' be a function that extends M by mapping t' to O, and let ||SYMBOLTOKEN|| By Claim 3, we know that L' is an OMQA[UCQ]-language. Suppose rew is an FO-rewriting function. Let rew' be a function that extends rew by mapping (t',q) to ||SYMBOLTOKEN|| for all boolean UCQs q. By a slight modification to Procedure ||SYMBOLTOKEN|| one can easily devise an algorithm to compute ||SYMBOLTOKEN|| (and ||SYMBOLTOKEN|| on given integer ||SYMBOLTOKEN|| 1. This implies that rew' is computable. By definition, we know that rew is an FO-rewriting function, which implies that L' is FO-rewritable. By Claim 4, we also know that L' is strictly more expressive than L, a contradiction as desired. And this completes the proof. 
+
+
+
+Since the sentence ||SYMBOLTOKEN|| defined in the above proof is also an ||SYMBOLTOKEN|| so the proof directly applies to the case of ||SYMBOLTOKEN|| For a proof of the remaining case, one can convert ||SYMBOLTOKEN|| to a ||SYMBOLTOKEN|| to the Rescue
+@#^S
+
+
+In the last section, we proved that there is no universal language for tractable OMQA in general. Then, a natural question arises as to whether one can find a natural property that approximates the tractability but still allows the existence of a universal language. The challenge here is that the property should be manageable enough to avoid a diagonalization argument (see the proof of Theorem ||SYMBOLTOKEN|| Below we propose a property as an approximation of the FO-rewritability.
+
+
+@#S!S
+Locality as Approximation of FO-rewritability
+@#S^S
+
+
+A  bound function is a computable function ℓ:N→N such that || YMBOLTOKEN|| n for ||SY BOLTOKEN|| To simplify the presentation, we fix a way to represent bound functions, e.g., one can represent each bound function by a Turing machine that computes it. A class of bound functions is called  decidable if the class of representations of those bound functions is decidable.
+
+To measure the size of a query, we fix   computable function · that maps each UCQ to a positive integer. Clearly, there are many methods to define ·. The only restriction is that we require  p∧ ||SYMBOLTOKEN|| p+ q for all UCQs p and q.
+
+
+Let D and Q be relational schemas, and Q a class of queries, O an OMQA[Q]-ontology over (D,Q), and ℓ a bound function. Then O is called ℓ-local if for all boolean Q-queries ||SYMBOLTOKEN|| and all D-databases D there is a set A, which consis s of at most ℓ(q ) constants, such that 
+
+###FORMULA###
+
+(D,q)∈ O   iff   ||SYMBOLTOKEN|| O.
+
+@@@FORMULA@@@
+
+
+Furthermore, given an OMQA[Q]-language L, a bound function ℓ and a class F of bound functions, L is called  ℓ-local  f  llOMQA[Q] ontologies defined in L is ℓ-local, and L is F-local if it is ℓ'-local for some bound function ||SYMBOLTOKEN|| 
+
+
+One might question why the bounded locality is a good ap roximation to the first-order rewritability. Let ||SYMBOLTOKEN|| denote the class of first-order sentences built on  toms and inequalities by using connectives ∧,∨ and the quantifier ||SYMBO TOKEN|| Obviously, this class is exactly the class of UCQs with inequalities. It had been observed by Benedikt16 tha  ||SYMBOLTOKEN|| captures the class of first-order sentences that preserved under injective homomorphisms Benedikt16. It remains open whether such a preservation theorem holds on finite s ructures (or databases). If this is indeed true, by the following proposition we then have that an O QAlanguage is FO-rew itable iff it is ℓ-local for some bound function ℓ.
+
+
+Let D and Q be relational schemas, O an OMQA[UCQ]-ontology over (D,Q), and ℓ a bound function. Then O is ℓ-local iff for each boolean Q-UCQ q there is a ||SYMBOLTOKEN|| φ involving at most ℓ(q ) terms such that ||SYMBOLTOKEN|| O iff ||SYMBOLTOKEN|| for all D-databases D.
+
+
+ 
+For the direction of "if", let us assume that for each boolean Q-UCQ q there is a ||SYMBOLTOKEN|| φ involving at most ℓ(q ) terms such that ||SYMBOLTOKEN|| O iff ||SYMBOLTOKEN|| for all D-databases D. We need to sh w that O is ℓ-local. Let q be a boolean Q-UCQ, and ||SYMBOLTOKEN|| a ||SYMBOLTOKEN|| involving at most ℓ(q ) terms such that ||SYMBOLTOKEN|| O iff ||SYMBOLTOKEN|| for all D-databases D. By the assumption, such a sentence does exist. Suppose ||SYMBOLTOKEN|| where ||SYMBOLTOKEN|| is a quantifier-free existential positive first-order formula with inequalities and involving at most ℓ( q) terms. Let D be a D-database. If ||SYMBOLTOKEN|| then let ||SYMBOLTOKEN|| const(φ), where s is an assignment such that ||SYMBOLTOKEN|| Otherwise, let A be any subset of adom(D) such that ||SYMBOLTOKEN|| k. In both cas s we have the following: (i) ||SYMBOLTOKEN|| k, and (ii) ||SYMBOLTOKEN|| iff ||SYMBOLTOKEN|| F om the latter, we know that ||SYMBOLTOKEN|| O iff ||SYMBOLTOKEN|| O. We thus yields that O is ℓ-local as desired.
+
+Conversely, suppose O is ℓ-local. Let q be a boolean Q-UCQ. Given a D-database D, let A⊆ adom(D) be a witness of the locality of O w.r.t. q, let ||SYMBOLTOKEN|| denote the conjunction of all facts in D; let ||SYMBOLTOKEN|| be the formula obtained from ||SYMBOLTOKEN|| by replacing each constant that does not occur in q by a fresh variable; and  et ||SYMBOLTOKEN|| denote the sentence ||SYMBOLTOKEN|| where x⃗ is the tuple of all variables occurring in ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| denotes the conjunction of ||SYMBOLTOKEN|| x_j for each pair of distinct variables ||SYMBOLTOKEN|| It is easy to see that, up to logical equivalence, there is only a finite number of ||SYMBOLTOKEN|| for all D-databases D such that ||SYMBOLTOKEN|| O. Let ||SYMBOLTOKEN|| be a disjunction of ||SYMBOLTOKEN|| for all D-databases D with ||SYMBOLTOKEN|| ) and ||SYMBOLTOKEN|| O. Clearly, ||SYMBOLTOKEN|| is equivalent to a ||SYMBO TOKEN|| that involves at most ℓ(q ) terms. To complete the proof, it suffices to show the following property:
+
+ Claim. ||SYMBOLTOKEN|| O iff ||SYMBOLTOKEN|| for all databases D over D.
+
+
+Now it remains to prove the claim. Let D be a database over D. We first prove the direction of "only if". Suppose ||SYMBOLTOKEN|| O. Since O is ℓ-local, there should be a D-database D'⊆ D such that ||SYMBOLTOKEN|| O and ||SYMBOLTOKEN|| ). By the definition of ||SYMBOLTOKEN|| we know that ||SYMBOLTOKEN|| is equivalent to a disjunct of ||SYMBOLTOKEN|| It is clear that ||SYMBOLTOKEN|| From D'⊆ D we the have ||SYMBOLTOKEN|| which implies ||SYMBOLTOKEN|| as desired.
+
+For the converse, we assume that ||SYMBOLTOKEN|| Then there is a database D' over D with ||SYMBOLTOKEN|| ) such that (i) ||SYMBOLTOKEN|| O and (ii) ||SYMBOLTOKEN|| is a disjunct of ||SYMBOLTOKEN|| From (ii) we have ||SYMBOLTOKEN|| which means that there is an injective C-homomorphism from D' to D, where ||SYMBOLTOKEN||  As O is closed under injective database homomorphisms, we have ||SYMBOLTOKEN|| O as desired, which completes the proof.
+
+
+
+
+Proposition ||SYMBOLTOKEN|| reveals an intrinsic connection between the bounded locality and the complexity of rewritings. We will elaborate th s in an extended version of this paper.
+
+
+
+@#S!S
+Universal Language for Local OMQA
+@#S^S
+
+
+Now it remains to know whether the bounded locality allows the existence of universal languages. For convenience, in the rest of this section, we  fix F as a decidable class of bound functions; fix D and Q as a pair of disjoint relational schemas. The disjointness will not introduce any real limitation. F r instance, in a DED-language, given any set ||SYMBOLTOKEN|| of DEDs, one can construct another set ||SYM OLTOKEN|| of DEDs by introducing a fresh relation symbol R' for each ||SYMBOLTOKEN|| and adding copy rules of the form R'(x⃗)→R(x⃗). Clearly, ||SYMBOLTOKEN|| has the same behaviour over (D',Q) as ||SYMBOLTOKEN|| over (D,Q), where D' denotes the schema consisting of all the fresh symbols.
+
+Surprisingly, we have the following result.
+
+
+Let Q be a decidable class of UCQs. Then there exists a DED-language that is universal for the family of F-local OMQA[Q]-languages over (D,Q).
+
+
+Let ℓ be any bound function in F. To prove Theorem ||SYMBOLTOKEN|| the general idea is to develop a transformation that converts every DED set to an ℓ-local DED set. In addition, for each DED set that is already ℓ-local, the transformation is  equired to preserve the semantics of query answering. If such a tran formation exists, since DED is universal for the family of OMQA-languages in which query answering is recursively enumerable, we then obtain a universal language for the family of F-local OMQA-languages.
+
+Let us begi  with a finite set ||SYMBOLTOKEN|| of DEDs over a relational schema R⊇D∪Q. To implement the desired transformation, we first show how to construct an ℓ-local OMQA[Q]-ontology from ||SYMBOLTOKEN|| As a natural idea, one may expect to define the desired ontology by removing all the pairs (D,q) from the original ontology (defined by ||SYMBOLTOKEN|| where q is not ℓ-local on D. Unfortunately, the ontology defined above is in general not well-defined. To construct the desired ontology, the ℓ-locality and the closure under both query conjunctions and query implications should be maintained simultaneously.
+
+Below we explain how to construct the ontology. We need to fix a strict linear order ≺ over Q-UCQs firstly. The strict linear order is required to satisfy p≺ q for all Q-UCQs p and q such that  ||SYMBOLTOKEN|| q. Clearly, such an order always exists. For the given set ||SYMBOLTOKEN|| of DEDs, let ||SYMBOLTOKEN|| be the set that consists of the ordered pair (D,q) if D is a D-database, q is a Q-UCQ in Q, and the following condition holds:
+
+###FORMULA###
+∀ ||SYMBOLTOKEN|| p<pr(q) & pr(q) ||SYMBOLTOKEN|| A⊆adom(D) s.t. ||SYMBOLTOKEN|| p) & ||SYMBOLTOKEN|| p
+
+@@@FORMULA@@@
+
+where pr(q) is the set of boolean UCQs p such that p≺ q and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and pr(q) denotes the conjunction of q and all UCQs in pr(q). Moreover, we define ||SYMBOLTOKEN|| as the minimum superset of ||SYMBOLTOKEN|| that is closed under query conjunctions, query implications and injective database homomorphisms.
+
+The constructed ontology enjoys several properties which will play important roles in our proof for Theorem ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| is ℓ-local, then ||SYMBOLTOKEN|| from the definition of ||SYMBOLTOKEN|| is an ℓ-local OMQA[Q]-ontology.
+
+
+
+We first claim that, for all UCQs q with ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| there exists an integer ||SYMBOLTOKEN|| 1 and UCQs ||SYMBOLTOKEN|| such that ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| for each ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| p_k q. This can be proved by a routine induction of the construction of ||SYMBOLTOKEN|| the claim, w.l.o.g., we assume ||SYMBOLTOKEN|| p_2≺...≺ ||SYMBOLTOKEN|| Let p denote the query ||SYMBOLTOKEN|| p_k. Obviously, it holds that ||SYMBOLTOKEN|| p, which implies that ||SYMBOLTOKEN|| q immediately. On the other hand, by definition we know that ||SYMBOLTOKEN|| is ℓ-local on D, i.e., there is a set ||SYMBOLTOKEN|| adom(D)  uch that ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| Let ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| We then have ||SYMBOLTOKEN|| p and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| p).
+Consequently, we obtain that p is ℓ-local on D.
+
+Now, it remains to show that q is ℓ-local on D. For the case where  ||SYMBOLTOKEN|| q, from p q and ||SYMBOLTOKEN|| p, we obtain that ||SYMBOLTOKEN|| q, which implies that q is ℓ-local on D. For the other case, it must be true that  ||SYMBOLTOKEN|| q. From the fact that ||SYMBOLTOKEN|| p, we know that ||SYMBOLTOKEN|| q. Since ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| is true, by Condition ||SYMBOLTOKEN|| we know that there is a set B⊆ adom(D) such that ||SYMBOLTOKEN|| q, which means that q is ℓ-local on D. This then completes the ||SYMBOLTOKEN|| is recursively enumerable. 
+
+
+
+The lemma is a corollary of the following facts:
+(1) The validity problem for inference in first-order logic is recursively enumerable;
+(2) The query containment problem for UCQs is decidable;
+(3) There are only a finite number of boolean Q-UCQs p with  ||SYMBOLTOKEN|| 
+(4) There are only a finite number of subsets of adom(D).
+(5) Both ℓ and · are computable.
+(6) Q is decidable.
+
+
+Now, to define the transformation, it remains to show how to encode the ontology ||SYMBOLTOKEN|| by another set of DEDs. Suppose D is the underlying database, and q the underlying query. The encoding will be implemented in the following way: 
+
+  * Simulate the query answering of q under ||SYMBOLTOKEN|| and D.
+
+  * If the answer of Stage 1 is positive, then nondeterministically copy disjuncts of q to generate the universal models. 
+
+
+The main challenges of implementing the above encoding are as follows. Firstly, instead of a single universal model, we need to generate a set of universal models in Stage 2. It is not clear whether the technique of generating universal model in ZhangZY16 can be applied to this situation. Secondly, to encode the computation in Stage 1, a successor relation is needed. But it seems  impossible to define such a relation in the language of DEDs explicitly.
+
+Below we explain how to implement the encoding.
+
+ Defining Successor and Arithmetic Relations.   
+To implement the desired encoding, a successor relation needs to be defined so that the constants in the underlying database D can be ranged over. 
+As there is no negation in the body of DEDs, it seems impossible to construct DEDs to traverse ALL constants in adom(D). Fortunately, thanks to the closure of OMQA-ontologies under injective database homomorphisms, we do not need a successor relation on the full domain. The reason is as follows. Suppose we want to show that a query q is derivable from the database D under some ontology O. As O is closed under injective database homomorphisms,  it is equivalent to show  whether there is a subset A of adom(D) such that q is derivable from ||SYMBOLTOKEN|| under O.
+
+To range over subsets of adom(D), we employ the  partial successor relations on adom(D), each of which is a successor relation on some subset of adom(D). Clearly, there is a partial successor relation for each subset A of adom(D). With the mentioned property, we will define some DEDs to generate partial successor relations on adom(D). To check whether q is derivable from D under O, it would be sufficient to test whether the computation of Stage 1 halts with "accept" under a certain partial successor relation.
+
+Our method to generate partial successor relations was inspired by RudolphT2015's technique to define successor relations in the language of TGDs RudolphT2015. In that paper they showed that every homomorphism-closed database query can be defined by a set of TGDs. It is worth noting that the ontology mediated queries focused on this paper are not necessary to be closed under homomorphisms. So their technique cannot be applied directly. 
+Fortunately, a linear order on adom(D) can be easily defined by a set of DEDs, and with this order, we are able to use their idea to generate all partial successor relations that are compatible with the defined order. Now we show how to implement this idea.
+
+Let AD be a unary relation symbol that will be interpreted as adom(D). Clearly, such a relation can be easily defined by some DEDs.
+With the relation AD, a linear order relation Less over AD can then be defined in a routine way: 
+AD(x)∧AD(y)→Less(x,y)∨ ||SYMBOLTOKEN|| generate all partial successor relations compatible with Less, we link each constant c in adom(D) with a  alias a by the relation Link(c,a). Suppose ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| are aliases of constant  ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| respectively, by ||SYMBOLTOKEN|| we mean that ||SYMBOLTOKEN|| is the immediate successor of ||SYMBOLTOKEN|| in the underlying successor relation. The head (resp., the tail) of a partial successor relation is denoted by First(a) (resp., Last(b)). In particular, we use a as the  name of the underlying relation. Every partial successor relation is required to have a head and a tail. To generate these relations, we use the following ||SYMBOLTOKEN|| v ||SYMBOLTOKEN|| v Link(x,v)∧Last(v)∧Partial(v)
+Less(x,y&)∧Link(y,v)∧Partial(v)
+
+&→ ||SYMBOLTOKEN|| u Link(x,u)∧Next(u,v)∧First(u)
+
+Less(x,y&)∧Link(y,v)∧Partial(v)
+
+&→ ||SYMBOLTOKEN|| u Link(x,u)∧Next(u,v)∧Partial(u)
+
+To understand how these DEDs work in more detail, please refer to the following example.
+
+###FIGURE###
+< g r a p h i c s ||SYMBOLTOKEN|| Instance Generated in Example ||SYMBOLTOKEN|| D be a database which involves only constants ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| and suppose the linear order defined by Less is ||SYMBOLTOKEN|| By an exhaustive application of DEDs ||SYMBOLTOKEN|| make the figure simple, we use the semi-oblivious chase.] we obtain an instance as illustrated by Figure ||SYMBOLTOKEN|| seen in Figure ||SYMBOLTOKEN|| there are 7 partial successor relations ||SYMBOLTOKEN|| generated in the instance. For instance, ||SYMBOLTOKEN|| defines the partial successor relation involving only ||SYMBOLTOKEN|| s_5 defines the relation ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| defines the relation ||SYMBOLTOKEN|| encode Stage 1 mentio ed before, we need to generate a linear order and the corresponding successor relation on a countably infinite domain, making sure they are compatible with the underlying partial successor relation on adom(D).
+More relations are needed to do this. Zero(o,a) means that a is the least element under the order o; DMax(o,a) states that a is the largest element in adom(D) under the order o; Succ(o,a,b) denotes that b is the immediate successor of a under the order o; and LT(o,a,b) asserts that a is less than b under t e order o. For a technical reason, we also need some auxiliary relations. TC(o,a) denotes that a is not less than the largest element in adom(D) under the order o, and RT(o,a,c) means that a is an alias of c and it is used to build the order o.
+All of these are defined by the following ||SYMBOLTOKEN|| z.Succ(v,x,y)∧TC(v,y)
+Succ(v,x,y)→LT(v,x,y)
+LT(v,x,y)∧LT(v,y,z)→LT(v,x,z)
+
+
+With these relations, it is routine to define arithmetic relations such as Add(o,a,b,c) (asserting that ||SYMBOLTOKEN|| under the order o) and ||SYMBOLTOKEN|| (asserting that the b-th bit of the binary representation of a is i). We omit the details here.
+
+ Simulating Query Answering under ||SYMBOLTOKEN||   With a partial successor relation and the related arithmetic relations, we are now in the position to define some DEDs to simulate the query answering of q under ||SYMBOLTOKEN|| and D.
+
+Our encoding that implements the simulation of query answering is almost the same as that in Section 5.3 of ZhangZY16. 
+As proved by ZhangZY16 (see Proposition 6 of ZhangZY16), all recursively enumerable OMQA-ontologies can be recognized by a certain class of Turing machines, called convergent 2-bounded nondeterministic Turing machines. Although the queries involved in that work are only boolean CQs, by a similar argument one can show that the result can be generalized to the case where boolean UCQs are involved. The only difference is that, to deal with UCQs, we have to change the format of input slightly. Due to the space limit, we omit the details here.
+
+With the result mentioned above, we can then find a convergent 2-bounded nondeterministic Turing machine ||SYMBOLTOKEN|| to recognize ||SYMBOLTOKEN|| By employing the DEDs defined in Section 5.3 of ZhangZY16 (with a slight modification to specify the partial successor relation), we are then able to simulate the computation of ||SYMBOLTOKEN|| on the input (D,q).
+
+To restore the result of the query answering, we use a binary relation symbol Accept. By Accept(o,a) we mean that the machine ||SYMBOLTOKEN|| halts on input (D,q) with "accep ", and o is the partial successor relation to implement the computation.
+
+ Generating Universal Models.   By applying all the DEDs that we have constructed, we will obtain the class of boolean UCQs that are derivable from D under ||SYMBOLTOKEN|| With such a class of UCQs, now our task is to construct a universal model set.
+
+Given a class D of databases and a set C of constants, let ||SYMBOLTOKEN|| where, for each database ||SYMBOLTOKEN|| D^∗ is an isomorphic copy of D such that, for any pair of distinct databases ||SYMBOLTOKEN|| only constants from C will be shared by ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| D be a D-database, and O an OMQA[UCQ]-ontology over (D,Q). Given a boolean UCQ q, let ||SYMBOLTOKEN|| denote the set consisting of [p] for each disjunct (a boolean CQ) of q. Let ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| O}.
+
+@@@FORMULA@@@
+ 
+Let U(O,D) denote the set that consists of ||SYMBOLTOKEN|| each minimum hitting set H of ||SYMBOLTOKEN|| where ||SYMBOLTOKEN|| O be an OMQA[UCQ]-ontology over (D,Q), let D be a D-database, and let q be a boolean Q-UCQ such that const(q)⊆adom(D). Then ||SYMBOLTOKEN|| O iff I q for all instances ||SYMBOLTOKEN|| Λ denote the set of all boolean UCQs p such that ||SYMBOLTOKEN|| O. We first show a property as follows.
+
+ Claim. ||SYMBOLTOKEN|| q iff I q for all instances ||SYMBOLTOKEN|| consider the direction of "only if". Suppose we have ||SYMBOLTOKEN|| q, and let I be any instance in U(O,D). We need to prove that I q. According to the definition of U(O,D), we know that there is a minimum hitting set H of ||SYMBOLTOKEN|| such that ||SYMBOLTOKEN|| This implies that for each UCQ ||SYMBOLTOKEN|| there is a disjunct p (which is a boolean CQ) of ||SYMBOLTOKEN|| such that [p] has an isomorphic copy in I. Consequently, we have that I ||SYMBOLTOKEN|| for all boolean UCQs ||SYMBOLTOKEN|| From the assumption that ||SYMBOLTOKEN|| q, we conclude I q as desired.
+
+Next let us turn to the direction of "if". Suppose I q for all instances ||SYMBOLTOKEN|| Now our task is to prove that ||SYMBOLTOKEN|| q. Let J be an arbitrary instance such that J p for all boolean UCQs ||SYMBOLTOKEN|| Take p as any boolean UCQ in ||SYMBOLTOKEN|| W.l.o.g., we write p as the form ||SYMBOLTOKEN|| p_n where each ||SYMBOLTOKEN|| is a boolean CQ. Let ||SYMBOLTOKEN|| be any disjunct of p such that ||SYMBOLTOKEN|| Such a disjunct always exists because J p. Suppose ||SYMBOLTOKEN|| is of the form ||SYMBOLTOKEN|| where ||SYMBOLTOKEN|| is a conjunction of atoms and ||SYMBOLTOKEN|| a tuple of variables. Let ||SYMBOLTOKEN|| be an assignment such that ||SYMBOLTOKEN|| Let H denote the set that consists of ||SYMBOLTOKEN|| for each UCQ ||SYMBOLTOKEN|| and let I denote the instance ||SYMBOLTOKEN|| Let h be a mapping that maps the isomorphic copy of x in I to ||SYMBOLTOKEN|| if ||SYMBOLTOKEN|| and ||SYMBOLTOKEN|| and maps each constant in adom(D) to itself. Clearly, h is an adom(D)-homomorphism from I to J. By the assumption made in the begin of this paragraph, we know I q. As q is preserved under adom(D)-homomorphisms, we conclude J q, which completes the proof of the claim.
+
+
+According to the above claim, to prove the desired proposition, it suffices to show that ||SYMBOLTOKEN|| O iff ||SYMBOLTOKEN|| q. The direction of "only if" is trivial since from ||SYMBOLTOKEN|| O we already have ||SYMBOLTOKEN|| It thus remains to show the converse. Suppose ||SYMBOLTOKEN|| q. According to the compactness, there is a finite subset ||SYMBOLTOKEN|| of ||SYMBOLTOKEN|| such that ||SYMBOLTOKEN|| q. Let ||SYMBOLTOKEN|| denote the conjunction of all UCQs in ||SYMBOLTOKEN|| Obviously, ||SYMBOLTOKEN|| is also a boolean UCQ. By the definition of ||SYMBOLTOKEN|| we know that for each UCQ ||SYMBOLTOKEN|| we have ||SYMBOLTOKEN|| O. Since O is closed under query conjunctions, we obtain ||SYMBOLTOKEN|| O. By ||SYMBOLTOKEN|| q, it also holds that ||SYMBOLTOKEN|| q. Furthermore, by applying the closure property of O under query implications, we conclude ||SYMBOLTOKEN|| O, which completes the proof of the proposition immediately. 
+
+
+With Proposition ||SYMBOLTOKEN|| we are now able to construct a set of DEDs to generate U(O,D). Several relations are needed to access the encoding of a query. We use UCQ(o,a) to denote that, under the order o, a is the representation (e.g., the Gödel number) of a boolean UCQ, and use Union(o,a,b,c) to assert that, under the order o, the boolean UCQ a is the disjunction of a boolean CQ b and a boolean UCQ c. By CQ(o,a) we mean that a is the encoding of some boolean CQ under the order o, and by QVar(o,a,b) we means that b is a variable that occurs in the boolean CQ encoded by a under the order o. Moreover, we assume that ||SYMBOLTOKEN|| enumerates all the relation symbols in Q. For ||SYMBOLTOKEN|| let ||SYMBOLTOKEN|| denote that ||SYMBOLTOKEN|| is an atom in the CQ encoded by a. It is easy to see that all these relations can be defined by standard arithmetic relations.
+
+Now, we use the following DEDs to nondeterministically choose which disjunct of a boolean UCQ to be true:
+Accept(v,x)→True(v,x)
+True(v,x)∧Union(v,x,y,z)→True(v,y)∨True(v,z)
+where True(o,a) states that the boolean CQ encoded by a under the order o is chosen to be true in the intended  odel.
+
+
+To generate a copy of a boolean CQ in the intended universal model, we employ the following ||SY BOLTOKEN|| z ||SYMBOLTOKEN|| ere Copy(v,x,y⃗,z⃗) denotes ||SYMBOLTOKEN|| j< ||SYMBOLTOKEN|| if ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| and k is the arity of ||SYMBOLTOKEN|| Intuitively, the first rule generates a copy for each variable in the CQ q, the second one asserts that the constant in q will not change, and the third one then copy atoms in q into the universal model and implement some necessary substitutions.
+
+
+Let ||SYMBOLTOKEN|| denote the set of DEDs that we have defined in this section. From the encoding and Proposition ||SYMBOLTOKEN|| we have ||SYMBOLTOKEN|| given the representation of any bound function ℓ and any finite set ||SYMBOLTOKEN|| of DEDs, constructing ||SYMBOLTOKEN|| is computable. Let ||SYMBOLTOKEN|| consist of ||SYMBOLTOKEN|| for each finite set ||SYMBOLTOKEN|| of DEDs and each bound function ||SYMBOLTOKEN|| Since F is decidable, we know that ||SYMBOLTOKEN|| is also decidable. Let ||SYMBOLTOKEN|| be the DED-language induced by ||SYMBOLTOKEN|| By Lemmas ||SYMBOLTOKEN|| <ref> and ||SYMBOLTOKEN|| ||SYMBOLTOKEN|| must be universal for the family of F-local OMQA-languages.
+
+
+@#!S
+Concluding Remarks
+@#^S
+
+
+We have established the nonexistence of universal language for both FO-rewritable and PTIME-tractable OMQA. As a rescue, we also proposed a novel property, called the locality, as an approximation to the FO-rewritability, and proved that there is some language of DEDs which is universal for OMQA with bounded locality. In spite of the unnaturalness of the constructed language, we believe that the proposed property would shed light on finding natural universal languages, as well as on identifying new tractable languages.
+
+aaairef

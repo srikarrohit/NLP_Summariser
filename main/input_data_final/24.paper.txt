@@ -1,0 +1,230 @@
+This paper attempts to design an intelligent simulation model for pedestrian crowd evacuation.
+For this purpose  the cellular automata (CA) was fully integrated with fuzzy logic  the kth
+nearest neighbors (KNN)  and some statistical equations. In this model  each pedestrian was
+assigned a specific speed  according to his/her physical  biological and emotional features. The
+emergency behavior and evacuation efficiency of each pedestrian were evaluated by coupling
+his/her speed with various elements  such as environment  pedestrian distribution and
+familiarity with the exits. These elements all have great impacts on the evacuation process.
+Several experiments were carried out to verify the performance of the model in different
+emergency scenarios. The results show that the proposed model can predict the evacuation
+time and emergency behavior in various types of building interiors and pedestrian distributions.
+The research provides a good reference to the design of building evacuation systems.
+Occurring emergencies in big places makes the evacuation
+operation difficult due to adding confusion  fear and even
+vagueness and anxiety to mass residents [1]. Constructed
+environment  evacuees’ communication  and the plans and
+measures in place to direct the reactions of participants to
+environmental conditions and characteristics can influence the
+evacuation system. Therefore  various evacuation methods
+appear  such as protective  preventive  rescue  and
+reconstructive evacuations [2]. The problem of evacuation is
+not solely the physical movement of evacuees; it is
+multifaceted and related to the physical and social
+circumstances  such as the high possibility for hazard  great
+stage of pressure  and inadequate data. These circumstances
+illustrate robust communication between environment  danger 
+egress process  population demographics  and participant
+behavior [3]. A crowd is a communication of a set of people
+[4]. Various features belong to crowds; therefore  during an
+emergency  a number of behaviors would be exposed in
+community areas [5]  and simulation is a means of expecting
+behaviors via responding to the "what-if" situations [6]. Hence 
+Crowd evacuation simulation is a method for mimicking the
+flow of participants for the same goal of evacuation from the
+same place [4]. In the last two decades  rising dedicated
+attempts via researchers clearly have been seen to explore
+crowd evacuation during an emergency. Evacuation dynamics
+have been widely considered to eliminate deaths and injuries
+during emergency pedestrian incidences [7-13]. A vast number
+of models is developed to know individual behaviors  such as
+how individual react a specific condition and how to deal with
+varied kind of scenarios in the crowd during an emergency; the
+entire investigations have been there for creating a foundation
+of enhancement in managing emergencies [14-20]. Modeling is a way of answering
+difficulties  thus  a newly developed framework after
+analyzing and controlling via basic pro-test shows the
+authenticity of its procedures to be mentioned as a model [4].
+Existing models can be separated into three main groups: the
+first one is classical models  the second one is hybridized
+models  and the third one is a generic model. Each group
+comprises some models  in the recent past; various
+applications to investigate crowd evacuation in both normal
+and emergency situations were done due to these models.
+Microscopic is one of the classical models and the details of
+the individuals and individual behaviors are precisely
+identified. However  it has a problem in dealing with the large
+size of participants. In microscopic  cellular automata  lattice
+gas  social force  agent-based  game theory  and experimental
+approaches were designed. In the last two decades  cellular
+automata models have been created to consider an evacuating
+group of individuals under different circumstances. These
+models can be categorized into two groups. The first depends
+on the associations among situations and pedestrians. For
+example  in 2007  Varas et al. utilized a two-dimensional
+cellular automaton model to imitate the process of leaving from
+a single and double door classroom with complete ability. In
+this study  to each grid  the structure of the room  obstructions
+spreading  floor field were measured. Moreover  the effect of
+panic as a counted dimension was calculated which % 5
+possibilities of not moving. The model applied random
+selection to cope with the collision issue. Therefore  the
+proposed model changed into non-deterministic via these
+characteristics. From the simulation result  it was clearly
+observed that the best locations of the door and evacuation
+efficiency were not enhanced by substituting a double door
+with two distinct doors. Finally  for the evacuation time  a
+number of persons and way out width were considered due to suggesting simple scaling law [21].
+In 2011  Alizadeh proposed a CA model to analyze process
+of evacuation in a room contained obstructions and had
+different configuration of the room  such as exit and
+obstruction locations  width of the exit  light of the area 
+evacuee’s psychology  and spreading of the crowd  which had
+a significant impact on the evacuation process. The case study
+of this model was the restaurant and a classroom. The impact
+of the distribution of the evacuees  location  and width of the
+door on time of the evacuation argued and output of the model
+was com-pared with some static models [22]. In 2014  Guo 
+Ren-Yong created a model based on CA with better separation
+of the area and advanced speed of walking to demonstrate
+moving away of pedestrians from a room with a single exit
+door. When experiments were simulated  near the exit they
+noticed the shape of the crowd was affected by both the
+separation of the area and advanced speed of walking  duration
+of the individuals at various positions  and efficiency of the
+evacuees expressed via two-time indicators. Besides  the
+association between width and flow of the exit was expressed
+via this model [23].
+In 2015  Li and Han recommended a model for simulating
+pedestrian evacuation based on extended cellular automata to
+configure different behavioral propensities in people.
+Familiarity and aggressive were the two chosen behavioral
+propensities to be examined via this model. During the
+experimentations of this simulation  behavioral parameters
+and pedestrian flow arrangements were verified. The output of
+this study demonstrated that evacuation time de-creases with
+increasing individuals’ familiarity and increases with the
+increasing individuals’ aggressiveness. Thus  it is clearly seen
+that the best evacuation was based on the familiarity of the
+individual with avoiding aggressive behavior [24].
+In 2018  Kontou et al. created a model of crowd evacuation
+based on cellular automata (CA) parallel computing tool to
+simulate and evaluate behaviors and distinct characteristics of
+the people within the area of evacuation  which comprises
+disable people. A secondary school in the region of Xanthi 
+which contained disable children  was chosen for the
+simulation process. With noticing and existing earthquake  the
+school controlled safety exercise; the overall time of the
+evacuation was recorded. Finally  the proposed model via the
+empirical data authenticated and there was a convenience
+inference to the special area [25]. Table 1 shows information
+for future use.
+The main goals of this paper are: 1) Collecting most of the
+research works related to various applications applied to
+pedestrian evacuation using a cellular automata approach in
+the microscopic classical model. 2) Investigating features 
+techniques  and implications of the different applications. 3)
+Learning from 1 and 2 to make a decision to design a new
+intelligent and reliable model to simulate participants’
+appearing emergency behaviors and evacuation efficiency
+during an emergency evacuation. The model is designed based
+on an amalgamation of cellular automata  fuzzy logic
+technique  KNN algorithm  and some statistical equations.
+Consequently  this paper provides details and specifics in the
+area of pedestrian evacuation and provides opportunities to the
+researchers to reach the related information easily and
+determine their future research directions.
+This research study’s contributions are: 1) Utilizing
+participants’ physical  biological  and emotional elements to
+apply different speeds for each participant. 2) Incorporating
+the speed with different elements  such as environment 
+participants’ distributions  and familiarity of the participant to
+the exit doors to the evacuation model to improve their
+appearing emergency behaviors and evacuation efficiency.
+The remainder of this paper is organized as follows: Section
+2 presents the research method. Section 3 shows the result and
+analysis of the simulations. Finally  Section 4 concludes the
+main points and suggests future research studies.
+Despite the fact that developed models based on pedestrian
+evacuation approaches have been extensively used and
+confirmed  there is still essential to create models that
+carefully simulate people's evacuation time and appeared
+behaviors during an emergency evacuation. It is vital to review
+many previous works and notice different factors that made an
+impact on participant behaviors during the evacuation process
+and also on participants’ evacuation time.
+In this study  an intelligent model built based on analyzing
+the previous applications of the cellular automata approach
+which is one of the microscopic model’s approaches. Inside
+this model  cellular automata (CA) employed with a
+combination of the fuzzy logic idea to define the value of the
+participant’s properties  such as physical  biological  and
+emotional and then defined values of the participant's
+properties were used within some statistical equation to define
+desired speed for that participant. Additionally  the KNN
+algorithm was applied to find the nearest exit door during the
+evacuation process.
+This study discusses the impact of the defined desired
+heterogeneous speed for participants with a combination of
+participants’ behavior  familiarity  environment  and
+participants’ distribution through the distinct parts of the
+cafeteria on the appearing emergency behaviors and evocation
+efficiency. From simulation results appeared different
+properties of participants caused different speeds for
+participants. Hence  a collision between participants C.W.A
+occurred during the evacuation process. Different behaviors 
+such as C.W.O and O.B.D.E appeared and different evacuation
+time was recorded for each participant. More experiments
+presented that environment  such as obstacles  size and number
+of main and distinct parts of the cafeteria exit doors had a great
+impact on changing participants’ emergency behaviors and
+evacuation time.
+This research confirms that participants with different
+properties  various distributions through the cafeteria  and the
+presence of obstacles are the key to appearing in various
+behaviors and congestion. Conversely  it is approved that
+various designs may decrease the impact of those factors.
+Firstly  instead of one main exit use two or more main exit
+doors. Secondly  the distinct part of the cafeteria increase the
+number of exit doors  meanwhile  changes the distribution of
+the participants inside the cafeteria into larger distribution.
+Thirdly  introduce the exit doors to the participants to choose
+the closest exit to evacuate as these situations simulated with
+the proposed model.
+In the future  designing and implementing fire will be
+examined. Other features  such as: how the fire spread out
+through the building according to its environment will be
+added. Additionally  the effect of the fire on the agents’
+behaviors would be analyzed and discussed. References [31]
+is very close to our future work while in our work numbers of dead  injured or suffocated agents as a result of fire and smoke
+will be recorded. Additionally  this model will be enhanced to
+make a simulation for the second floor and above. Also  it can
+be seen as a real-world application and will be optimized by
+different optimizer algorithms  such as fitness dependent
+optimizer (FDO) [32]  WOA-BAT optimization [33]  donkey
+and smuggler optimization [34]  and modified grey wolf
+optimizer [35] to find best location of the main exit door
+through the area of evacuation in a building. Finally  interested
+readers can read references [36-38] for the possibility of
+obtaining future directions.
+
+@label
+This paper attempts to design an intelligent simulation model for pedestrian crowd evacuation.
+For this purpose  the cellular automata (CA) was fully integrated with fuzzy logic  the kth
+nearest neighbors (KNN)  and some statistical equations. 
+@label
+In this model  each pedestrian was
+assigned a specific speed  according to his/her physical  biological and emotional features. 
+@label
+The emergency behavior and evacuation efficiency of each pedestrian were evaluated by coupling
+his/her speed with various elements  such as environment  pedestrian distribution and
+familiarity with the exits. 
+@label
+These elements all have great impacts on the evacuation process.
+@label
+Several experiments were carried out to verify the performance of the model in different
+emergency scenarios. 
+@label
+The results show that the proposed model can predict the evacuation
+time and emergency behavior in various types of building interiors and pedestrian distributions.
+@label
+The research provides a good reference to the design of building evacuation systems.

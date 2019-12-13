@@ -1,0 +1,74 @@
+Representing maritime traffic patterns and detecting
+anomalies from them are key to vessel monitoring and maritime
+situational awareness . We propose a novel approach -- referred
+to as GeoTrackNet -- for maritime anomaly detection from AIS
+data streams . Our model exploits state-of-the-art neural network
+schemes to learn a probabilistic representation of AIS tracks then
+uses a contrario detection to detect abnormal events . The neural
+network helps us capture complex and heterogeneous patterns
+in vessels ' behaviors while the a contrario detection takes into
+account the fact that the learned distribution may be locationdependent . Experiments on a real AIS dataset comprising more
+than 4.2 million AIS messages demonstrate the relevance of the
+proposed method .
+
+Nowadays about 90 % of the world trade is carried by
+maritime traffic and it is growing consistently -LSB- 2 -RSB- . Maritime
+surveillance and Maritime Situational Awareness -LRB- MSA -RRB- are
+vital demands . In this context anomaly detection is one of
+the most important tasks because anomalies may involve
+accidents -LRB- loss of navigation damages in engine etc. -RRB- or
+illegal activities -LRB- smuggling illegal transshipment etc. -RRB- . Initially designed for collision avoidance the Automatic Identification System -LRB- AIS -RRB- has quickly become the main source of
+information for maritime surveillance thanks to its information
+richness .
+
+The potential of AIS is
+enormous however it is not fully utilized . AIS data are awash
+in noise besides that the massive amount of data quickly
+overwhelms human processing capacity . This emphasizes the
+need for a system that can automatically analyze and arise an
+alarm whenever there is an abnormal event . However since
+AIS was originally created for collision avoidance only no
+metadata -LRB- quality reliability uncertainty etc. -RRB- are available
+making the anomaly detection from AIS a very difficult task .
+Here we present GeoTrackNet -- a new approach for maritime anomaly detection using a probabilistic RNN-based
+-LRB- Recurrent Neural Network -RRB- representation of AIS tracks and
+a contrario detection . This paper is an extended version of
+our previous work . The first step in GeoTrackNet is to
+build a normalcy model that represents the characteristics of
+AIS tracks . Actually at sea either being enforced by law or
+for optimization issues.vessels follow
+some specific patterns and we expect to learn these patterns
+from data . In this work we exploit sequential
+latent variational models specifically the Variational Recurrent
+Neural Networks -LRB- VRNNs -RRB- to create a probabilistic representation of vessels ' movement patterns . RNNs have been
+famous for their ability to capture long-term correlation in time
+series -LRB- here AIS tracks -RRB- VRNNs are an extension of RNNs
+where stochastic factors are added to improve the networks '
+capacity of modeling data variabilities and uncertainties . This
+architecture is one of the state-of-the-art methods for text
+speech and music analysis and generating . In the
+proposed scheme given the learned representation of the
+movement patterns of vessels a `` geospatial a contrario ''
+detector evaluates how likely an AIS track segment is to state
+the detection of abnormal patterns . This detector exploits a
+geospatial prior depending on the location-dependent complexity of the patterns observed in the considered dataset . This
+prior also accounts for the strong geographical variabilities of
+vessels ' occurrences and movement patterns . We demonstrate
+the relevance of the proposed scheme with respect to state-ofthe-art approaches on a real dataset comprising more than 4.2
+million AIS messages .
+
+@label
+We introduced a new approach for maritime anomaly detection using AIS data .
+@label
+To our knowledge this is the first model which relies on a normalcy model of AIS tracks using a deep learning generative scheme .
+@label
+More precisely we exploit Variational Recurrent Neural Networks to represent AIS tracks probabilistically .
+@label
+Once the approximate distribution of the data is learned a geographical a contrario detection is used to evaluate how likely an AIS track is .
+@label
+This detector takes into account the fact that the performance of the learning is geographically dependent .
+@label
+The general idea is that if an AIS message has its log probability lower than other messages ' in the same region it should be flagged as abnormal .
+@label
+An AIS track is abnormal if there are many abnormal messages in this track .
+

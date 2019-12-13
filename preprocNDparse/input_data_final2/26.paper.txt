@@ -1,0 +1,49 @@
+A statement that has either a true or false value is called a proposition. Propositional logic studies the idea of building complicated propositions using simple
+propositions or statements connected by logical connectives. The true or false
+value of a compound proposition depends on the values of underlying simple
+propositions and their structure of connectives.
+Two popular algorithms for determining the satisfiability of propositional
+logic are: DavisLogemannLoveland (DLL) algorithm and WalkSAT algorithm.
+DLL is a backtrack based complete algorithm and WalkSAT is an incomplete
+local search algorithm for determining the boolean satisfiability of the propositional logic formulae. These algorithms are unable to apply any prior belief
+about the assignments of the propositions. The WalkSAT algorithm always
+starts and continues with a uniform distribution and is unable to update it’s
+belief about the variable assignment from an unsatisfiable situation rather it
+repeatedly samples from the uniform distribution on each trial. The current
+algorithms don’t employ the belief update or probabilistic reasoning about the
+binary assignment of the variables. This paper addresses the problem to make
+the WalkSAT algorithm smarter by updating the belief of variable assignments
+with each unsatisfied attempt so that it can obtain a positive bias towards
+convergence and can find a satisfiable or unsatisfiable situation more efficiently.
+The paper is organized as follows: section 2 discusses some of the relevant
+works. Section 3 presents the approach and the proposed algorithm. Section 4
+presents and discusses the results obtained. Section 5 concludes the paper with
+some probable future works.
+The starting state is critically important for any local search algorithm. Finding
+a global minima or maxima can extensively be affected depending on where the
+search started. WalkSAT the existing local search algorithm for determining
+the satisfiability of propositional logic formulae is not able to bias the starting
+state towards more promising states. The proposed BetaWalkSAT algorithm
+improves the starting state over consecutive trials biasing towards convergence.
+The results presented in the paper bolsters the claim showing that biasing
+starting state by maintaining Beta distribution for each literal does help in
+determining satisfiability. It outperforms for harder problems requiring many
+trials though the difference is not significant enough. Applying BetaWalkSAT
+in more complex solvable problems would help to better understand its perfor
+mance. In future we will work more to formulate complex solvable problems
+to better quantify the performance improvement of our algorithm. The idea of
+biasing starting state is general and is supposed to work for other local search
+algorithms as well. In future we will work to see how it behaves for other local
+search algorithms.
+
+@label
+We propose a version of WalkSAT algorithm named as BetaWalkSAT. This
+method uses probabilistic reasoning for biasing the starting state of the local
+search algorithm
+@label
+Beta distribution is used to model the belief over boolean
+values of the literals
+@label
+Our results suggest that the proposed BetaWalkSAT
+algorithm can outperform other uninformed local search approaches for complex
+boolean satisfiability problems

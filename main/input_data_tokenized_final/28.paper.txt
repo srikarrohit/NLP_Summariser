@@ -1,0 +1,65 @@
+Some researchers have speculated that capable reinforcement learning -LRB- RL -RRB- agents
+pursuing misspecified objectives are often incentivized to seek resources and power
+in pursuit of those objectives . An agent seeking power is incentivized to behave
+in undesirable ways including rationally preventing deactivation and correction .
+Others have voiced skepticism : humans seem idiosyncratic in their urges to power
+which need not be present in the agents we design . We formalize a notion of power
+within the context of finite deterministic Markov decision processes -LRB- MDPs -RRB- . We
+prove that with respect to a wide class of reward function distributions optimal
+policies tend to seek power over the environment .
+
+Instrumental convergence is the idea that some actions are optimal for a wide range of goals : for
+example to travel as quickly as possible to a randomly selected coordinate on Earth one likely begins
+by driving to the nearest airport . Driving to the airport would then be instrumentally convergent for
+travel-related goals . In other words instrumental convergence posits that there are strong regularities
+in optimal policies across a wide range of objectives .
+Power may be defined as the ability to accomplish goals in general .1 This seems reasonable : `` money
+is power '' as the saying goes and money helps one achieve many goals . Conversely physical
+restrainment reduces one 's ability to steer the situation in various directions . A deactivated agent has
+no control over the future and so has no power .
+
+Instrumental convergence is a potential safety concern for the alignment of advanced RL systems
+with human goals . If gaining power over the environment is instrumentally convergent -LRB- as suggested
+by e.g. Omohundro -LSB- 2008 -RSB- ; Bostrom -LSB- 2014 -RSB- ; Russell -LSB- 2019 -RSB- -RRB- then even minor goal misspecification
+will incentivize the agent to resist correction and eventually to appropriate resources at scale to best
+pursue its goal . For example Marvin Minsky imagined an agent tasked with proving the Riemann
+hypothesis might rationally turn the planet into computational resources -LRB- Russell and Norvig -LSB- 2009 -RSB- -RRB- .
+
+Some established researchers have argued that to impute power-seeking motives is to anthropomorphize and recent months have brought debate as to the strength of instrumentally convergent
+incentives to gain power .2 Pinker -LSB- 2015 -RSB- argued that `` thinking does not imply subjugating '' . It has
+been similarly suggested that cooperation is instrumentally convergent -LRB- and so the system will not
+gain undue power over us -RRB- .
+
+We put the matter to formal investigation and find that their positions are contradicted by reasonable
+interpretations of our theorems . We make no supposition about the timeline over which real-world
+power-seeking behavior could become plausible ; instead we concern ourselves with the theoretical
+consequences of RL agents acting optimally in their environment . Instrumental convergence does in
+fact arise from the structural properties of MDPs . Power-seeking behavior is in fact instrumentally
+
+convergent . With respect to distributions over reward functions we prove that optimal action
+is likely proportional to the power it supplies the agent . That seeking power is instrumentally
+convergent highlights a significant theoretical risk : for an agent to gain maximal power over realworld environments it may need to disempower its supervisors .
+
+Much research is devoted -LRB- directly or indirectly -RRB- towards the dream of AI : creating highly intelligent
+agents operating in the real world . In the real world optimal pursuit of random goals does n't just
+lead to strange behavior -- it leads to bad behavior : maximizing a reasonable notion of power over
+the environment entails resisting shutdown and potentially appropriating resources . Theoretically
+theorem 48 implies that the farsighted optimal policies of most reinforcement learning agents acting
+in the real world are malign .
+
+@label
+Some researchers have speculated that capable reinforcement learning -LRB- RL -RRB- agents
+pursuing misspecified objectives are often incentivized to seek resources and power
+in pursuit of those objectives
+@label
+An agent seeking power is incentivized to behave
+in undesirable ways including rationally preventing deactivation and correction .
+@label
+Others have voiced skepticism : humans seem idiosyncratic in their urges to power
+which need not be present in the agents we design
+@label
+We formalize a notion of power
+within the context of finite deterministic Markov decision processes -LRB- MDPs -RRB- .
+@label
+We prove that with respect to a wide class of reward function distributions optimal
+policies tend to seek power over the environment

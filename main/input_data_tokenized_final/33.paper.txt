@@ -1,0 +1,114 @@
+Neural networks have become increasingly prevalent within the geosciences for applications ranging from numerical model parameterizations to the prediction of extreme weather .
+A common limitation of neural networks has been the lack of methods to interpret what
+the networks learn and how they make decisions . As such neural networks have typically been used within the geosciences to accurately identify a desired output given a set
+of inputs with the interpretation of what the network learns being used - if used at all
+- as a secondary metric to ensure the network is making the right decision for the right
+reason . Network interpretation techniques have become more advanced in recent years
+however and we therefore propose that the ultimate objective of using a neural network
+can also be the interpretation of what the network has learned rather than the output
+itself .
+We show that the interpretation of a neural network can enable the discovery of
+scientifically meaningful connections within geoscientific data . By training neural networks to use one or more components of the earth system to identify another interpretation methods can be used to gain scientific insights into how and why the two components are related . In particular we use two methods for neural network interpretation . These methods project the decision pathways of a network back onto the original
+input dimensions and are called `` optimal input '' and layerwise relevance propagation
+-LRB- LRP -RRB- . We then show how these interpretation techniques can be used to reliably infer
+scientifically meaningful information from neural networks by applying them to common
+climate patterns . These results suggest that combining interpretable neural networks with
+novel scientific hypotheses will open the door to many new avenues in neural networkrelated geoscience research .
+
+Machine learning methods are emerging as a powerful tool in scientific applications
+across all areas of geoscience including marine science solid earth science and atmospheric science . This revolution in machine learning within the geosciences has been spurred by the coincident introduction
+of novel algorithms an influx of large quantities of high-quality data and an increase
+in computational power for processing immense quantities of data simultaneously . There
+have been limitations to the application of machine learning methods within geoscience
+however as their interpretation is commonly deemed difficult if not impossible . Here
+we show that two recent techniques from computer science for interpreting one of the
+most common forms of machine learning methods Artificial Neural Networks -LRB- ANNs ;
+hereafter just neural networks -RRB- have the potential to transform how geoscientists use
+neural networks within their research . More specifically these methods enable the usage of neural networks for the discovery of physically meaningful relationships within geoscientific data .
+
+Neural networks also occasionally dubbed `` deep learning ''
+are one of the most versatile types of machine learning methods and can be used for a
+broad range of applications within the geosciences . Such models have been used for timeseries prediction . The structure of the
+neural networks employed within these applications can vary substantially although the
+general concept is the same : given a set of input variables the neural network is tasked
+with identifying the desired output as accurately as possible .
+Neural networks consist of consecutive layers of nonlinear transformations and adjustable weights and biases . The mathematics of how these layer-to-layer transformations are applied to the data are well understood since the individual transformations
+themselves are mathematically simple . However once a neural network has been trained
+the reasoning of how and why it combines information across its weights and biases and
+from each transformation to the next to arrive at its ultimate output is not easily deduced due to the potentially high complexity of the network architecture and the increasing level of abstraction in later layers of the network . Thus in practice neural networks are overwhelmingly used - including in geoscience - without a detailed understanding of the reasoning they employ to arrive at their output .
+
+Even for applications where the network 's output is all that is desired a lack of understanding of a network 's reasoning can lead to many problems . For example the neural network can overfit to the data and attempt to explain noise rather than capturing
+the meaningful connections between the input and output . Additionally within the geosciences sample sizes are typically limited which means that the available samples might
+not capture the full range of possible outcomes and thereby might also not be representative of the true underlying physics driving the relationship between the inputs and outputs . In this scenario the network may therefore fail to model the relationship correctly
+from a physical perspective even if it accurately captures a relationship between the inputs and outputs given the provided training data . Thus the ability to interpret neural networks is important for ensuring that the reasoning for a network 's outputs are consistent with our physical understanding of the earth system .
+The various applications of neural networks within the geosciences commonly rely
+on indirect scientific inference . In many cases the primary objective of the neural networks has been to maximize the accuracy of the networks ' outputs from which indirect
+inferences have been made about the earth system . For example by using neural networks to predict the likelihood that a convective storm would produce hail Gagne et al. showed that the neural networks made accurate predictions by identifying known
+types of storm structures . In another case used a neural network to
+predict the evolution of the El Ni˜no Southern Oscillation -LRB- ENSO -RRB- and then used interpretation techniques to show that ENSO precursors exist within the South Pacific and
+Indian Oceans . However even in these cases the primary objective was to construct a
+neural network that most accurately predicted its output with the interpretation being used to ensure the network attained high accuracy using reasoning consistent with
+physical theory . This theme is common throughout geoscientific applications of neural
+networks : the network 's output is the ultimate objective and interpretation techniques
+are used to ensure the network is making decisions according to our current understanding of how the earth system evolves .
+
+We propose an additional use for neural networks whereby the ultimate scientific
+objective of using a neural network is its interpretation rather than its output . From this
+perspective we show how neural networks can be used to directly advance our understanding of the earth system . To do so we focus on two methods which trace the decision of a neural network back onto the original dimensions of the input image and thereby
+permit the understanding of which input variables are most important for the neural network 's decisions . These methods are particularly well-suited for scientific inference when
+a physical understanding of relationships is important -- such as within geoscience -- and
+one of the methods has yet to be introduced to the geoscientific community to the best
+of our knowledge .
+We first discuss the theory and logic behind the two interpretation methods then
+provide two examples of how these methods can be used to explore physically meaning -
+ful patterns of earth system variability . The objective of this paper is to showcase the
+utility of using neural network interpretations for scientific inference . We use commonly
+studied climate phenomena to do so and are optimistic that these concepts can be extended to other geoscientific applications as well .
+
+The recent surge in the popularity of neural networks within the geosciences has
+inspired the need for techniques to interpret their decisions . Neural networks are conventionally thought of as `` black boxes '' within the geosciences with limited tools for the
+interpretation of the reasoning behind their decision-making process . We have shown that
+the usage of two separate techniques enables physically meaningful inference from thoughtfully designed neural networks . This ability to reliably interpret these types of neural
+networks opens the door to extending upon a network 's output by using the interpretation of how and why the network makes its decisions as the ultimate science outcome .
+The optimal input method can be used to quantify the patterns within the input
+data that maximize a neural network 's confidence that an input is associated with a particular output . For the case of categorical output as we present within this paper optimal input iteratively changes an input to maximize the neural network 's confidence that
+it belongs in a particular category . The optimized input has the same dimensions and
+can be interpreted in the same units as the input samples used to train the network but
+provides no direct indication as to which regions within the image are most important
+for a specific output .
+
+Layerwise relevance propagation -LRB- LRP -RRB- on the other hand considers each sample individually and provides information about which features in each sample are most
+important or relevant for the network 's associated output . LRP can thereby provide
+insight into how relationships between the inputs and outputs of a neural network vary
+on a case-by-case basis . The usefulness of this quality is exemplified by comparing the
+relevance heatmaps for two types of El Ni˜no events -- the eastern Pacific and central Pacific or Modoki patterns -LRB- Figure 7 -RRB- . Although the optimal input pattern does not distinguish between these two modes of El Ni˜no variability because it offers a composite
+interpretation LRP shows that the network does redirect its focus depending on where the sea-surface temperature anomalies occur -LRB- Figure 7 -RRB- . The fact that the
+neural network learns the variable spatial structures of ENSO and that LRP can elucidate this understanding suggests that LRP can be used to identify physically meaningful patterns within other geoscientific datasets as well .
+There are however particular requirements of the optimal input and LRP techniques that constrain how a neural network is constructed the details of which are discussed in Section 3 . We therefore emphasize that neural networks must be constructed
+thoughtfully so as to maximize the scientific value of their interpretation . The network
+architecture must be complex enough to capture any existing relationships between the
+input and output data but not so complex such that interpretation methods are no longer
+usable . The relative value of the accuracy and interpretability of a neural network is of
+critical importance to scientific analyses and should be assessed carefully prior to training . If a network is too simple to accurately capture the relationships between the input and output then its accuracy will be low and any interpretations of its understanding will be limited in scientific value . On the other hand if a network is too complex and
+interpretation is impossible then the network is limited to solely its output . A balance
+between network complexity and interpretability must be struck if the interpretation of
+what a network has learned is to be scientifically useful .
+We have shown that techniques for interpreting neural networks have the potential to extend the usage of neural networks to the discovery of unknown patterns within
+geoscientific data . The ultimate scientific outcome of a neural network can now also be
+the interpretation of what the neural network has learned rather than just the output
+of the network itself . Regardless of the specific application it is now apparent that neural networks offer scientists a powerful new way to identify and understand undiscovered connections within geoscience data
+
+@label
+Neural networks have become increasingly prevalent within the geosciences for applications ranging from numerical model parameterizations to the prediction of extreme weather .
+@label
+A common limitation of neural networks has been the lack of methods to interpret what
+the networks learn and how they make decisions
+@label
+As such neural networks have typically been used within the geosciences to accurately identify a desired output given a set
+of inputs with the interpretation of what the network learns being used if used at all as a secondary metric to ensure the network is making the right decision for the right
+reason
+@label
+Network interpretation techniques have become more advanced in recent years
+however and we therefore propose that the ultimate objective of using a neural network
+can also be the interpretation of what the network has learned rather than the output
+itself

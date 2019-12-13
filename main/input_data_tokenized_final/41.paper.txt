@@ -1,0 +1,70 @@
+Microblogging platforms such as Twitter are increasingly being used in event detection . Existing approaches
+mainly use machine learning models and rely on eventrelated keywords to collect the data for model training .
+These approaches make strong assumptions on the distribution of the relevant microposts containing the keyword -- referred to as the expectation of the distribution
+-- and use it as a posterior regularization parameter during model training . Such approaches are , however , limited as they fail to reliably estimate the informativeness
+of a keyword and its expectation for model training .
+This paper introduces a Human-AI loop approach to
+jointly discover informative keywords for model training while estimating their expectation . Our approach iteratively leverages the crowd to estimate both keywordspecific expectation and the disagreement between the
+crowd and the model in order to discover new keywords
+that are most beneficial for model training . These keywords and their expectation not only improve the resulting performance but also make the model training
+process more transparent . We empirically demonstrate
+the merits of our approach , both in terms of accuracy
+and interpretability , on multiple real-world datasets and
+show that our approach improves the state of the art by
+24.3 % .
+
+Event detection on microblogging platforms such as Twitter aims to detect events preemptively . A main task in event
+detection is detecting events of predetermined types , such as concerts or controversial events
+based on microposts matching specific event descriptions .
+This task has extensive applications ranging from cyber security to political elections or public
+health . Due to the high
+ambiguity and inconsistency of the terms used in microposts , event detection is generally performed though statistical machine learning models , which require a labeled dataset
+for model training . Data labeling is , however , a long , laborious , and usually costly process .
+using specific hashtags , or event-related date-time information -RRB- , there is no straightforward way to generate negative labels useful for model training . To tackle this lack of negative
+labels and the significant manual efforts in data labeling , Ritter et al.introduced a weak supervision based
+learning approach , which uses only positively labeled data ,
+accompanied by unlabeled examples by filtering microposts
+that contain a certain keyword indicative of the event type
+under consideration .
+Another key technique in this context is expectation regularization . Here , the estimated proportion of relevant microposts in an unlabeled dataset containing a keyword is given as a keyword-specific expectation . This expectation is used in the regularization term of
+the model 's objective function to constrain the posterior distribution of the model predictions . By doing so , the model is
+trained with an expectation on its prediction for microposts
+that contain the keyword .
+Our approach iteratively leverages 1 -RRB- crowd workers for estimating keywordspecific expectations , and 2 -RRB- the disagreement between the
+model and the crowd for discovering new informative keywords . More specifically , at each iteration after we obtain
+a keyword-specific expectation from the crowd , we train
+the model using expectation regularization and select those
+keyword-related microposts for which the model 's prediction disagrees the most with the crowd 's expectation ; such
+microposts are then presented to the crowd to identify new
+keywords that best explain the disagreement . By doing so ,
+our approach identifies new keywords which convey more
+relevant information with respect to existing ones , thus effectively boosting model performance . By exploiting the
+disagreement between the model and the crowd , our approach can make efficient use of the crowd , which is of
+critical importance in a human-in-the-loop context . An additional advantage of
+our approach is that by obtaining new keywords that improve model performance over time , we are able to gain insight into how the model learns for specific event detection
+tasks . Such an advantage is particularly useful for event detection using complex models , e.g. , deep neural networks ,
+which are intrinsically hard to understand .
+
+In this paper , we presented a new human-AI loop approach
+for keyword discovery and expectation estimation to better
+train event detection models . Our approach takes advantage
+of the disagreement between the crowd and the model to discover informative keywords and leverages the joint power of
+the crowd and the model in expectation inference . We evaluated our approach on real-world datasets and showed that
+it significantly outperforms the state of the art and that it
+is particularly useful for detecting events where relevant microposts are semantically complex , e.g. , the death of a politician . As future work , we plan to parallelize the crowdsourcing tasks and optimize our pipeline in order to use our event
+detection approach in real-time .
+
+@label
+Microblogging platforms such as Twitter are increasingly being used in event detection .
+@label
+Existing approaches mainly use machine learning models and rely on eventrelated keywords to collect the data for model training .
+@label
+These approaches make strong assumptions on the distribution of the relevant microposts containing the keyword -- referred to as the expectation of the distribution and use it as a posterior regularization parameter during model training .
+@label
+Such approaches are , however , limited as they fail to reliably estimate the informativeness of a keyword and its expectation for model training .
+@label
+This paper introduces a Human-AI loop approach to jointly discover informative keywords for model training while estimating their expectation . Our approach iteratively leverages the crowd to estimate both keywordspecific expectation and the disagreement between the crowd and the model in order to discover new keywords that are most beneficial for model training .
+@label
+These keywords and their expectation not only improve the resulting performance but also make the model training process more transparent .
+@label
+We empirically demonstrate the merits of our approach , both in terms of accuracy and interpretability , on multiple real-world datasets and show that our approach improves the state of the art by 24.3 % .

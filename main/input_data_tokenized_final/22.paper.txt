@@ -1,0 +1,89 @@
+We present ALFRED -LRB- Action Learning From Realistic
+Environments and Directives -RRB- a benchmark for learning a
+mapping from natural language instructions and egocentric
+vision to sequences of actions for household tasks . Long
+composition rollouts with non-reversible state changes are
+among the phenomena we include to shrink the gap between research benchmarks and real-world applications .
+ALFRED consists of expert demonstrations in interactive
+visual environments for 25k natural language directives .
+These directives contain both high-level goals like `` Rinse
+off a mug and place it in the coffee maker . '' and low-level
+language instructions like `` Walk to the coffee maker on the
+right . '' ALFRED tasks are more complex in terms of sequence length action space and language than existing
+vision-and-language task datasets . We show that a baseline
+model designed for recent embodied vision-and-language
+tasks performs poorly on ALFRED suggesting that there
+is significant room for developing innovative grounded visual language understanding models with this benchmark .
+A robot operating in a human spaces needs to connect
+natural language to the world . This symbol grounding -LSB- 21 -RSB-
+problem has largely focused on connecting language to
+static images . However robots need to understand taskoriented language for example `` Rinse off a mug and place
+it in the coffee maker '' illustrated in Figure 1 .
+Platforms for translating language to action have become
+increasingly popular spawning new test-beds . These benchmarks include language-driven navigation
+and embodied question answering which have seen dramatic improvements in modeling thanks to environments
+like Matterport 3D AI2-THOR and AI Habitat . However these datasets ignore complexities arising from describing task-oriented behaviors with objects .
+We introduce ALFRED a new benchmark for connecting human language to actions behaviors and objects in
+an interactive visual environment . Expert task demonstrations are accompanied by both high - and low-level human
+language instructions in 120 indoor scenes in the new AI2 -
+THOR 2.0 -LSB- 25 -RSB- . These demonstrations involve partial observability long action horizons underspecified natural language and irreversible actions .
+ALFRED includes 25 743 English language directives
+describing 8 055 expert demonstrations averaging 50 steps
+each resulting in 428 322 image-action pairs . Motivated
+by work in robotics on segmentation-based grasping -LSB- 36 -RSB-
+agents in ALFRED interact with objects visually specifying a pixelwise interaction mask of the target object . This inference is more
+realistic than simple object class prediction where localization is treated as a solved problem .
+Existing beam-search and backtracking solutions are infeasible due to the larger action and state
+space long horizon and inability to undo certain actions .
+To establish baseline performance levels we evaluate
+a sequence-to-sequence model shown to be successful on
+vision-and-language navigation tasks -LSB- 27 -RSB- . This model is
+not effective on the complex tasks in ALFRED achieving
+less than 5 % success rates . For analysis we also evaluate
+individual sub-goals like the routine of cooking something
+in a microwave . While performance is better for isolated
+sub-goals the model lacks the reasoning capacity for longhorizon and compositional task planning .
+In summary ALFRED facilitates learning models that
+translate from language to sequences of actions and predictions of visual interaction masks for object interactions . This benchmark captures many reasoning challenges
+present in real-world settings for translating human language to robot actions for accomplishing household tasks .
+Models that can overcome these challenges will begin to
+close the gap towards real-world language-driven robotics . We introduced ALFRED a benchmark for learning to
+map natural language instructions and egocentric vision to
+sequences of actions . ALFRED poses a challenging modeling problem towards the long-term vision of languagedriven robots capable of navigation and interaction . The
+environment dynamics and interaction mask predictions required in ALFRED narrow the gap between agents in simulation and robots operating in the real world -LSB- 36 -RSB- .
+We use ALFRED to evaluate a sequence-to-sequence
+model with progress monitoring shown to be effective
+in vision-and-language navigation tasks -LSB- 27 -RSB- . While this
+model is relatively competent at accomplishing some subgoals -LRB- e.g. operating microwaves is similar across Heat &
+Place tasks -RRB- the overall task success rates are poor . The
+long horizon of ALFRED tasks poses a significant challenge with sub-problems including visual semantic navigation object detection referring expression grounding and
+action grounding . These challenges may be approachable
+by models that exploit hierarchy modularity
+and structured reasoning and planning -LSB- 6 -RSB- . Such approaches
+have not been applied to data with the language complexity
+and long horizon action sequences of ALFRED . We are
+encouraged by the possibilities and challenges that the ALFRED benchmark introduces to the community .
+
+@label
+We present ALFRED -LRB- Action Learning From Realistic
+Environments and Directives -RRB- a benchmark for learning a
+mapping from natural language instructions and egocentric
+vision to sequences of actions for household tasks .
+@label
+Long composition rollouts with non-reversible state changes are
+among the phenomena we include to shrink the gap between research benchmarks and real-world applications .
+ALFRED consists of expert demonstrations in interactive
+visual environments for 25k natural language directives .
+@label
+These directives contain both high-level goals like `` Rinse
+off a mug and place it in the coffee maker . '' and low-level
+language instructions like `` Walk to the coffee maker on the
+right . ''
+@label
+ALFRED tasks are more complex in terms of sequence length action space and language than existing
+vision-and-language task datasets .
+@label
+We show that a baseline
+model designed for recent embodied vision-and-language
+tasks performs poorly on ALFRED suggesting that there
+is significant room for developing innovative grounded visual language understanding models with this benchmark .

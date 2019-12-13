@@ -1,0 +1,91 @@
+A KRM-based dialogue management -LRB- DM -RRB- is proposed using to implement human-computer dialogue system in
+complex scenarios . KRM-based DM has a well description ability
+and it can ensure the logic of the dialogue process . Then a
+complex application scenario in the Internet of Things -LRB- IOT -RRB-
+industry and a dialogue system implemented based on the KRMbased DM will be introduced where the system allows enterprise
+customers to customize topics and adapts corresponding topics
+in the interaction process with users . The experimental results
+show that the system can complete the interactive tasks well and
+can effectively solve the problems of topic switching information
+inheritance between topics change of dominance .
+
+Dialogue is a kind of behavior of human brain . The brain
+receives the grammatical expression of information through
+vision or hearing recognizes the semantics of information
+from accumulated knowledge decides the semantics that need
+to be replied expresses the semantics into natural language
+grammar and finally outputs it through voice . Dialogue
+management model is the core technology in the field of
+human-computer interaction and the dialogue management
+module is the core module of a dialogue system . Dialogue
+management module can identify the user 's intention from
+the input and context information through natural language
+processing technologies and then determine the response that
+the system will output .
+With the development of human-computer interaction technologies new dialogue management models have been proposed.reviews the current dialogue management model
+including Finite State Machine based Frame based Reinforcement Learning based Example-based Plan-based Bayesian Network based etc. .
+These dialog management models can work well in lots of
+task-oriented and chat-oriented application scenarios . However the dialogue process will face many problems such
+as topic switching information inheritance and change of
+dominance in more complex application scenarios due to
+the characteristics of human complexity randomness and
+irrationality . It requires the dialogue management model to
+have a better description ability a higher level of intelligence
+so as to be able to solve these problems flexibly and effectively .
+Knowledge-Requirement-Memory -LRB- KRM -RRB- model is a
+mathematical model proposed to explain the principle of brain
+information processing . Through the interaction of knowledge
+requirement and memory the KRM model well explains
+the information process of human brain 's abilities including cognition thinking creation language feeling etc. . The
+human dialogue behavior is the comprehensive function of
+these abilities of brain . In the process of dialogue the brain
+experiences the process of identifying information thinking
+about the knowledge requirements and memory contained
+in information updating requirements outputting behavioral
+instructions and finally result is the dialogue behavior .
+This paper will propose a dialogue management model
+based on KRM model . It is different from the existing dialog
+management models that it is a requirement based dialog
+management model . On the one hand KRM-based DM is
+suitable for describe complex conversation scenarios because
+KRM model is a model used to process general information .
+On the other hand in the process of dialogue the content of
+requirement memory and knowledge is dynamic changed and
+the final behavior decision is the result of the comprehensive
+effect of requirement memory and knowledge so it is suitable
+for solving the problems of topic switching information
+inheritance between topics change of dominance .
+The organization of this paper is as follows : Chapter 2
+introduces the KRM model and KRM-based DM . Chapter 3
+introduces a complex application scenario and analyzes the
+problems with an example . Chapter 4 introduces a system for
+the complex scenario . Chapter 5 is the conclusion .
+
+This paper proposes a new KRM-based dialogue management which can be used to solve more complex interaction
+scenarios than the traditional ones .
+First the decision-making model based on knowledge
+requirement and memory has the better description ability .
+Second information neuron is an independent unit of information storage and calculation . The system model based
+on information neuron can realize very complex scenarios .
+Moreover the independence of information neurons makes
+it easy to expand the system architecture through distributed
+methods .
+Third separate memory from requirement . The information
+provided by users will be transformed into memory . And then
+memory information will be used to match the requirements
+of scenarios information so it is easy to solve the problem of
+information inheritance in different scenarios .
+Fourth the decision-making process is divided into requirement and memory analysis memory matching requirement and
+response decision-making stages so that the system response
+no longer only depends on local information but integrates all
+information results . Thus it is easy to solve the problems of
+user topic switching and dominant change
+
+@label
+A KRM-based dialogue management is proposed using to implement human-computer dialogue system in complex scenarios .
+@label
+KRM-based DM has a well description ability and it can ensure the logic of the dialogue process .
+@label
+Then a complex application scenario in the Internet of Things industry and a dialogue system implemented based on the KRMbased DM will be introduced where the system allows enterprise customers to customize topics and adapts corresponding topics in the interaction process with users .
+@label
+The experimental results show that the system can complete the interactive tasks well and can effectively solve the problems of topic switching information inheritance between topics change of dominance .

@@ -1,0 +1,61 @@
+This article reviews recent advances in multi-agent reinforcement learning algorithms for largescale control systems and communication networks, which learn to communicate and cooperate. We
+provide an overview of this emerging field, with an emphasis on the decentralized setting under different
+coordination protocols. We highlight the evolution of reinforcement learning algorithms from single-agent
+to multi-agent systems, from a distributed optimization perspective, and conclude with future directions
+and challenges, in the hope to catalyze the growing synergy among distributed optimization, signal
+processing, and reinforcement learning communities
+
+Fueled with recent advances in deep neural networks, reinforcement learning (RL) has been in the
+limelight for many recent breakthroughs in artificial intelligence, including defeating humans in games
+(e.g., chess, Go, StarCraft), self-driving cars, smart home automation, service robots, among many others.
+Despite these remarkable achievements, many basic tasks can still elude a single RL agent. Examples
+abound from multi-player games, multi-robots, cellular antenna tilt control, traffic control systems, smart
+power grids to network management.
+Often, cooperation among multiple RL agents is much more critical: multiple agents must collaborate
+to complete a common goal, expedite learning, protect privacy, offer resiliency against failures and
+adversarial attacks, and overcome the physical limitations of a single RL agent behaving alone. These tasks
+are studied under the umbrella of cooperative multi-agent RL (MARL), where agents seek to learn optimal
+policies to maximize a shared team reward, while interacting with an unknown stochastic environment
+and with each other. Cooperative MARL is far more challenging than the single-agent case due to: i)
+the exponentially growing search space, ii) the non-stationary and unpredictable environment caused by
+the agents’ concurrent yet heterogeneous behaviors, and iii) the lack of central coordinators in many
+applications. These difficulties can be alleviated by appropriate coordination among agents.
+The cooperative MARL can be further categorized into subclasses depending on the information
+structure and types of coordination, such as how much information (e.g., state, action, reward, etc.)
+is available for each agent, what kinds of information can be shared among the agents, and what kinds
+of protocols (e.g., communication networks, etc.) are used for coordination. When only local partial
+state observation is available for each agent, the corresponding multi-agent systems are often described
+through decentralized partially observable Markov decision processes (MDP), or DEC-POMDP for short,
+for which the decision problem is known to be extremely challenging. In fact, even the planning problem of
+DEC-POMDPs (with known models) is known to be NEXT-complete. Despite some recent empirical
+successes, finding an exact solution of Dec-POMDPs using RLs with theoretical guarantees
+remains an open question.
+When full state information is available for each agent, we call agents joint action learners (JALs)
+if they also know the joint actions of other agents, and independent learners (ILs) if agents only know
+their own actions. Learning tasks for ILs are still very challenging, since each agent sees other agents
+as parts of the environment, so without observing the internal states, including other agents actions, the
+problem essentially becomes non-Markovian and a partially observable MDP (POMDP). It turns out
+that optimal policy can be found under restricted assumptions such as deterministic MDP, and for
+general stochastic MDPs, several attempts have demonstrated empirical successes. For a more
+comprehensive survey on independent MARLs, the reader is referred to the survey.
+The form of rewards, either centralized or decentralized, also makes a huge difference in multi-agent
+systems. If every agent receives a common reward, the situation becomes relatively easy to deal with.
+For instance, JALs can perfectly learn exact optimal policies of the underlying decision problem even
+without coordination among agents. The more interesting and practical scenario is when rewards
+are decentralized, i.e., each agent receives its own local reward while the global reward to be maximized
+is the sum of local rewards. This decentralization is especially important when taking into account the
+privacy and resiliency of the system.
+
+Until now, we mainly focused on networked MARL and recent advances which combine tools in
+consensus-based distributed optimization with MARL under decentralized rewards. There remain much
+more challenging agendas to be studied. By bridging two domains in a synergistic way, these research
+topics are expected to generate new results and enrich both fields.
+
+@label
+This article reviews recent advances in multi-agent reinforcement learning algorithms for largescale control systems and communication networks, which learn to communicate and cooperate. 
+@label
+We
+provide an overview of this emerging field, with an emphasis on the decentralized setting under different coordination protocols. 
+@label
+We highlight the evolution of reinforcement learning algorithms from single-agent to multi-agent systems, from a distributed optimization perspective, and conclude with future directions and challenges, in the hope to catalyze the growing synergy among distributed optimization, signal processing, and reinforcement learning communities.
+

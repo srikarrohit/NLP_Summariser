@@ -1,0 +1,33 @@
+
+Compositional reasoning in terms of objects, relations, and actions is a central ability in human cognition p{spelke2007core}. This ability serves as a core motivation behind a range of recent works that aim at enriching machine learning models with the ability to disentangle scenes into objects, their properties, and relations between them  p{chang2016compositional,battaglia2016interaction,watters2017visual,van2018relational,kipf2018neural,sun2018actor,sun2019relational,xu2019unsupervised}. These structured neural models greatly facilitate predicting physical dynamics and the consequences of actions, and provide a strong inductive bias for generalization to novel environment situations, allowing models to answer counterfactual questions such as ``\textit{What would happen if I pushed this block instead of pulling it?}''.
+
+Arriving at a structured description of the world in terms of objects and relations in the first place, however, is a challenging problem. While most methods in this area require some form of human annotation for the extraction of objects or relations, several recent works study the problem of object discovery from visual data in a completely unsupervised or self-supervised manner p{eslami2016attend,greff2017neural,nash2017multi,van2018relational,kosiorek2018sequential,janner2018reasoning,xu2019unsupervised,burgess2019monet,greff2019multi,engelcke2019genesis}. These methods follow a \textit{generative} approach, i.e., they learn to discover object-based representations by performing visual predictions or reconstruction and by optimizing an objective in pixel space. Placing a loss in pixel space requires carefully trading off structural constraints on latent variables vs.~accuracy of pixel-based reconstruction. Typical failure modes include ignoring visually small, but relevant features for predicting the future, such as a bullet in an Atari game p{kaiser2019model}, or wasting model capacity on visually rich, but otherwise potentially irrelevant features, such as static backgrounds.
+
+To avoid such failure modes, we propose to adopt a \textit{discriminative} approach using contrastive learning, which scores real against fake experiences in the form of state-action-state triples from an experience buffer p{lin1992self}, in a similar fashion as typical graph embedding approaches score true facts in the form of entity-relation-entity triples against corrupted triples or fake facts.
+
+We introduce Contrastively-trained Structured World Models (C-SWMs), a class of models for learning abstract state representations from observations in an environment. C-SWMs learn a set of abstract state variables, one for each object in a particular observation. Environment transitions are modeled using a graph neural network p{scarselli2009graph,li2015gated,kipf2016semi,gilmer2017neural,battaglia2018relational} that operates on latent abstract representations.
+
+This paper further introduces a novel object-level contrastive loss for unsupervised learning of object-based representations. We arrive at this formulation by adapting methods for learning translational graph embeddings p{bordes2013translating,wang2014knowledge} to our use case. By establishing a connection between contrastive learning of state abstractions p{franccois2018combined,thomas2018disentangling} and relational graph embeddings p{nickel2016review}, we hope to provide inspiration and guidance for future model improvements in both fields.
+
+In a set of experiments, where we use a novel ranking-based evaluation strategy, we demonstrate that C-SWMs learn interpretable object-level state abstractions, accurately learn to predict state transitions many steps into the future, demonstrate combinatorial generalization to novel environment configurations and learn to identify objects from scenes without supervision.
+
+@label
+
+A structured understanding of our world in terms of objects, relations, and hierarchies is an important component of human cognition
+@label
+ Learning such a structured world model from raw sensory data remains a challenge
+@label
+ As a step towards this goal, we introduce Contrastively-trained Structured World Models (C-SWMs)
+@label
+ C-SWMs utilize a contrastive approach for representation learning in environments with compositional structure
+@label
+ We structure each state embedding as a set of object representations and their relations, modeled by a graph neural network
+@label
+ This allows objects to be discovered from raw pixel observations without direct supervision as part of the learning process
+@label
+ We evaluate C-SWMs on compositional environments involving multiple interacting objects that can be manipulated independently by an agent, simple Atari games, and a multi-object physics simulation
+@label
+ Our experiments demonstrate that C-SWMs can overcome limitations of models based on pixel reconstruction and outperform typical representatives of this model class in highly structured environments, while learning interpretable object-based representations
+@label
+
+
